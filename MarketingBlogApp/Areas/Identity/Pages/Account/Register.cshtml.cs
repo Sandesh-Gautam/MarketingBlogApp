@@ -84,6 +84,8 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+            [Required]
+            public string UserName { get; set; }
 
             [Required]
             public string Address { get; set; }
@@ -125,7 +127,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                  {
                      FirstName = Input.FirstName,
                      LastName = Input.LastName,
-                     UserName = Input.Email,
+                     UserName = Input.UserName,
                      Email = Input.Email,
                      Address = Input.Address,
                      CreatedAt = DateTime.Now,
