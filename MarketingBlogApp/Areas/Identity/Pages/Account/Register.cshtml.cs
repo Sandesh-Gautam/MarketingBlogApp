@@ -137,6 +137,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                  if (result.Succeeded)
                  {
                      _logger.LogInformation("User created a new account with password.");
+                     TempData["message"] = "Registered Successfully";
                      await _userManager.AddToRoleAsync(user, "client");
 
                      var userId = await _userManager.GetUserIdAsync(user);

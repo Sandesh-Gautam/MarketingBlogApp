@@ -129,6 +129,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User logged in.");
+                        TempData["message"] = "Logged In Successfully";
                         return LocalRedirect(returnUrl);
                     }
                     if (result.RequiresTwoFactor)
@@ -152,10 +153,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                     return Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
-
     }
 }

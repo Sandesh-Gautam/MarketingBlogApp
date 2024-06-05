@@ -15,13 +15,6 @@ namespace MarketingBlogApp.Data
         {
             base.OnModelCreating(builder);
 
-            var admin = new IdentityRole("admin");
-            admin.NormalizedName = "admin";
-
-            var client = new IdentityRole("client");
-            client.NormalizedName = "client";
-            
-            builder.Entity<IdentityRole>().HasData(admin,client);
         }
     }
 }
