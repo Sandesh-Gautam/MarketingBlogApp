@@ -13,47 +13,45 @@
     </div>
     <div class="col-md-6 right-panel">
         <h1>Register</h1>
-        <form  asp-route="@Model.ReturnUrl" method="post">
+        <form id="registerForm" method="post">
             <div class="form-group">
-                <label asp-for="Input.FirstName">First Name</label>
-                <input asp-for="Input.FirstName" class="form-control"  placeholder="First Name">
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                <label for="FirstName">First Name</label>
+                <input id="FirstName" name="FirstName" class="form-control" placeholder="First Name">
+                <span class="text-danger error-message" id="FirstNameError"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.LastName">Last Name</label>
-                <input asp-for="Input.LastName" class="form-control" placeholder="Last Name">
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                <label for="LastName">Last Name</label>
+                <input id="LastName" name="LastName" class="form-control" placeholder="Last Name">
+                <span class="text-danger error-message" id="LastNameError"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.UserName">User Name</label>
-                <input asp-for="Input.UserName" class="form-control" placeholder="UserName">
-                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                <label for="UserName">User Name</label>
+                <input id="UserName" name="UserName" class="form-control" placeholder="UserName">
+                <span class="text-danger error-message" id="UserNameError"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Email">Email</label>
-                <input asp-for="Input.Email" class="form-control" placeholder="Email">
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <label for="Email">Email</label>
+                <input id="Email" name="Email" class="form-control" placeholder="Email">
+                <span class="text-danger error-message" id="EmailError"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Address">Address</label>
-                <input asp-for="Input.Address" class="form-control"  placeholder="Address">
-                <span asp-validation-for="Input.Address" class="text-danger"></span>
+                <label for="Address">Address</label>
+                <input id="Address" name="Address" class="form-control" placeholder="Address">
+                <span class="text-danger error-message" id="AddressError"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.Password">Password</label>
-                <input asp-for="Input.Password" class="form-control" id="password" placeholder="Password">
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <label for="PasswordRegister">Password</label>
+                <input id="PasswordRegister" name="PasswordRegister" class="form-control" placeholder="Password">
+                <span class="text-danger error-message" id="PasswordRegisterError"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <input asp-for="Input.ConfirmPassword" class="form-control" id="password" placeholder="Confirm Password">
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                <label for="ConfirmPassword">Confirm Password</label>
+                <input id="ConfirmPassword" name="ConfirmPassword" class="form-control" placeholder="Confirm Password">
+                <span class="text-danger error-message" id="ConfirmPasswordError"></span>
             </div>
-
             <button type="submit" class="btn btn-dark btn-block">Register</button>
             <p class="text-center text-muted mt-3">Already have an account? <a asp-area="Identity" asp-page="/Account/Login">Sign in</a></p>
         </form>
+
     </div>
 </div>
-  
-
