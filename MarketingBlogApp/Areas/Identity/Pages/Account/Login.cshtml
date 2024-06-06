@@ -1,12 +1,9 @@
 ﻿@page
 @model LoginModel
-
 @{
     Layout = "/Pages/Shared/_CustomLayout.cshtml";
 }
-
 <h1>@ViewData["Title"]</h1>
-
 <div class="row">
     <div class="col-md-6 left-panel">
         <img src="/lib/images/pic.jpg" alt="BlogApp">
@@ -14,24 +11,25 @@
     </div>
     <div class="col-md-6 right-panel">
         <h1>Sign-In</h1>
-
-        <form id="loginForm" method="post">
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
             <div class="form-group">
-                <label for="Identifier" class="form-label">Email or User Name</label>
-                <input id="Identifier" name="Identifier" class="form-control">
-                <span class="text-danger error-message" id="IdentifierError"></span>
+                <label class="form-label">Email or User Name</label>
+                <input asp-for="Input.Identifier" class="form-control">
+                <span asp-validation-for="Input.Identifier" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="PasswordLogin" class="form-label">Password</label>
-                <input id="PasswordLogin" name="PasswordLogin" class="form-control">
-                <span class="text-danger error-message" id="PasswordLoginError"></span>
+                <label class="form-label">Password</label>
+                <input asp-for="Input.Password" class="form-control">
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <input asp-for="Input.RememberMe" class="form-check-input">
+                <label class="form-check-label" asp-for="Input.RememberMe">Remember Me</label>
             </div>
             <button type="submit" class="btn btn-dark align-self-center">Sign in</button>
         </form>
-
-
         <p class="text-center mt-3">OR</p>
-
         @foreach (var provider in Model.ExternalLogins!)
         {
             <form asp-page="./ExternalLogin" asp-route-provider="@provider.Name" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-inline">
@@ -40,11 +38,9 @@
                 </button>
             </form>
         }
-
         <p class="text-center text-muted mt-3">Don't Have an account? <a asp-area="Identity" asp-page="/Account/Register">Signup Here</a></p>
     </div>
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

@@ -8,24 +8,12 @@ body {
     margin: 0;
 }
 
-.error-message {
-    display: none;
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-    padding: 5px;
-    border: 1px solid red;
-    border-radius: 5px;
-    background-color: #ffe6e6;
-}
-
 @media (max-width: 600px) {
     .error-message {
         font-size: 14px;
         padding: 10px;
     }
 }
-
 
 
 .container {
@@ -103,3 +91,22 @@ h1 {
         padding: 20px;
     }
 }
+/* Add this to your CSS file (e.g., site.css) */
+.text-danger {
+    color: #dc3545;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+}
+
+.error {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+

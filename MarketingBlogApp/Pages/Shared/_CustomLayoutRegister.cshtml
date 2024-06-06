@@ -1,5 +1,4 @@
-﻿<!-- Pages/Shared/LoginLayout.cshtml -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -7,19 +6,93 @@
     <title>@ViewData["Title"] - MarketingBlogApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/_register.css" asp-append-version="true" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
     <div class="container">
         <main role="main" class="pb-3">
-       
             @RenderBody()
         </main>
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            $.validator.addMethod("lettersOnly", function (value, element) {
+                return this.optional(element) || /^[a-zA-Z]+$/.test(value);
+            }, "Please enter only letters.");
+
+            $.validator.addMethod("passwordComplexity", function (value, element) {
+                return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/.test(value);
+            }, "Password must have one uppercase, one lowercase, one number, and one special character.");
+
+            $("form").validate({
+                rules: {
+                    "Input.FirstName": {
+                        required: true,
+                        lettersOnly: true
+                    },
+                    "Input.LastName": {
+                        required: true,
+                        lettersOnly: true
+                    },
+                    "Input.Email": {
+                        required: true,
+                        email: true
+                    },
+                    "Input.UserName": {
+                        required: true
+                    },
+                    "Input.Address": {
+                        required: true
+                    },
+                    "Input.Password": {
+                        required: true,
+                        minlength: 6,
+                        passwordComplexity: true
+                    },
+                    "Input.ConfirmPassword": {
+                        required: true,
+                        equalTo: "#Input_Password"
+                    }
+                },
+                messages: {
+                    "Input.FirstName": {
+                        required: "First Name is required.",
+                        lettersOnly: "First Name cannot contain numbers or special characters."
+                    },
+                    "Input.LastName": {
+                        required: "Last Name is required.",
+                        lettersOnly: "Last Name cannot contain numbers or special characters."
+                    },
+                    "Input.Email": {
+                        required: "Email is required.",
+                        email: "Please enter a valid email address."
+                    },
+                    "Input.UserName": {
+                        required: "User Name is required."
+                    },
+                    "Input.Address": {
+                        required: "Address is required."
+                    },
+                    "Input.Password": {
+                        required: "Password is required.",
+                        minlength: "Password must be at least 6 characters long.",
+                        passwordComplexity: "Password must have one uppercase, one lowercase, one number, and one special character."
+                    },
+                    "Input.ConfirmPassword": {
+                        required: "Confirm Password is required.",
+                        equalTo: "Passwords do not match."
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
