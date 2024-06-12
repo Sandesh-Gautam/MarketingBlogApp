@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace MarketingBlogApp.Areas.Identity.Pages.Account
 {
@@ -30,13 +31,15 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly AdminSettings _adminSettings;
 
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
-            SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+             UserManager<ApplicationUser> userManager,
+             IUserStore<ApplicationUser> userStore,
+             SignInManager<ApplicationUser> signInManager,
+             ILogger<RegisterModel> logger,
+             IEmailSender emailSender,
+             IOptions<AdminSettings> adminSettings)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +47,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _adminSettings = adminSettings?.Value ?? throw new ArgumentNullException(nameof(adminSettings));
         }
 
         /// <summary>
@@ -120,6 +124,18 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var existingEmail = await _userManager.FindByEmailAsync(Input.Email);
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError(string.Empty, "A user with this email already exists.");
+                    return Page();
+                }
+                var existingUsername = await _userManager.FindByEmailAsync(Input.UserName);
+                if (existingUsername != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Username is already taken");
+                    return Page();
+                }
                 var user = new ApplicationUser()
                 {
                     FirstName = Input.FirstName,
@@ -133,6 +149,14 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    if (Input.Email == _adminSettings.AdminEmail)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

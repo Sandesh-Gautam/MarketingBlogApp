@@ -131,19 +131,6 @@ namespace MarketingBlogApp.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "36079f84-59bb-4c48-8883-5e33c37d2db7",
-                            Name = "admin",
-                            NormalizedName = "client"
-                        },
-                        new
-                        {
-                            Id = "247c8d55-f69d-40dc-aa36-6ec154963db6",
-                            Name = "client"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

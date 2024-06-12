@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using MarketingBlogApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
+builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminSettings"));
 
+var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -25,6 +26,20 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddRoles<IdentityRole>() // Ensure that roles are added
     .AddEntityFrameworkStores<ApplicationDbContext>();
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        RoleInitializer.InitializeAsync(services).Wait();
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding the DB.");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
