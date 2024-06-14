@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Encodings.Web;
+using System.Security.Cryptography;
 
 namespace MarketingBlogApp.Pages
 {
@@ -150,11 +151,58 @@ namespace MarketingBlogApp.Pages
             return Page();
         }
 
-        private string GenerateTemporaryPassword()
+        private string GenerateTemporaryPassword(int length = 12)
         {
-            // Generate a temporary password (customize as needed)
-            var temporaryPassword = "Temp@123";
-            return temporaryPassword;
+            if (length < 4)
+                throw new ArgumentException("Password length must be at least 4.", nameof(length));
+
+            const string lowerCaseChars = "abcdefghijklmnopqrstuvwxyz";
+            const string upperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string digitChars = "1234567890";
+            const string specialChars = "!@#$%^&*()";
+            const string allChars = lowerCaseChars + upperCaseChars + digitChars + specialChars;
+
+            StringBuilder res = new StringBuilder();
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] uintBuffer = new byte[sizeof(uint)];
+
+                // Ensure at least one of each required character type
+                res.Append(GetRandomChar(lowerCaseChars, rng, uintBuffer));
+                res.Append(GetRandomChar(upperCaseChars, rng, uintBuffer));
+                res.Append(GetRandomChar(digitChars, rng, uintBuffer));
+                res.Append(GetRandomChar(specialChars, rng, uintBuffer));
+
+                // Fill the rest of the password length with random characters from all character sets
+                for (int i = 4; i < length; i++)
+                {
+                    res.Append(GetRandomChar(allChars, rng, uintBuffer));
+                }
+            }
+
+            // Shuffle the resulting characters to avoid any predictable pattern
+            return Shuffle(res.ToString());
+        }
+
+        private char GetRandomChar(string chars, RNGCryptoServiceProvider rng, byte[] uintBuffer)
+        {
+            rng.GetBytes(uintBuffer);
+            uint num = BitConverter.ToUInt32(uintBuffer, 0);
+            return chars[(int)(num % (uint)chars.Length)];
+        }
+
+        private string Shuffle(string input)
+        {
+            char[] array = input.ToCharArray();
+            Random rng = new Random();
+            int n = array.Length;
+            while (n > 1)
+            {
+                int k = rng.Next(n--);
+                (array[n], array[k]) = (array[k], array[n]);
+            }
+            return new string(array);
         }
     }
 }
+
