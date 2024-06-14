@@ -1,15 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MarketingBlogApp.Areas.Identity.Pages.Account
+namespace MarketingBlogApp.Pages
 {
     public class ResetPasswordModel : PageModel
     {
@@ -28,39 +26,38 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Required]
             [DataType(DataType.Password)]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Display(Name = "Temporary Password")]
             public string TemporaryPassword { get; set; }
 
             [Required]
-            [DataType(DataType.Password)]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [Display(Name = "New password")]
+            [DataType(DataType.Password)]
+            [Display(Name = "New Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm new password")]
+            [Display(Name = "Confirm New Password")]
             [Compare("Password", ErrorMessage = "The new password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            public string Code { get; set; }
+            public string Code { get; set; } // This will hold the token generated for password reset
+
+            public string Email { get; set; }
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(string code = null, string email = null)
         {
-            if (code == null)
+            if (code == null || email == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("A code and email must be supplied for password reset.");
             }
             else
             {
                 Input = new InputModel
                 {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code)),
+                    Email = email
                 };
                 return Page();
             }
@@ -73,25 +70,37 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                 return Page();
             }
 
+            // Find user by email
             var user = await _userManager.FindByEmailAsync(Input.Email);
+
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                return RedirectToPage("/Index");
             }
 
-            var result = await _userManager.ChangePasswordAsync(user, Input.TemporaryPassword, Input.Password);
-            if (result.Succeeded)
+            // Verify the temporary password first
+            var isTempPasswordValid = await _userManager.CheckPasswordAsync(user, Input.TemporaryPassword);
+            if (!isTempPasswordValid)
             {
-                // Optionally set EmailConfirmed to true after resetting password
-                // user.EmailConfirmed = true;
-                // await _userManager.UpdateAsync(user);
-
-                _logger.LogInformation("User changed their password successfully.");
-                return RedirectToPage("./ResetPasswordConfirmation");
+                ModelState.AddModelError(string.Empty, "Invalid temporary password.");
+                return Page();
             }
 
-            foreach (var error in result.Errors)
+            // Reset user's password to the new password
+            var resetPasswordResult = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+
+            if (resetPasswordResult.Succeeded)
+            {
+                _logger.LogInformation("User password reset successfully.");
+
+                // Optionally update the user entity to reflect password change
+                await _userManager.UpdateAsync(user);
+
+                return RedirectToPage("/Index");
+            }
+
+            foreach (var error in resetPasswordResult.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }

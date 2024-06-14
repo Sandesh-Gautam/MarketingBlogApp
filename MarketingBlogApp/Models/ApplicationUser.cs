@@ -11,5 +11,9 @@ namespace MarketingBlogApp.Models
         public string ProfileImage { get; set; } = "";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        internal ApplicationUser FirstOrDefault(Func<object, bool> value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

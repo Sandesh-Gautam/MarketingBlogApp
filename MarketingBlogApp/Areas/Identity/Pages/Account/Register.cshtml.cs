@@ -143,6 +143,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                     UserName = Input.UserName,
                     Email = Input.Email,
                     Address = Input.Address,
+                    EmailConfirmed = true,
                     CreatedAt = DateTime.Now,
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
