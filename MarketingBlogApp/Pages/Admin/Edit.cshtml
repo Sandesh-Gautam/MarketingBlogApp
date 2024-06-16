@@ -1,0 +1,55 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.EditModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h1>Edit User</h1>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="User.FirstName"></label>
+        <input asp-for="User.FirstName" class="form-control" />
+        <span asp-validation-for="User.FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="User.LastName"></label>
+        <input asp-for="User.LastName" class="form-control" />
+        <span asp-validation-for="User.LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="User.Address"></label>
+        <input asp-for="User.Address" class="form-control" />
+        <span asp-validation-for="User.Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="User.Email"></label>
+        <input asp-for="User.Email" class="form-control" />
+        <span asp-validation-for="User.Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="User.UserName"></label>
+        <input asp-for="User.UserName" class="form-control" />
+        <span asp-validation-for="User.UserName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SelectedRole">Role</label>
+        <select asp-for="SelectedRole" class="form-control" asp-items="Model.Roles"></select>
+        <span asp-validation-for="SelectedRole" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+}

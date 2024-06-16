@@ -19,8 +19,9 @@
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">Logout</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" asp-page="/AdminUserCreation">UserCreate</a></li>
-
+                    <li><a class="dropdown-item" asp-page="/AdminUserCreation">Create Users</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-page="/Admin/Index">Users</a></li>
                 </ul>
             </li>
 
@@ -29,6 +30,21 @@
         {
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    @User?.Identity?.Name
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">Logout</a></li>
+                </ul>
+            </li>
+
+        }
+        else if (User.IsInRole("Manager"))
+        {
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Manager
                     @User?.Identity?.Name
                 </a>
                 <ul class="dropdown-menu">
