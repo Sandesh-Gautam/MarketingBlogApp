@@ -3,47 +3,43 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
-    public class DeleteModel : PageModel
+    public class DisabledUsersModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public DeleteModel(UserManager<ApplicationUser> userManager)
+
+        public DisabledUsersModel(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
 
-        [BindProperty]
-        public ApplicationUser User { get; set; }
+        public IList<ApplicationUser> DisabledUsers { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string id)
+        public async Task OnGetAsync()
         {
-            User = await _userManager.FindByIdAsync(id);
-            if (User == null)
-            {
-                return NotFound();
-            }
-
-            return Page();
+            DisabledUsers = await _userManager.Users.Where(u => u.IsDisabled).ToListAsync();
         }
 
         public async Task<IActionResult> OnPostAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-
             if (user == null)
             {
                 return NotFound();
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            user.IsDisabled = true; // Disable the user
+            var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
             {
-                ModelState.AddModelError("", "Failed to delete user.");
+                ModelState.AddModelError("", "Failed to disable user.");
                 return Page();
             }
 

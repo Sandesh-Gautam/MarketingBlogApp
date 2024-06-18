@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace MarketingBlogApp.Data
 {
@@ -14,6 +15,10 @@ namespace MarketingBlogApp.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+           builder.Entity<ApplicationUser>()
+          .Property(u => u.IsDisabled)
+          .HasColumnName("IsDisabled");
 
         }
     }

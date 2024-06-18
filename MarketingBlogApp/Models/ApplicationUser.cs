@@ -11,6 +11,8 @@ namespace MarketingBlogApp.Models
         public string ProfileImage { get; set; } = "";
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        public bool IsDisabled { get; set; } = false;
+
         internal ApplicationUser FirstOrDefault(Func<object, bool> value)
         {
             throw new NotImplementedException();

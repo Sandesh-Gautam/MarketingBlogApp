@@ -1,6 +1,5 @@
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -30,7 +29,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         }
 
         [BindProperty]
-        public ApplicationUser User { get; set; }
+        public ApplicationUser UserToUpdate { get; set; }
 
         [BindProperty]
         public string SelectedRole { get; set; }
@@ -39,16 +38,16 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            User = await _userManager.FindByIdAsync(id);
-            if (User == null)
+            UserToUpdate = await _userManager.FindByIdAsync(id);
+            if (UserToUpdate == null)
             {
                 return NotFound();
             }
 
-            var userRoles = await _userManager.GetRolesAsync(User);
+            var userRoles = await _userManager.GetRolesAsync(UserToUpdate);
             SelectedRole = userRoles.FirstOrDefault();
 
-            Roles = _roleManager.Roles.Select(r => new SelectListItem
+            Roles = _roleManager.Roles.Where(r => r.Name != "Admin").Select(r => new SelectListItem
             {
                 Value = r.Name,
                 Text = r.Name
@@ -61,20 +60,11 @@ namespace MarketingBlogApp.Pages.Admin.Users
         {
             if (!ModelState.IsValid)
             {
-                Roles = _roleManager.Roles.Select(r => new SelectListItem
+                Roles = _roleManager.Roles.Where(r => r.Name != "Admin").Select(r => new SelectListItem
                 {
                     Value = r.Name,
                     Text = r.Name
                 });
-
-                foreach (var modelStateKey in ModelState.Keys)
-                {
-                    var value = ModelState[modelStateKey];
-                    foreach (var error in value.Errors)
-                    {
-                        _logger.LogError($"Key: {modelStateKey}, Error: {error.ErrorMessage}");
-                    }
-                }
 
                 return Page();
             }
@@ -85,34 +75,31 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 return NotFound();
             }
 
-            user.FirstName = User.FirstName;
-            user.LastName = User.LastName;
-            user.Address = User.Address;
-            user.Email = User.Email;
-            user.UserName = User.UserName;
+            user.FirstName = UserToUpdate.FirstName;
+            user.LastName = UserToUpdate.LastName;
+            user.Address = UserToUpdate.Address;
+            user.Email = UserToUpdate.Email;
+            user.UserName = UserToUpdate.UserName;
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var result = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to update user roles.");
+                return Page();
+            }
+
+            result = await _userManager.AddToRoleAsync(user, SelectedRole);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Failed to update user roles.");
+                return Page();
+            }
 
             var updateResult = await _userManager.UpdateAsync(user);
             if (!updateResult.Succeeded)
             {
                 ModelState.AddModelError("", "Failed to update user.");
-                return Page();
-            }
-
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            if (currentRoles.Any())
-            {
-                var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
-                if (!removeRolesResult.Succeeded)
-                {
-                    ModelState.AddModelError("", "Failed to remove user roles.");
-                    return Page();
-                }
-            }
-
-            var addRoleResult = await _userManager.AddToRoleAsync(user, SelectedRole);
-            if (!addRoleResult.Succeeded)
-            {
-                ModelState.AddModelError("", "Failed to add user role.");
                 return Page();
             }
 

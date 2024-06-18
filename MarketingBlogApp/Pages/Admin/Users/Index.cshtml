@@ -3,6 +3,7 @@
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
 }
+
 <h1>Manage Users</h1>
 
 <table class="table">
@@ -20,16 +21,20 @@
         @foreach (var user in Model.Users)
         {
             <tr>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-                <td>@user.Email</td>
-                <td>@user.UserName</td>
+                <td>@(user.IsDisabled ? $"<del>{user.FirstName}</del>" : user.FirstName)</td>
+                <td>@(user.IsDisabled ? $"<del>{user.LastName}</del>" : user.LastName)</td>
+                <td>@(user.IsDisabled ? $"<del>{user.Email}</del>" : user.Email)</td>
+                <td>@(user.IsDisabled ? $"<del>{user.UserName}</del>" : user.UserName)</td>
                 <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> |
-                    <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a> |
-                    <a asp-page="./Disable" asp-route-id="@user.Id">Disable</a>
+                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> 
+                    <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a> 
+                    @if (!user.IsDisabled)
+                    {
+                        <a asp-page="./Disabled" asp-route-id="@user.Id">Disable</a>
+                    }
                 </td>
+
             </tr>
         }
     </tbody>

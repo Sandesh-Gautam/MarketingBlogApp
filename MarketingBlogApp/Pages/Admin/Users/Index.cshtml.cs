@@ -2,6 +2,7 @@ using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,12 +13,10 @@ namespace MarketingBlogApp.Pages.Admin.Users
     public class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public IndexModel(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public IndexModel(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         public IList<ApplicationUser> Users { get; set; }
@@ -25,15 +24,22 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public async Task OnGetAsync()
         {
-            var users = _userManager.Users.ToList();
+            var usersQuery = _userManager.Users;
+
+            var users = await usersQuery.ToListAsync();
             Users = new List<ApplicationUser>();
             UserRoles = new Dictionary<string, IList<string>>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                Users.Add(user);
-                UserRoles[user.Id] = roles;
+
+                // Check if the user has roles other than "Admin"
+                if (roles.Any(r => r != "Admin"))
+                {
+                    Users.Add(user);
+                    UserRoles[user.Id] = roles;
+                }
             }
         }
     }

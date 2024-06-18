@@ -71,6 +71,65 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
+        //public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        //{
+        //    returnUrl ??= Url.Content("~/");
+
+        //    ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Check if the identifier is an email or username
+        //        ApplicationUser user = null;
+        //        if (new EmailAddressAttribute().IsValid(Input.Identifier))
+        //        {
+        //            user = await _userManager.FindByEmailAsync(Input.Identifier);
+        //        }
+        //        else
+        //        {
+        //            user = await _userManager.FindByNameAsync(Input.Identifier);
+        //        }
+
+        //        if (user != null)
+        //        {
+        //            var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        //            if (result.Succeeded)
+        //            {
+        //                _logger.LogInformation("User logged in.");
+        //                TempData["message"] = "Logged In Successfully";
+
+        //                // Check if the user is an admin and redirect to the admin dashboard
+        //                if (await _userManager.IsInRoleAsync(user, "Admin"))
+        //                {
+        //                    return LocalRedirect(Url.Content("~/Admin/Dashboard"));
+        //                }
+
+        //                return LocalRedirect(returnUrl);
+        //            }
+        //            if (result.RequiresTwoFactor)
+        //            {
+        //                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+        //            }
+        //            if (result.IsLockedOut)
+        //            {
+        //                _logger.LogWarning("User account locked out.");
+        //                return RedirectToPage("./Lockout");
+        //            }
+        //            else
+        //            {
+        //                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        //                return Page();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+        //            return Page();
+        //        }
+        //    }
+        //    return Page();
+        //}
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -92,6 +151,13 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
 
                 if (user != null)
                 {
+                    // Check if the account is disabled
+                    if (user.IsDisabled)
+                    {
+                        ModelState.AddModelError(string.Empty, "Your account has been disabled. Please contact support.");
+                        return Page();
+                    }
+
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
@@ -129,5 +195,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
             }
             return Page();
         }
+
+
     }
 }

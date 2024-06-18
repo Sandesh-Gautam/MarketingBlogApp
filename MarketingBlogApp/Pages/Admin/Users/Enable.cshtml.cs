@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
-    public class DeleteModel : PageModel
+    public class EnableModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public DeleteModel(UserManager<ApplicationUser> userManager)
+
+        public EnableModel(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -22,7 +23,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public async Task<IActionResult> OnGetAsync(string id)
         {
             User = await _userManager.FindByIdAsync(id);
-            if (User == null)
+            if (User == null || !User.IsDisabled)
             {
                 return NotFound();
             }
@@ -33,21 +34,21 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public async Task<IActionResult> OnPostAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-
-            if (user == null)
+            if (user == null || !user.IsDisabled)
             {
                 return NotFound();
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            user.IsDisabled = false;
+            var result = await _userManager.UpdateAsync(user);
 
             if (!result.Succeeded)
             {
-                ModelState.AddModelError("", "Failed to delete user.");
+                ModelState.AddModelError("", "Failed to enable user.");
                 return Page();
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./DisabledUsers");
         }
     }
 }

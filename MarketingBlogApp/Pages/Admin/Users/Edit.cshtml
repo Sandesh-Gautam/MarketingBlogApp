@@ -3,39 +3,40 @@
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
 }
+
 <h1>Edit User</h1>
 
 <form method="post">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
-        <label asp-for="User.FirstName"></label>
-        <input asp-for="User.FirstName" class="form-control" />
-        <span asp-validation-for="User.FirstName" class="text-danger"></span>
+        <label asp-for="UserToUpdate.FirstName"></label>
+        <input asp-for="UserToUpdate.FirstName" class="form-control" placeholder="First Name" />
+        <span asp-validation-for="UserToUpdate.FirstName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="User.LastName"></label>
-        <input asp-for="User.LastName" class="form-control" />
-        <span asp-validation-for="User.LastName" class="text-danger"></span>
+        <label asp-for="UserToUpdate.LastName"></label>
+        <input asp-for="UserToUpdate.LastName" class="form-control" placeholder="Last Name" />
+        <span asp-validation-for="UserToUpdate.LastName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="User.Address"></label>
-        <input asp-for="User.Address" class="form-control" />
-        <span asp-validation-for="User.Address" class="text-danger"></span>
+        <label asp-for="UserToUpdate.Address"></label>
+        <input asp-for="UserToUpdate.Address" class="form-control" placeholder="Address" />
+        <span asp-validation-for="UserToUpdate.Address" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="User.Email"></label>
-        <input asp-for="User.Email" class="form-control" />
-        <span asp-validation-for="User.Email" class="text-danger"></span>
+        <label asp-for="UserToUpdate.Email"></label>
+        <input asp-for="UserToUpdate.Email" class="form-control" placeholder="Email" />
+        <span asp-validation-for="UserToUpdate.Email" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="User.UserName"></label>
-        <input asp-for="User.UserName" class="form-control" />
-        <span asp-validation-for="User.UserName" class="text-danger"></span>
+        <label asp-for="UserToUpdate.UserName"></label>
+        <input asp-for="UserToUpdate.UserName" class="form-control" placeholder="Username" />
+        <span asp-validation-for="UserToUpdate.UserName" class="text-danger"></span>
     </div>
 
     <div class="form-group">

@@ -1,0 +1,39 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.Users.DisabledModel
+@{
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1>Disable User</h1>
+
+<h3>Are you sure you want to disable this user?</h3>
+<div>
+    <h4>@Model.User.UserName</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            First Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.FirstName
+        </dd>
+        <dt class="col-sm-2">
+            Last Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.LastName
+        </dd>
+        <dt class="col-sm-2">
+            Email
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.Email
+        </dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="User.Id" />
+        <button type="submit" class="btn btn-danger">Disable</button>
+        <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
