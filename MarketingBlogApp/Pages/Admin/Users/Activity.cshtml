@@ -1,0 +1,27 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.ActivityModel
+@{
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1>User Activity</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Activity</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var activity in Model.UserActivity)
+        {
+            <tr>
+                <td>@activity.UserName</td>
+                <td>@activity.Activity</td>
+                <td>@activity.Timestamp</td>
+            </tr>
+        }
+    </tbody>
+</table>
