@@ -1,9 +1,8 @@
 ﻿@page
-@model MarketingBlogApp.Pages.Admin.EditModel
+@model MarketingBlogApp.Pages.Admin.Users.EditModel
 @{
-    ViewData["Title"] = "Edit User";
+    Layout = "/Pages/Shared/_Admin.cshtml";
 }
-
 <h1>Edit User</h1>
 
 <form method="post">
@@ -51,5 +50,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
 }

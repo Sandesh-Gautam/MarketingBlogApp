@@ -1,18 +1,16 @@
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MarketingBlogApp.Pages.Admin
+namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
     public class EditModel : PageModel
@@ -20,18 +18,15 @@ namespace MarketingBlogApp.Pages.Admin
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<EditModel> _logger;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public EditModel(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<EditModel> logger,
-            IWebHostEnvironment webHostEnvironment)
+            ILogger<EditModel> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         [BindProperty]
@@ -40,7 +35,6 @@ namespace MarketingBlogApp.Pages.Admin
         [BindProperty]
         public string SelectedRole { get; set; }
 
-    
         public IEnumerable<SelectListItem> Roles { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -73,7 +67,6 @@ namespace MarketingBlogApp.Pages.Admin
                     Text = r.Name
                 });
 
-                // Log ModelState errors
                 foreach (var modelStateKey in ModelState.Keys)
                 {
                     var value = ModelState[modelStateKey];

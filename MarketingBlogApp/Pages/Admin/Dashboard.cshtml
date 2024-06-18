@@ -1,0 +1,19 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.DashboardModel
+@{
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1>Admin Dashboard</h1>
+
+<!-- Users Management Section -->
+<div class="card mb-3">
+    <div class="card-header">
+        <h2>Manage Users</h2>
+    </div>
+    <div class="card-body">
+        <p>View, edit, and disable user accounts.</p>
+        <a class="btn btn-primary" asp-page="/Admin/Users/Index">Users List</a>
+    </div>
+</div>
+

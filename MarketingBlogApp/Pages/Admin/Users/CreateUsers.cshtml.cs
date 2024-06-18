@@ -13,16 +13,16 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text.Encodings.Web;
 using System.Security.Cryptography;
 
-namespace MarketingBlogApp.Pages
+namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
-    public class AdminUserCreationModel : PageModel
+    public class CreateUsersModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<AdminUserCreationModel> _logger;
+        private readonly ILogger<CreateUsersModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public AdminUserCreationModel(UserManager<ApplicationUser> userManager, ILogger<AdminUserCreationModel> logger, IEmailSender emailSender)
+        public CreateUsersModel(UserManager<ApplicationUser> userManager, ILogger<CreateUsersModel> logger, IEmailSender emailSender)
         {
             _userManager = userManager;
             _logger = logger;
@@ -133,7 +133,7 @@ namespace MarketingBlogApp.Pages
                     await _emailSender.SendEmailAsync(Input.Email, "Set up your password",
                         $"Your temporary password is {temporaryPassword}. Please set up your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    return RedirectToPage("/AdminUserCreatedConfirmation");
+                    return RedirectToPage("/Admin/CreatedConfirmation");
                 }
                 catch (Exception ex)
                 {
@@ -205,4 +205,3 @@ namespace MarketingBlogApp.Pages
         }
     }
 }
-

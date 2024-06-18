@@ -1,13 +1,12 @@
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MarketingBlogApp.Pages.Admin
+namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
     public class IndexModel : PageModel
@@ -27,19 +26,14 @@ namespace MarketingBlogApp.Pages.Admin
         public async Task OnGetAsync()
         {
             var users = _userManager.Users.ToList();
-            var userRole = await _roleManager.FindByNameAsync("User");
-
             Users = new List<ApplicationUser>();
             UserRoles = new Dictionary<string, IList<string>>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                if (roles.Contains("User") || roles.Contains("Manager"))
-                {
-                    Users.Add(user);
-                    UserRoles[user.Id] = roles;
-                }
+                Users.Add(user);
+                UserRoles[user.Id] = roles;
             }
         }
     }
