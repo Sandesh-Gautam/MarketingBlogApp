@@ -1,3 +1,4 @@
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +14,12 @@ namespace MarketingBlogApp.Pages.Admin.Users
     public class DisabledUsersModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public DisabledUsersModel(UserManager<ApplicationUser> userManager)
+        public DisabledUsersModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         public IList<ApplicationUser> DisabledUsers { get; set; }
@@ -24,6 +27,18 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public async Task OnGetAsync()
         {
             DisabledUsers = await _userManager.Users.Where(u => u.IsDisabled).ToListAsync();
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    Activity = "Viewed Disabled Users",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string id)

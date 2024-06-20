@@ -1,8 +1,10 @@
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages.Admin.Users
@@ -11,9 +13,11 @@ namespace MarketingBlogApp.Pages.Admin.Users
     public class DeleteModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        public DeleteModel(UserManager<ApplicationUser> userManager)
+        private readonly ApplicationDbContext _context;
+        public DeleteModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         [BindProperty]
@@ -25,6 +29,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
             if (User == null)
             {
                 return NotFound();
+            }
+            if (User != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = User.Id,
+                    Activity = "Viewed Delete Page",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
             }
 
             return Page();
@@ -40,6 +55,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
             }
 
             var result = await _userManager.DeleteAsync(user);
+            if (user != null)
+            {
+                var deleteUsers = new UserActivity
+                {
+                    UserId = user.Id,
+                    Activity = "Deleted a User",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(deleteUsers);
+                await _context.SaveChangesAsync();
+            }
 
             if (!result.Succeeded)
             {

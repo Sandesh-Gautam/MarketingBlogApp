@@ -12,6 +12,8 @@ using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Encodings.Web;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using MarketingBlogApp.Data;
 
 namespace MarketingBlogApp.Pages.Admin.Users
 {
@@ -21,12 +23,14 @@ namespace MarketingBlogApp.Pages.Admin.Users
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<CreateUsersModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
-        public CreateUsersModel(UserManager<ApplicationUser> userManager, ILogger<CreateUsersModel> logger, IEmailSender emailSender)
+        public CreateUsersModel(UserManager<ApplicationUser> userManager, ILogger<CreateUsersModel> logger, IEmailSender emailSender,ApplicationDbContext context)
         {
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         [BindProperty]
@@ -112,6 +116,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
             if (result.Succeeded)
             {
+                if (user != null)
+                {
+                    var createUsers = new UserActivity
+                    {
+                        UserId = user.Id,
+                        Activity = "Created User",
+                        Timestamp = DateTime.Now
+                    };
+                    _context.UserActivities.Add(createUsers);
+                    await _context.SaveChangesAsync();
+                }
                 // Assign the user to a role (example: Manager role)
                 await _userManager.AddToRoleAsync(user, "Manager");
 

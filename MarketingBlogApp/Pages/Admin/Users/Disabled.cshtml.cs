@@ -1,8 +1,10 @@
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages.Admin.Users
@@ -11,10 +13,12 @@ namespace MarketingBlogApp.Pages.Admin.Users
     public class DisabledModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        public readonly ApplicationDbContext _context;
 
-        public DisabledModel(UserManager<ApplicationUser> userManager)
+        public DisabledModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         [BindProperty]
@@ -26,6 +30,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
             if (User == null)
             {
                 return NotFound();
+            }
+            if (User != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = User.Id,
+                    Activity = "Viewed Delete Page",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
             }
 
             return Page();
@@ -41,6 +56,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
             user.IsDisabled = true; // Disable the user
             var result = await _userManager.UpdateAsync(user);
+            if (user != null)
+            {
+                var disableUsers = new UserActivity
+                {
+                    UserId = user.Id,
+                    Activity = "Disabled a User",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(disableUsers);
+                await _context.SaveChangesAsync();
+            }
 
             if (!result.Succeeded)
             {

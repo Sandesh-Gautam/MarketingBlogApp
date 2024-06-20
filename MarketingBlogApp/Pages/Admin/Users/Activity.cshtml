@@ -6,7 +6,15 @@
 
 <h1>User Activity</h1>
 
-<table class="table">
+<form method="get">
+    <div class="form-group">
+        <label for="searchUsername">Search by Username:</label>
+        <input type="text" name="searchUsername" id="searchUsername" value="@Model.SearchUsername" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<table class="table mt-4">
     <thead>
         <tr>
             <th>Username</th>

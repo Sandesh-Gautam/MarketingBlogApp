@@ -1,3 +1,4 @@
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +14,12 @@ namespace MarketingBlogApp.Pages.Admin.Users
     public class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public IndexModel(UserManager<ApplicationUser> userManager)
+        public IndexModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
 
         public IList<ApplicationUser> Users { get; set; }
@@ -24,13 +27,25 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public async Task OnGetAsync()
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    Activity = "Viewed Users",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
+            }
             var usersQuery = _userManager.Users;
 
             var users = await usersQuery.ToListAsync();
             Users = new List<ApplicationUser>();
             UserRoles = new Dictionary<string, IList<string>>();
 
-            foreach (var user in users)
+            foreach (var obj in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
 

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MarketingBlogApp.Data;
 
 namespace MarketingBlogApp.Pages
 {
@@ -13,11 +15,13 @@ namespace MarketingBlogApp.Pages
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<ResetPasswordModel> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public ResetPasswordModel(UserManager<ApplicationUser> userManager, ILogger<ResetPasswordModel> logger)
+        public ResetPasswordModel(UserManager<ApplicationUser> userManager, ILogger<ResetPasswordModel> logger,ApplicationDbContext context)
         {
             _userManager = userManager;
             _logger = logger;
+            _context = context; 
         }
 
         [BindProperty]
@@ -92,6 +96,17 @@ namespace MarketingBlogApp.Pages
 
             if (resetPasswordResult.Succeeded)
             {
+                if (user != null)
+                {
+                    var resetActivity = new UserActivity
+                    {
+                        UserId = user.Id,
+                        Activity = "Changed Password",
+                        Timestamp = DateTime.Now
+                    };
+                    _context.UserActivities.Add(resetActivity);
+                    await _context.SaveChangesAsync();
+                }
                 _logger.LogInformation("User password reset successfully.");
 
                 // Optionally update the user entity to reflect password change

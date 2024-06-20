@@ -1,9 +1,11 @@
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +19,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<EditModel> _logger;
+        private readonly ApplicationDbContext _context;
 
         public EditModel(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<EditModel> logger)
+            ILogger<EditModel> logger,ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -42,6 +46,18 @@ namespace MarketingBlogApp.Pages.Admin.Users
             if (UserToUpdate == null)
             {
                 return NotFound();
+            }
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    Activity = "Viewed Dashboard Page",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
             }
 
             var userRoles = await _userManager.GetRolesAsync(UserToUpdate);
@@ -97,6 +113,17 @@ namespace MarketingBlogApp.Pages.Admin.Users
             }
 
             var updateResult = await _userManager.UpdateAsync(user);
+            if (user != null)
+            {
+                var editUsers = new UserActivity
+                {
+                    UserId = user.Id,
+                    Activity = "Edited a User",
+                    Timestamp = DateTime.Now
+                };
+                _context.UserActivities.Add(editUsers);
+                await _context.SaveChangesAsync();
+            }
             if (!updateResult.Succeeded)
             {
                 ModelState.AddModelError("", "Failed to update user.");

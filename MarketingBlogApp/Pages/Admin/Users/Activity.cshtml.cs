@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,13 +25,23 @@ namespace MarketingBlogApp.Pages.Admin
         }
 
         public IList<UserActivityViewModel> UserActivity { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string SearchUsername { get; set; }
 
         public async Task OnGetAsync()
         {
-            var userActivities = await _context.UserActivities
+            var userActivitiesQuery = _context.UserActivities
                 .Include(a => a.User)
                 .OrderByDescending(a => a.Timestamp)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(SearchUsername))
+            {
+                userActivitiesQuery = userActivitiesQuery
+                    .Where(a => a.User.UserName.Contains(SearchUsername));
+            }
+
+            var userActivities = await userActivitiesQuery.ToListAsync();
 
             // Convert UserActivity to UserActivityViewModel
             UserActivity = userActivities.Select(a => new UserActivityViewModel
