@@ -16,9 +16,6 @@ namespace MarketingBlogApp.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>()
-                .Property(u => u.IsDisabled)
-                .HasColumnName("IsDisabled");
         }
     }
 }

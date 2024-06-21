@@ -15,7 +15,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public EnableModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
+        public EnableModel(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -32,7 +32,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var userActivity = new UserActivity
                 {
                     UserId = User.Id,
-                    Activity = "Viewed Dashboard Page",
+                    Activity = "Viewed Enable User Page",
                     Timestamp = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
@@ -58,13 +58,13 @@ namespace MarketingBlogApp.Pages.Admin.Users
             var result = await _userManager.UpdateAsync(user);
             if (user != null)
             {
-                var enableUsers = new UserActivity
+                var enableUserActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Deleted a User",
+                    Activity = "Enabled a User",
                     Timestamp = DateTime.Now
                 };
-                _context.UserActivities.Add(enableUsers);
+                _context.UserActivities.Add(enableUserActivity);
                 await _context.SaveChangesAsync();
             }
 

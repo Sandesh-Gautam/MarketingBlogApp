@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages.Admin.Users
@@ -14,7 +15,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
-        public DeleteModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
+
+        public DeleteModel(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -30,17 +32,15 @@ namespace MarketingBlogApp.Pages.Admin.Users
             {
                 return NotFound();
             }
-            if (User != null)
+
+            var userActivity = new UserActivity
             {
-                var userActivity = new UserActivity
-                {
-                    UserId = User.Id,
-                    Activity = "Viewed Delete Page",
-                    Timestamp = DateTime.Now
-                };
-                _context.UserActivities.Add(userActivity);
-                await _context.SaveChangesAsync();
-            }
+                UserId = User.Id,
+                Activity = "Viewed Delete Page",
+                Timestamp = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            await _context.SaveChangesAsync();
 
             return Page();
         }
@@ -54,24 +54,29 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 return NotFound();
             }
 
-            var result = await _userManager.DeleteAsync(user);
-            if (user != null)
+            // Log the activity before deleting the user
+            var deleteUserActivity = new UserActivity
             {
-                var deleteUsers = new UserActivity
-                {
-                    UserId = user.Id,
-                    Activity = "Deleted a User",
-                    Timestamp = DateTime.Now
-                };
-                _context.UserActivities.Add(deleteUsers);
-                await _context.SaveChangesAsync();
-            }
+                UserId = user.Id,
+                Activity = "Deleted a User",
+                Timestamp = DateTime.Now
+            };
+            _context.UserActivities.Add(deleteUserActivity);
+            await _context.SaveChangesAsync();
+
+            // Delete related UserActivity records
+            var userActivities = _context.UserActivities.Where(ua => ua.UserId == id);
+            _context.UserActivities.RemoveRange(userActivities);
+
+            var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
                 ModelState.AddModelError("", "Failed to delete user.");
                 return Page();
             }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

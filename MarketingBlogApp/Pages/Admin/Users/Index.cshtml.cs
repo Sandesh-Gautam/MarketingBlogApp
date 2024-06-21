@@ -16,7 +16,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public IndexModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
+        public IndexModel(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -39,22 +39,16 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();
             }
-            var usersQuery = _userManager.Users;
 
-            var users = await usersQuery.ToListAsync();
+            var users = await _userManager.Users.ToListAsync();
             Users = new List<ApplicationUser>();
             UserRoles = new Dictionary<string, IList<string>>();
 
             foreach (var obj in users)
             {
-                var roles = await _userManager.GetRolesAsync(user);
-
-                // Check if the user has roles other than "Admin"
-                if (roles.Any(r => r != "Admin"))
-                {
-                    Users.Add(user);
-                    UserRoles[user.Id] = roles;
-                }
+                var roles = await _userManager.GetRolesAsync(obj);
+                Users.Add(obj);
+                UserRoles[obj.Id] = roles;
             }
         }
     }

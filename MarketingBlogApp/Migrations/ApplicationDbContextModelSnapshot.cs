@@ -53,8 +53,7 @@ namespace MarketingBlogApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDisabled")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsDisabled");
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

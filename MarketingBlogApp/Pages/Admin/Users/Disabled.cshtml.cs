@@ -36,7 +36,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var userActivity = new UserActivity
                 {
                     UserId = User.Id,
-                    Activity = "Viewed Delete Page",
+                    Activity = "Viewed Disabled Page",
                     Timestamp = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);

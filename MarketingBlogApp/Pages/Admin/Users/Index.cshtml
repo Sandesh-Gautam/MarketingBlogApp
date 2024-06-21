@@ -27,14 +27,16 @@
                 <td>@(user.IsDisabled ? $"<del>{user.UserName}</del>" : user.UserName)</td>
                 <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> 
-                    <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a> 
-                    @if (!user.IsDisabled)
+                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a>
+                    @if (!Model.UserRoles[user.Id].Contains("Admin"))
                     {
-                        <a asp-page="./Disabled" asp-route-id="@user.Id">Disable</a>
+                        <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
+                        @if (!user.IsDisabled)
+                        {
+                            <a asp-page="./Disable" asp-route-id="@user.Id">Disable</a>
+                        }
                     }
                 </td>
-
             </tr>
         }
     </tbody>

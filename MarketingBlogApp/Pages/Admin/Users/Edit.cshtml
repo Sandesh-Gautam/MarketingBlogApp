@@ -39,11 +39,18 @@
         <span asp-validation-for="UserToUpdate.UserName" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="SelectedRole">Role</label>
-        <select asp-for="SelectedRole" class="form-control" asp-items="Model.Roles"></select>
-        <span asp-validation-for="SelectedRole" class="text-danger"></span>
-    </div>
+    @if (!Model.IsAdmin)
+    {
+        <div class="form-group">
+            <label asp-for="SelectedRole">Role</label>
+            <select asp-for="SelectedRole" class="form-control" asp-items="Model.Roles"></select>
+            <span asp-validation-for="SelectedRole" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="SelectedRole" value="Admin" />
+    }
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="./Index" class="btn btn-secondary">Cancel</a>

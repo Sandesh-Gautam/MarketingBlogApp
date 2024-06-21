@@ -24,7 +24,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public EditModel(
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<EditModel> logger,ApplicationDbContext context)
+            ILogger<EditModel> logger,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -39,6 +40,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public string SelectedRole { get; set; }
 
         public IEnumerable<SelectListItem> Roles { get; set; }
+        public bool IsAdmin { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -47,13 +49,14 @@ namespace MarketingBlogApp.Pages.Admin.Users
             {
                 return NotFound();
             }
+
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
                 var userActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Viewed Dashboard Page",
+                    Activity = "Viewed Edit User Page",
                     Timestamp = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
@@ -61,6 +64,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
             }
 
             var userRoles = await _userManager.GetRolesAsync(UserToUpdate);
+            IsAdmin = userRoles.Contains("Admin");
             SelectedRole = userRoles.FirstOrDefault();
 
             Roles = _roleManager.Roles.Where(r => r.Name != "Admin").Select(r => new SelectListItem
@@ -91,25 +95,48 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 return NotFound();
             }
 
+            var existingUserWithUsername = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == UserToUpdate.UserName && u.Id != id);
+            if (existingUserWithUsername != null)
+            {
+                ModelState.AddModelError("UserToUpdate.UserName", "Username is already taken.");
+                return Page();
+            }
+
+            var existingUserWithEmail = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == UserToUpdate.Email && u.Id != id);
+            if (existingUserWithEmail != null)
+            {
+                ModelState.AddModelError("UserToUpdate.Email", "Email is already taken.");
+                return Page();
+            }
+
             user.FirstName = UserToUpdate.FirstName;
             user.LastName = UserToUpdate.LastName;
             user.Address = UserToUpdate.Address;
             user.Email = UserToUpdate.Email;
             user.UserName = UserToUpdate.UserName;
 
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            var result = await _userManager.RemoveFromRolesAsync(user, currentRoles);
-            if (!result.Succeeded)
+            var userRoles = await _userManager.GetRolesAsync(user);
+            if (!userRoles.Contains("Admin"))
             {
-                ModelState.AddModelError("", "Failed to update user roles.");
-                return Page();
-            }
+                var currentRoles = await _userManager.GetRolesAsync(user);
+                var result = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to update user roles.");
+                    return Page();
+                }
 
-            result = await _userManager.AddToRoleAsync(user, SelectedRole);
-            if (!result.Succeeded)
+                result = await _userManager.AddToRoleAsync(user, SelectedRole);
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to update user roles.");
+                    return Page();
+                }
+            }
+            else
             {
-                ModelState.AddModelError("", "Failed to update user roles.");
-                return Page();
+                // Ensure SelectedRole is set to "Admin" if the user is an admin
+                SelectedRole = "Admin";
             }
 
             var updateResult = await _userManager.UpdateAsync(user);
