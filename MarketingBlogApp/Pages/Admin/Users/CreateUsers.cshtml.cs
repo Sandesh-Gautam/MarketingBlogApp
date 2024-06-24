@@ -38,23 +38,23 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "The First Name Field is required.")]
             [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First Name cannot contain numbers or special characters.")]
             public string FirstName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Last Name Field is required.")]
             [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last Name cannot contain numbers or special characters.")]
             public string LastName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Email Field is required.")]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Username Field is required.")]
             public string UserName { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Address Field is required.")]
             public string Address { get; set; }
         }
 

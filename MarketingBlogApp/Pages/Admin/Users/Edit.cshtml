@@ -7,35 +7,35 @@
 <h1>Edit User</h1>
 
 <form method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
+   
 
     <div class="form-group">
-        <label asp-for="UserToUpdate.FirstName"></label>
+        <label asp-for="UserToUpdate.FirstName">First Name</label>
         <input asp-for="UserToUpdate.FirstName" class="form-control" placeholder="First Name" />
         <span asp-validation-for="UserToUpdate.FirstName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="UserToUpdate.LastName"></label>
+        <label asp-for="UserToUpdate.LastName">Last Name</label>
         <input asp-for="UserToUpdate.LastName" class="form-control" placeholder="Last Name" />
         <span asp-validation-for="UserToUpdate.LastName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="UserToUpdate.Address"></label>
+        <label asp-for="UserToUpdate.Address">Address</label>
         <input asp-for="UserToUpdate.Address" class="form-control" placeholder="Address" />
         <span asp-validation-for="UserToUpdate.Address" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="UserToUpdate.Email"></label>
-        <input asp-for="UserToUpdate.Email" class="form-control" placeholder="Email" />
+        <label asp-for="UserToUpdate.Email">Email</label>
+        <input asp-for="UserToUpdate.Email" class="form-control" placeholder="Email" required/>
         <span asp-validation-for="UserToUpdate.Email" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="UserToUpdate.UserName"></label>
-        <input asp-for="UserToUpdate.UserName" class="form-control" placeholder="Username" />
+        <label asp-for="UserToUpdate.UserName">Username</label>
+        <input asp-for="UserToUpdate.UserName" class="form-control" placeholder="Username" required/>
         <span asp-validation-for="UserToUpdate.UserName" class="text-danger"></span>
     </div>
 

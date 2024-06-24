@@ -135,7 +135,6 @@ namespace MarketingBlogApp.Pages.Admin.Users
             }
             else
             {
-                // Ensure SelectedRole is set to "Admin" if the user is an admin
                 SelectedRole = "Admin";
             }
 
