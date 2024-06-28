@@ -1,0 +1,42 @@
+﻿@page
+@model MarketingBlogApp.Pages.Manager.ViewPostsModel
+
+@{
+    ViewData["Title"] = "ViewPosts";
+}
+
+<h1>ViewPosts</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BlogPostCategory[0].BlogPost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BlogPostCategory[0].Category)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.BlogPostCategory) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.BlogPost.Content)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
