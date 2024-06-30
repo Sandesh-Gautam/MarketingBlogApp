@@ -1,0 +1,37 @@
+﻿@page
+@model MarketingBlogApp.Pages.User.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Blog Posts</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+@foreach (var item in Model.BlogPosts)
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <strong>@item.AuthorUserName</strong> posted on @item.CreatedAt.ToString("MMMM dd, yyyy")
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">@item.Title</h5>
+            <p class="card-text">@item.Content</p>
+            @if (!string.IsNullOrEmpty(item.Picture))
+            {
+                <img src="/uploads/@item.Picture" alt="Blog post image" class="img-fluid" />
+            }
+        </div>
+        <div class="card-footer text-muted">
+            Likes: @item.LikeCount
+            <div class="float-right">
+                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+}

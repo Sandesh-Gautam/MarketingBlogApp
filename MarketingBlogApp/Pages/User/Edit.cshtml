@@ -1,0 +1,60 @@
+﻿@page
+@model MarketingBlogApp.Pages.User.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>BlogPost</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BlogPost.Id" />
+            <div class="form-group">
+                <label asp-for="BlogPost.Title" class="control-label"></label>
+                <input asp-for="BlogPost.Title" class="form-control" />
+                <span asp-validation-for="BlogPost.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BlogPost.Content" class="control-label"></label>
+                <input asp-for="BlogPost.Content" class="form-control" />
+                <span asp-validation-for="BlogPost.Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BlogPost.Picture" class="control-label"></label>
+                <input asp-for="BlogPost.Picture" class="form-control" />
+                <span asp-validation-for="BlogPost.Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BlogPost.LikeCount" class="control-label"></label>
+                <input asp-for="BlogPost.LikeCount" class="form-control" />
+                <span asp-validation-for="BlogPost.LikeCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BlogPost.CreatedAt" class="control-label"></label>
+                <input asp-for="BlogPost.CreatedAt" class="form-control" />
+                <span asp-validation-for="BlogPost.CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BlogPost.AuthorId" class="control-label"></label>
+                <select asp-for="BlogPost.AuthorId" class="form-control" asp-items="ViewBag.AuthorId"></select>
+                <span asp-validation-for="BlogPost.AuthorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
