@@ -28,37 +28,17 @@ namespace MarketingBlogApp.Pages.Admin.CreateCategory
         public Category Category { get; set; } = default!;
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-  public async Task<IActionResult> OnPostAsync()
-{
-    if (!ModelState.IsValid)
-    {
-        // Debug or log ModelState errors to identify the issue
-        foreach (var key in ModelState.Keys)
+        public async Task<IActionResult> OnPostAsync()
         {
-            var state = ModelState[key];
-            foreach (var error in state.Errors)
+            if (!ModelState.IsValid)
             {
-                Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                return Page();
             }
+
+            _context.Categories.Add(Category);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("./Index");
         }
-
-        return Page();
-    }
-
-    try
-    {
-        _context.Categories.Add(Category);
-        await _context.SaveChangesAsync();
-
-        return RedirectToPage("./Index");
-    }
-    catch (Exception ex)
-    {
-        // Log or handle exceptions during save operation
-        Console.WriteLine($"Exception occurred: {ex.Message}");
-        throw;
-    }
-}
-
     }
 }

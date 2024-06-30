@@ -10,7 +10,7 @@ using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using MarketingBlogApp.Data;
 
-namespace MarketingBlogApp.Pages.Admin
+namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
     public class ActivityModel : PageModel
@@ -31,26 +31,30 @@ namespace MarketingBlogApp.Pages.Admin
         public async Task OnGetAsync()
         {
             var userActivitiesQuery = _context.UserActivities
-                .Include(a => a.User)
                 .OrderByDescending(a => a.Timestamp)
+                .Join(
+                    _context.Users,
+                    ua => ua.UserId,
+                    u => u.Id,
+                    (ua, u) => new { UserActivity = ua, UserName = u.UserName }
+                )
+                .Select(ua => new UserActivityViewModel
+                {
+                    UserName = ua.UserName,
+                    Activity = ua.UserActivity.Activity,
+                    Timestamp = ua.UserActivity.Timestamp
+                })
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(SearchUsername))
             {
                 userActivitiesQuery = userActivitiesQuery
-                    .Where(a => a.User.UserName.Contains(SearchUsername));
+                    .Where(a => a.UserName.Contains(SearchUsername));
             }
 
-            var userActivities = await userActivitiesQuery.ToListAsync();
-
-            // Convert UserActivity to UserActivityViewModel
-            UserActivity = userActivities.Select(a => new UserActivityViewModel
-            {
-                UserName = a.User.UserName,
-                Activity = a.Activity,
-                Timestamp = a.Timestamp
-            }).ToList();
+            UserActivity = await userActivitiesQuery.ToListAsync();
         }
+
     }
 
     public class UserActivityViewModel

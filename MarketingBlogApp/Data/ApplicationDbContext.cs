@@ -6,175 +6,141 @@ namespace MarketingBlogApp.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<BlogPost> BlogPosts { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<TopContributor> TopContributors { get; set; }
+        public DbSet<PopularBlog> PopularBlogs { get; set; }
+        public DbSet<TrendingBlog> TrendingBlogs { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<BlogPostCategory> BlogPostCategories { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<UserActivity> UserActivities { get; set; }
-        public DbSet<BlogPost> BlogPosts { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<BlogPostCategory> BlogPostCategories { get; set; }
-        public DbSet<Like> Likes { get; set; }
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<PopularBlog> PopularBlogs { get; set; }
-        public DbSet<TrendingBlog> TrendingBlogs { get; set; }
-        public DbSet<TopContributor> TopContributors { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApplicationUser>(entity =>
-            {
-                // Configure ApplicationUser entity
-                entity.Property(u => u.FirstName).IsRequired();
-                entity.Property(u => u.LastName).IsRequired();
-                entity.Property(u => u.Address).IsRequired(false);
-                entity.Property(u => u.CreatedAt).HasDefaultValueSql("getutcdate()");
-                entity.Property(u => u.IsDisabled).HasDefaultValue(false);
-                entity.Property(u => u.ProfileImage).IsRequired(false);
-            });
+            // Configure BlogPost and Author relationship
+            modelBuilder.Entity<BlogPost>()
+                .HasKey(bp => bp.Id);
 
-            modelBuilder.Entity<UserActivity>(entity =>
-            {
-                // Configure UserActivity entity
-                entity.HasKey(ua => ua.Id);
-                entity.Property(ua => ua.Activity).IsRequired();
-                entity.Property(ua => ua.Timestamp).HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<BlogPost>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(bp => bp.AuthorId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(ua => ua.User)
-                    .WithMany()
-                    .HasForeignKey(ua => ua.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-            modelBuilder.Entity<Category>(entity =>
-            {
-                entity.HasKey(c => c.Id);
-                entity.Property(c => c.Name).IsRequired();
+            // Configure Like and BlogPost relationship
+            modelBuilder.Entity<Like>()
+                .HasKey(l => l.Id);
 
-                entity.HasMany(c => c.BlogPostCategories)
-                      .WithOne(bpc => bpc.Category)
-                      .HasForeignKey(bpc => bpc.CategoryId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            modelBuilder.Entity<Like>()
+                .HasOne<BlogPost>()
+                .WithMany()
+                .HasForeignKey(l => l.BlogPostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<BlogPostCategory>(entity =>
-            {
-                entity.HasKey(bpc => new { bpc.BlogPostId, bpc.CategoryId });
+            modelBuilder.Entity<Like>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(bpc => bpc.BlogPost)
-                      .WithMany(bp => bp.BlogPostCategories)
-                      .HasForeignKey(bpc => bpc.BlogPostId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            // Configure Comment and BlogPost relationship
+            modelBuilder.Entity<Comment>()
+                .HasKey(c => c.Id);
 
-                entity.HasOne(bpc => bpc.Category)
-                      .WithMany(c => c.BlogPostCategories)
-                      .HasForeignKey(bpc => bpc.CategoryId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            modelBuilder.Entity<Comment>()
+                .HasOne<BlogPost>()
+                .WithMany()
+                .HasForeignKey(c => c.BlogPostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<BlogPost>(entity =>
-            {
-                entity.HasKey(bp => bp.Id);
-                entity.Property(bp => bp.Title).IsRequired();
-                entity.Property(bp => bp.Content).IsRequired();
-                entity.Property(bp => bp.CreatedAt).HasDefaultValueSql("getutcdate()");
-                entity.Property(bp => bp.Picture).IsRequired(false);
+            modelBuilder.Entity<Comment>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(bp => bp.Category)
-                      .WithMany() 
-                      .HasForeignKey(bp => bp.CategoryId)
-                      .OnDelete(DeleteBehavior.SetNull);
+            // Configure TopContributor and ApplicationUser relationship
+            modelBuilder.Entity<TopContributor>()
+                .HasKey(tc => tc.Id);
 
-                entity.HasMany(bp => bp.BlogPostCategories)
-                      .WithOne(bpc => bpc.BlogPost)
-                      .HasForeignKey(bpc => bpc.BlogPostId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TopContributor>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(tc => tc.AuthorId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasMany(bp => bp.Likes)
-                      .WithOne(l => l.BlogPost)
-                      .HasForeignKey(l => l.BlogPostId)
-                      .OnDelete(DeleteBehavior.Cascade);
+            // Configure PopularBlog and BlogPost relationship
+            modelBuilder.Entity<PopularBlog>()
+                .HasKey(pb => pb.Id);
 
-                entity.HasMany(bp => bp.Comments)
-                      .WithOne(c => c.BlogPost)
-                      .HasForeignKey(c => c.BlogPostId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
+            modelBuilder.Entity<PopularBlog>()
+                .HasOne<BlogPost>()
+                .WithMany()
+                .HasForeignKey(pb => pb.BlogPostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Like>(entity =>
-            {
-                entity.HasKey(l => l.Id);
-                entity.Property(l => l.CreatedAt).HasDefaultValueSql("getutcdate()");
+            // Configure TrendingBlog and BlogPost relationship
+            modelBuilder.Entity<TrendingBlog>()
+                .HasKey(tb => tb.Id);
 
-                entity.HasOne(l => l.User)
-                    .WithMany()
-                    .HasForeignKey(l => l.UserId)
-                    .OnDelete(DeleteBehavior.Cascade); 
+            modelBuilder.Entity<TrendingBlog>()
+                .HasOne<BlogPost>()
+                .WithMany()
+                .HasForeignKey(tb => tb.BlogPostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(l => l.BlogPost)
-                    .WithMany(bp => bp.Likes)
-                    .HasForeignKey(l => l.BlogPostId)
-                    .OnDelete(DeleteBehavior.Restrict); 
-            });
+            // Configure Category model
+            modelBuilder.Entity<Category>()
+                .HasKey(c => c.Id);
 
+            modelBuilder.Entity<Category>()
+                .Property(c => c.Name)
+                .IsRequired();
 
+            // Configure BlogPostCategory as a join table for BlogPost and Category
+            modelBuilder.Entity<BlogPostCategory>()
+                .HasKey(bc => new { bc.BlogPostId, bc.CategoryId });
 
-            modelBuilder.Entity<Comment>(entity =>
-            {
-                entity.HasKey(c => c.Id);
-                entity.Property(c => c.Content).IsRequired();
-                entity.Property(c => c.CreatedAt).HasDefaultValueSql("getutcdate()");
+            modelBuilder.Entity<BlogPostCategory>()
+                .HasOne<BlogPost>()
+                .WithMany()
+                .HasForeignKey(bc => bc.BlogPostId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(c => c.Author)
-                    .WithMany()
-                    .HasForeignKey(c => c.AuthorId)
-                    .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<BlogPostCategory>()
+                .HasOne<Category>()
+                .WithMany()
+                .HasForeignKey(bc => bc.CategoryId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(c => c.BlogPost)
-                    .WithMany(bp => bp.Comments)
-                    .HasForeignKey(c => c.BlogPostId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+            // Configure UserActivity
+            modelBuilder.Entity<UserActivity>()
+                .HasKey(ua => ua.Id);
 
-
-            modelBuilder.Entity<PopularBlog>(entity =>
-            {
-                entity.HasKey(pb => pb.Id);
-                entity.Property(pb => pb.RecordedAt).HasDefaultValueSql("getutcdate()");
-
-                entity.HasOne(pb => pb.BlogPost)
-                    .WithMany()
-                    .HasForeignKey(pb => pb.PopularBlogPostId)  // Ensure BlogPostId matches the type of BlogPost's primary key
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            modelBuilder.Entity<TrendingBlog>(entity =>
-            {
-                entity.HasKey(tb => tb.Id);
-                entity.Property(tb => tb.RecordedAt).HasDefaultValueSql("getutcdate()");
-
-                entity.HasOne(tb => tb.BlogPost)
-                    .WithMany()
-                    .HasForeignKey(tb => tb.TrendingBlogPostId)  // Ensure BlogPostId matches the type of BlogPost's primary key
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
-
-
-            modelBuilder.Entity<TopContributor>(entity =>
-            {
-                // Configure TopContributor entity
-                entity.HasKey(tc => tc.Id);
-                entity.Property(tc => tc.RecordedAt).HasDefaultValueSql("getutcdate()");
-
-                entity.HasOne(tc => tc.User)
-                    .WithMany()
-                    .HasForeignKey(tc => tc.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+            modelBuilder.Entity<UserActivity>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(ua => ua.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

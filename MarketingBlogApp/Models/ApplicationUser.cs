@@ -6,10 +6,7 @@ public class ApplicationUser : IdentityUser
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Address { get; set; }
-    public string ProfileImage { get; set; }
+    public string? ProfileImage { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsDisabled { get; set; }
-
-    public ICollection<BlogPost> BlogPosts { get; set; }
-    public ICollection<UserActivity> Activities { get; set; }
 }

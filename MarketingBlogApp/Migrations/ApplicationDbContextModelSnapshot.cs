@@ -31,6 +31,7 @@ namespace MarketingBlogApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -38,9 +39,7 @@ namespace MarketingBlogApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -54,9 +53,7 @@ namespace MarketingBlogApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDisabled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -122,11 +119,6 @@ namespace MarketingBlogApp.Migrations
                     b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -152,17 +144,15 @@ namespace MarketingBlogApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
@@ -174,8 +164,6 @@ namespace MarketingBlogApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("BlogPosts");
                 });
@@ -220,10 +208,6 @@ namespace MarketingBlogApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
@@ -232,15 +216,17 @@ namespace MarketingBlogApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
-
                     b.HasIndex("BlogPostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -253,22 +239,15 @@ namespace MarketingBlogApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BlogPostId")
+                    b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PopularBlogPostId")
+                    b.Property<int>("ViewCount")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("RecordedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BlogPostId");
-
-                    b.HasIndex("PopularBlogPostId");
 
                     b.ToTable("PopularBlogs");
                 });
@@ -281,18 +260,16 @@ namespace MarketingBlogApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("RecordedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<string>("UserId")
+                    b.Property<string>("AuthorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("ContributionCount")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("TopContributors");
                 });
@@ -305,22 +282,15 @@ namespace MarketingBlogApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BlogPostId")
+                    b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("RecordedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<int>("TrendingBlogPostId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("TrendingDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BlogPostId");
-
-                    b.HasIndex("TrendingBlogPostId");
 
                     b.ToTable("TrendingBlogs");
                 });
@@ -337,21 +307,14 @@ namespace MarketingBlogApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("Timestamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("getutcdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -497,133 +460,92 @@ namespace MarketingBlogApp.Migrations
 
             modelBuilder.Entity("Like", b =>
                 {
-                    b.HasOne("MarketingBlogApp.Models.BlogPost", "BlogPost")
-                        .WithMany("Likes")
-                        .HasForeignKey("BlogPostId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationUser", "User")
+                    b.HasOne("MarketingBlogApp.Models.BlogPost", null)
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BlogPost");
-
-                    b.Navigation("User");
+                    b.HasOne("ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MarketingBlogApp.Models.BlogPost", b =>
                 {
-                    b.HasOne("ApplicationUser", "Author")
-                        .WithMany("BlogPosts")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MarketingBlogApp.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("MarketingBlogApp.Models.BlogPostCategory", b =>
-                {
-                    b.HasOne("MarketingBlogApp.Models.BlogPost", "BlogPost")
-                        .WithMany("BlogPostCategories")
-                        .HasForeignKey("BlogPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MarketingBlogApp.Models.Category", "Category")
-                        .WithMany("BlogPostCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BlogPost");
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("MarketingBlogApp.Models.Comment", b =>
-                {
-                    b.HasOne("ApplicationUser", "Author")
+                    b.HasOne("ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
 
-                    b.HasOne("MarketingBlogApp.Models.BlogPost", "BlogPost")
-                        .WithMany("Comments")
+            modelBuilder.Entity("MarketingBlogApp.Models.BlogPostCategory", b =>
+                {
+                    b.HasOne("MarketingBlogApp.Models.BlogPost", null)
+                        .WithMany()
                         .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
+                    b.HasOne("MarketingBlogApp.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
 
-                    b.Navigation("BlogPost");
+            modelBuilder.Entity("MarketingBlogApp.Models.Comment", b =>
+                {
+                    b.HasOne("MarketingBlogApp.Models.BlogPost", null)
+                        .WithMany()
+                        .HasForeignKey("BlogPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MarketingBlogApp.Models.PopularBlog", b =>
                 {
                     b.HasOne("MarketingBlogApp.Models.BlogPost", null)
-                        .WithMany("PopularBlogs")
-                        .HasForeignKey("BlogPostId");
-
-                    b.HasOne("MarketingBlogApp.Models.BlogPost", "BlogPost")
                         .WithMany()
-                        .HasForeignKey("PopularBlogPostId")
+                        .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("BlogPost");
                 });
 
             modelBuilder.Entity("MarketingBlogApp.Models.TopContributor", b =>
                 {
-                    b.HasOne("ApplicationUser", "User")
+                    b.HasOne("ApplicationUser", null)
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MarketingBlogApp.Models.TrendingBlog", b =>
                 {
                     b.HasOne("MarketingBlogApp.Models.BlogPost", null)
-                        .WithMany("TrendingBlogs")
-                        .HasForeignKey("BlogPostId");
-
-                    b.HasOne("MarketingBlogApp.Models.BlogPost", "BlogPost")
                         .WithMany()
-                        .HasForeignKey("TrendingBlogPostId")
+                        .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("BlogPost");
                 });
 
             modelBuilder.Entity("MarketingBlogApp.Models.UserActivity", b =>
                 {
                     b.HasOne("ApplicationUser", null)
-                        .WithMany("Activities")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -675,31 +597,6 @@ namespace MarketingBlogApp.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ApplicationUser", b =>
-                {
-                    b.Navigation("Activities");
-
-                    b.Navigation("BlogPosts");
-                });
-
-            modelBuilder.Entity("MarketingBlogApp.Models.BlogPost", b =>
-                {
-                    b.Navigation("BlogPostCategories");
-
-                    b.Navigation("Comments");
-
-                    b.Navigation("Likes");
-
-                    b.Navigation("PopularBlogs");
-
-                    b.Navigation("TrendingBlogs");
-                });
-
-            modelBuilder.Entity("MarketingBlogApp.Models.Category", b =>
-                {
-                    b.Navigation("BlogPostCategories");
                 });
 #pragma warning restore 612, 618
         }
