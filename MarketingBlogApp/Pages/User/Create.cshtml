@@ -1,6 +1,5 @@
 ﻿@page
 @model MarketingBlogApp.Pages.User.CreateModel
-
 @{
     ViewData["Title"] = "Create";
 }
@@ -27,6 +26,19 @@
                 <label asp-for="Picture" class="control-label"></label>
                 <input asp-for="Picture" class="form-control" type="file" />
                 <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Categories</label>
+                <div>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" id="category_@category.Id" name="CategoryIds" value="@category.Id" />
+                            <label for="category_@category.Id" class="form-check-label">@category.Name</label>
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="CategoryIds" class="text-danger"></span>
             </div>
             <div class="form-group" style="display:none;">
                 <input asp-for="BlogPost.AuthorId" />

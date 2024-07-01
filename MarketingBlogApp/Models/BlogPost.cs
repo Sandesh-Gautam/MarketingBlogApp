@@ -12,5 +12,6 @@ namespace MarketingBlogApp.Models
         public int LikeCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public string AuthorId { get; set; }
+        
     }
 }
