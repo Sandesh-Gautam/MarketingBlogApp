@@ -31,7 +31,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public async Task OnGetAsync()
         {
             var userActivitiesQuery = _context.UserActivities
-                .OrderByDescending(a => a.Timestamp)
+                .OrderByDescending(a => a.ActivityDate)
                 .Join(
                     _context.Users,
                     ua => ua.UserId,
@@ -41,8 +41,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 .Select(ua => new UserActivityViewModel
                 {
                     UserName = ua.UserName,
-                    Activity = ua.UserActivity.Activity,
-                    Timestamp = ua.UserActivity.Timestamp
+                    ActivityType = ua.UserActivity.ActivityType,
+                    ActivityDate = ua.UserActivity.ActivityDate
                 })
                 .AsQueryable();
 
@@ -54,13 +54,12 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
             UserActivity = await userActivitiesQuery.ToListAsync();
         }
-
     }
 
     public class UserActivityViewModel
     {
         public string UserName { get; set; }
-        public string Activity { get; set; }
-        public DateTime Timestamp { get; set; }
+        public string ActivityType { get; set; }
+        public DateTime ActivityDate { get; set; }
     }
 }

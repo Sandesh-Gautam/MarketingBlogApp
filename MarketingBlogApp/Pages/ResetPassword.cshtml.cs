@@ -101,8 +101,8 @@ namespace MarketingBlogApp.Pages
                     var resetActivity = new UserActivity
                     {
                         UserId = user.Id,
-                        Activity = "Changed Password",
-                        Timestamp = DateTime.Now
+                        ActivityType = "Changed Password",
+                        ActivityDate = DateTime.Now
                     };
                     _context.UserActivities.Add(resetActivity);
                     await _context.SaveChangesAsync();

@@ -1,61 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketingBlogApp.Pages.User
 {
     public class DeleteModel : PageModel
     {
-        private readonly MarketingBlogApp.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DeleteModel(MarketingBlogApp.Data.ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public BlogPost BlogPost { get; set; } = default!;
+        public BlogPost BlogPost { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
+            BlogPost = await _context.BlogPosts
+                .Include(bp => bp.Comments)
+                .Include(bp => bp.Likes)
+                .FirstOrDefaultAsync(bp => bp.Id == id);
+
+            if (BlogPost == null)
             {
                 return NotFound();
-            }
-
-            var blogpost = await _context.BlogPosts.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (blogpost == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                BlogPost = blogpost;
             }
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (id == null)
+            BlogPost = await _context.BlogPosts
+                .Include(bp => bp.Comments)
+                .Include(bp => bp.Likes)
+                .FirstOrDefaultAsync(bp => bp.Id == id);
+
+            if (BlogPost == null)
             {
                 return NotFound();
             }
 
-            var blogpost = await _context.BlogPosts.FindAsync(id);
-            if (blogpost != null)
-            {
-                BlogPost = blogpost;
-                _context.BlogPosts.Remove(BlogPost);
-                await _context.SaveChangesAsync();
-            }
+            // Remove related Likes
+            _context.Likes.RemoveRange(BlogPost.Likes);
+
+            // Remove related Comments
+            _context.Comments.RemoveRange(BlogPost.Comments);
+
+            // Remove the BlogPost itself
+            _context.BlogPosts.Remove(BlogPost);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

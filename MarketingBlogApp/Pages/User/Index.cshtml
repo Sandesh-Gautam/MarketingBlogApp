@@ -1,44 +1,109 @@
 ﻿@page
 @model MarketingBlogApp.Pages.User.IndexModel
-
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<MarketingBlogApp.Models.ApplicationUser> UserManager
 @{
-    ViewData["Title"] = "Index";
+    Layout = "/Pages/Shared/_Layout.cshtml";
 }
 
-<h1>Blog Posts</h1>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!-- or -->
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+</head>
 
-<p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
-</p>
+<h1 class="my-4">My Blog Posts</h1>
 
-@foreach (var item in Model.BlogPosts)
-{
-    <div class="card mb-4">
-        <div class="card-header">
-            <strong>@item.AuthorUserName</strong> posted on @item.CreatedAt.ToString("MMMM dd, yyyy")
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">@item.Title</h5>
-            <p class="card-text">@item.Content</p>
-            @if (!string.IsNullOrEmpty(item.Picture))
-            {
-                <img src="/uploads/@item.Picture" alt="Blog post image" class="img-fluid" />
-            }
-        </div>
-        <div class="card-footer text-muted">
-            <div>
-                Categories:
-                @foreach (var category in item.Categories)
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h4">My Blog Posts</h2>
+    <a asp-page="Create" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Post</a>
+</div>
+
+<div class="list-group">
+    @foreach (var post in Model.BlogPosts)
+    {
+        <div class="list-group-item list-group-item-action mb-3 rounded shadow-sm">
+            <div class="d-flex w-100 justify-content-between align-items-center">
+                <div class="flex-grow-1">
+                    <h5 class="mb-1">@post.Title</h5>
+                    <p class="mb-1">@post.Content.Substring(0, Math.Min(100, post.Content.Length))...</p>
+                    <small class="text-muted">@string.Join(", ", post.BlogPostCategories.Select(bc => bc.Category.Name))</small>
+                </div>
+                @if (!string.IsNullOrEmpty(post.ImageUrl))
                 {
-                    <span class="badge badge-primary">@category.Name</span>
+                    <div class="ms-3">
+                        <img src="@post.ImageUrl" alt="Post Image" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                    </div>
                 }
+                <small>@post.PublishedDate.ToString("yyyy-MM-dd")</small>
             </div>
-            Likes: @item.LikeCount
-            <div class="float-right">
-                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+            <div class="d-flex justify-content-between mt-2">
+                <div>
+                    <form method="post" asp-page-handler="ToggleLike" class="d-inline">
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                            @if (post.Likes.Any(l => l.UserId == UserManager.GetUserId(User)))
+                            {
+                                <box-icon name='like' type='solid'></box-icon>
+                            }
+                            else
+                            {
+                                <box-icon name='like'></box-icon>
+                            }
+                            @post.Likes.Count
+                        </button>
+                    </form>
+                </div>
+                <div>
+                    <a asp-page="Edit" asp-route-id="@post.Id" class="btn btn-warning btn-sm me-2"><box-icon name='edit' type='solid'></box-icon></a>
+                    <a asp-page="Delete" asp-route-id="@post.Id" class="btn btn-danger btn-sm"><box-icon name='trash-alt'></box-icon></a>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h6>Comments</h6>
+                @foreach (var comment in post.Comments)
+                {
+                    <div class="border p-2 mb-2 rounded">
+                        <strong>@comment.User.UserName:</strong>
+                        <p class="mb-0">@comment.Content</p>
+                        <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
+                        <form method="post" asp-page-handler="DeleteComment" class="mt-2">
+                            <input type="hidden" name="commentId" value="@comment.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                }
+                <form method="post" asp-page-handler="AddComment" class="mt-2">
+                    <div class="input-group">
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <input type="text" name="commentContent" class="form-control" placeholder="Add a comment..." />
+                        <button type="submit" class="btn btn-primary">Comment</button>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}
+
+@section Styles {
+    <style>
+        .list-group-item {
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .list-group-item:hover {
+                transform: translateY(-5px);
+            }
+
+        .btn-primary, .btn-warning, .btn-danger {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+    </style>
 }

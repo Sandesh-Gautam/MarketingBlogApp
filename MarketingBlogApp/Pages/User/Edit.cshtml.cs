@@ -1,77 +1,128 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MarketingBlogApp.Pages.User
 {
     public class EditModel : PageModel
     {
-        private readonly MarketingBlogApp.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EditModel(MarketingBlogApp.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
-        public BlogPost BlogPost { get; set; } = default!;
+        public BlogPost BlogPost { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        [BindProperty]
+        public IFormFile? Image { get; set; }
+
+        [BindProperty]
+        public List<int> SelectedCategories { get; set; }
+
+        public List<SelectListItem> CategoryOptions { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (id == null)
+            BlogPost = await _context.BlogPosts
+                .Include(bp => bp.BlogPostCategories)
+                .ThenInclude(bc => bc.Category)
+                .Include(bp => bp.Author)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (BlogPost == null)
             {
                 return NotFound();
             }
 
-            var blogpost =  await _context.BlogPosts.FirstOrDefaultAsync(m => m.Id == id);
-            if (blogpost == null)
+            var categories = await _context.Categories.ToListAsync();
+            CategoryOptions = categories.Select(c => new SelectListItem
             {
-                return NotFound();
-            }
-            BlogPost = blogpost;
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+
+            SelectedCategories = BlogPost.BlogPostCategories.Select(bc => bc.CategoryId).ToList();
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
+            var blogPostToUpdate = await _context.BlogPosts
+                .Include(bp => bp.BlogPostCategories)
+                .FirstOrDefaultAsync(bp => bp.Id == BlogPost.Id);
+
+            if (blogPostToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            // Remove validation errors for navigation properties and fields
+            ModelState.Remove("BlogPost.Author");
+            ModelState.Remove("BlogPost.AuthorId");
+            ModelState.Remove("BlogPost.Comments");
+            ModelState.Remove("BlogPost.Likes");
+            ModelState.Remove("BlogPost.BlogPostCategories");
+
+            // Retain the existing image URL if no new image is uploaded
+            if (Image != null)
+            {
+                var fileName = Path.GetFileName(Image.FileName);
+                var filePath = Path.Combine("wwwroot/uploads", fileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await Image.CopyToAsync(fileStream);
+                }
+                blogPostToUpdate.ImageUrl = "/uploads/" + fileName;
+            }
+            else
+            {
+                blogPostToUpdate.ImageUrl = BlogPost.ImageUrl;
+            }
+
+            blogPostToUpdate.Title = BlogPost.Title;
+            blogPostToUpdate.Content = BlogPost.Content;
+
+            // Update categories
+            blogPostToUpdate.BlogPostCategories.Clear();
+            foreach (var categoryId in SelectedCategories)
+            {
+                blogPostToUpdate.BlogPostCategories.Add(new BlogPostCategory
+                {
+                    BlogPostId = blogPostToUpdate.Id,
+                    CategoryId = categoryId
+                });
+            }
+
             if (!ModelState.IsValid)
             {
+                var categories = await _context.Categories.ToListAsync();
+                CategoryOptions = categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
                 return Page();
             }
 
-            _context.Attach(BlogPost).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BlogPostExists(BlogPost.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.Entry(blogPostToUpdate).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
-        }
-
-        private bool BlogPostExists(int id)
-        {
-            return _context.BlogPosts.Any(e => e.Id == id);
         }
     }
 }

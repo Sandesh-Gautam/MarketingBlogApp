@@ -56,8 +56,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var userActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Viewed Edit User Page",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Viewed Edit User Page",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();
@@ -144,8 +144,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var editUsers = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Edited a User",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Edited a User",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(editUsers);
                 await _context.SaveChangesAsync();

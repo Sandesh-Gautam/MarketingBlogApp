@@ -31,8 +31,8 @@ namespace MarketingBlogApp.Pages
                 var userActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Viewed Privacy Page",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Viewed Privacy Page",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();

@@ -31,8 +31,8 @@ namespace MarketingBlogApp.Pages.Admin
                 var userActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Viewed Dashboard Page",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Viewed Dashboard Page",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();

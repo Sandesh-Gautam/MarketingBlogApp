@@ -47,8 +47,8 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                 var userActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = activity,
-                    Timestamp = DateTime.Now
+                    ActivityType = activity,
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();

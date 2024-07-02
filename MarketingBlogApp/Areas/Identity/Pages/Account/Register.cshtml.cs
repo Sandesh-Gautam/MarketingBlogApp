@@ -136,8 +136,8 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                     var registrationActivity = new UserActivity
                     {
                         UserId = user.Id,
-                        Activity = "Registered",
-                        Timestamp = DateTime.Now
+                        ActivityType = "Registered",
+                        ActivityDate = DateTime.Now
                     };
                     _context.UserActivities.Add(registrationActivity);
                     await _context.SaveChangesAsync();

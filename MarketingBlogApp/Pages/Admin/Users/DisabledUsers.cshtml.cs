@@ -33,8 +33,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var userActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Viewed Disabled Users",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Viewed Disabled Users",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();

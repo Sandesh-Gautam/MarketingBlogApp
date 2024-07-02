@@ -36,8 +36,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
             var userActivity = new UserActivity
             {
                 UserId = User.Id,
-                Activity = "Viewed Delete Page",
-                Timestamp = DateTime.Now
+                ActivityType = "Viewed Delete Page",
+                ActivityDate = DateTime.Now
             };
             _context.UserActivities.Add(userActivity);
             await _context.SaveChangesAsync();
@@ -58,8 +58,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
             var deleteUserActivity = new UserActivity
             {
                 UserId = user.Id,
-                Activity = "Deleted a User",
-                Timestamp = DateTime.Now
+                ActivityType = "Deleted a User",
+                ActivityDate = DateTime.Now
             };
             _context.UserActivities.Add(deleteUserActivity);
             await _context.SaveChangesAsync();

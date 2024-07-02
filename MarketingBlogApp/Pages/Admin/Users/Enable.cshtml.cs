@@ -32,8 +32,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var userActivity = new UserActivity
                 {
                     UserId = User.Id,
-                    Activity = "Viewed Enable User Page",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Viewed Enable User Page",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();
@@ -61,8 +61,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var enableUserActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    Activity = "Enabled a User",
-                    Timestamp = DateTime.Now
+                    ActivityType = "Enabled a User",
+                    ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(enableUserActivity);
                 await _context.SaveChangesAsync();

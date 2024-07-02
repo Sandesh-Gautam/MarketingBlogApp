@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.IO;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketingBlogApp.Pages.User
@@ -25,102 +25,74 @@ namespace MarketingBlogApp.Pages.User
         }
 
         [BindProperty]
-        public BlogPost BlogPost { get; set; } = new BlogPost();
+        public BlogPost BlogPost { get; set; }
 
         [BindProperty]
-        public IFormFile Picture { get; set; } // To bind the uploaded file
+        public IFormFile? Image { get; set; } // Nullable IFormFile
 
         [BindProperty]
-        public List<int> CategoryIds { get; set; } = new List<int>(); // For handling selected category ids
+        public List<int> SelectedCategories { get; set; }
 
-        public IList<Category> Categories { get; set; }
+        public List<SelectListItem> CategoryOptions { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var categories = await _context.Categories.ToListAsync();
+            CategoryOptions = categories.Select(c => new SelectListItem
             {
-                return Forbid();
-            }
-
-            BlogPost.AuthorId = user.Id; // Set AuthorId to logged-in user's ID
-
-            Categories = await _context.Categories.ToListAsync();
-
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            BlogPost.AuthorId = user.Id;
+            BlogPost.PublishedDate = DateTime.Now;
+
+            if (Image != null)
             {
-                return Forbid();
-            }
-
-            BlogPost.CreatedAt = DateTime.UtcNow;
-            BlogPost.AuthorId = user.Id; // Ensure this line is setting the AuthorId correctly
-
-            // Handle file upload
-            if (Picture != null)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + Picture.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
+                var fileName = Path.GetFileName(Image.FileName);
+                var filePath = Path.Combine("wwwroot/uploads", fileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await Picture.CopyToAsync(fileStream);
+                    await Image.CopyToAsync(fileStream);
                 }
-
-                BlogPost.Picture = uniqueFileName;
+                BlogPost.ImageUrl = "/uploads/" + fileName;
             }
 
-            // Validate Model manually
+            // Remove the validation errors for navigation properties and explicit properties
+            ModelState.Remove("BlogPost.Author");
+            ModelState.Remove("BlogPost.AuthorId");
+            ModelState.Remove("BlogPost.Comments");
+            ModelState.Remove("BlogPost.Likes");
+            ModelState.Remove("BlogPost.BlogPostCategories");
+            ModelState.Remove("Image"); // Ensure Image is not validated as required
+
             if (!ModelState.IsValid)
             {
+                var categories = await _context.Categories.ToListAsync();
+                CategoryOptions = categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
                 return Page();
             }
 
-            // Add BlogPost to DbContext
             _context.BlogPosts.Add(BlogPost);
             await _context.SaveChangesAsync();
-            var topContributor = await _context.TopContributors
-    .FirstOrDefaultAsync(tc => tc.AuthorId == user.Id);
 
-            if (topContributor == null)
+            foreach (var categoryId in SelectedCategories)
             {
-                // If top contributor entry doesn't exist, create it
-                topContributor = new TopContributor
-                {
-                    AuthorId = user.Id,
-                    ContributionCount = 1 // Start with 1 if first post
-                };
-                _context.TopContributors.Add(topContributor);
-            }
-            else
-            {
-                // Increment contribution count
-                topContributor.ContributionCount++;
-            }
-
-            // Create BlogPostCategory relationships
-            foreach (var categoryId in CategoryIds)
-            {
-                var blogPostCategory = new BlogPostCategory
+                _context.BlogPostCategories.Add(new BlogPostCategory
                 {
                     BlogPostId = BlogPost.Id,
                     CategoryId = categoryId
-                };
-                _context.BlogPostCategories.Add(blogPostCategory);
+                });
             }
-
-            // Save changes to add BlogPostCategory relationships
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

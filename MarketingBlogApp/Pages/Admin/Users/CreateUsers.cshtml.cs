@@ -121,8 +121,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                     var createUsers = new UserActivity
                     {
                         UserId = user.Id,
-                        Activity = "Created User",
-                        Timestamp = DateTime.Now
+                        ActivityType = "Created User",
+                        ActivityDate = DateTime.Now
                     };
                     _context.UserActivities.Add(createUsers);
                     await _context.SaveChangesAsync();

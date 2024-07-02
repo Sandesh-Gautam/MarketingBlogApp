@@ -107,8 +107,8 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                             var loginActivity = new UserActivity
                             {
                                 UserId = users.Id,
-                                Activity = "Logged in",
-                                Timestamp = DateTime.Now
+                                ActivityType = "Logged in",
+                                ActivityDate = DateTime.Now
                             };
                             _context.UserActivities.Add(loginActivity);
                             await _context.SaveChangesAsync();
