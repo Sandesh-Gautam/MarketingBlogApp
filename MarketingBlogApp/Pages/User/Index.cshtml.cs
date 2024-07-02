@@ -25,7 +25,10 @@ namespace MarketingBlogApp.Pages.User
 
         public async Task OnGetAsync()
         {
+            var user = await _userManager.GetUserAsync(User);
+
             BlogPosts = await _context.BlogPosts
+                .Where(bp => bp.AuthorId == user.Id)
                 .Include(bp => bp.BlogPostCategories)
                     .ThenInclude(bc => bc.Category)
                 .Include(bp => bp.Comments)

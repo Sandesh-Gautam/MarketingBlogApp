@@ -28,6 +28,8 @@
                     <h5 class="mb-1">@post.Title</h5>
                     <p class="mb-1">@post.Content.Substring(0, Math.Min(100, post.Content.Length))...</p>
                     <small class="text-muted">@string.Join(", ", post.BlogPostCategories.Select(bc => bc.Category.Name))</small>
+                    <br />
+                    <small class="text-muted">Author: @post.Author.UserName</small>
                 </div>
                 @if (!string.IsNullOrEmpty(post.ImageUrl))
                 {
@@ -67,10 +69,13 @@
                         <strong>@comment.User.UserName:</strong>
                         <p class="mb-0">@comment.Content</p>
                         <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
-                        <form method="post" asp-page-handler="DeleteComment" class="mt-2">
-                            <input type="hidden" name="commentId" value="@comment.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
+                        @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId)
+                        {
+                            <form method="post" asp-page-handler="DeleteComment" class="mt-2">
+                                <input type="hidden" name="commentId" value="@comment.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        }
                     </div>
                 }
                 <form method="post" asp-page-handler="AddComment" class="mt-2">
