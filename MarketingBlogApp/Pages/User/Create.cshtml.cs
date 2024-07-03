@@ -62,6 +62,10 @@ namespace MarketingBlogApp.Pages.User
                 }
                 BlogPost.ImageUrl = "/uploads/" + fileName;
             }
+            else
+            {
+                BlogPost.ImageUrl = "/uploads/BlankPost.jpg";
+            }
 
             // Remove the validation errors for navigation properties and explicit properties
             ModelState.Remove("BlogPost.Author");

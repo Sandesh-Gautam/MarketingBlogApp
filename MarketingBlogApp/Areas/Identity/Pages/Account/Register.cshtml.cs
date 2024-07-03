@@ -124,6 +124,7 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                     UserName = Input.UserName,
                     Email = Input.Email,
                     Address = Input.Address,
+                    ProfileImage = "/uploads/BlankProfile.jpeg",
                     EmailConfirmed = true,
                     CreatedAt = DateTime.Now,
                 };

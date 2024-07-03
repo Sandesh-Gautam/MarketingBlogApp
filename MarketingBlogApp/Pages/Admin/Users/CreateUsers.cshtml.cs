@@ -100,6 +100,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 LastName = Input.LastName,
                 UserName = Input.UserName,
                 Email = Input.Email,
+                ProfileImage = "/uploads/BlankProfile.jpeg",
                 Address = Input.Address,
                 CreatedAt = DateTime.Now,
             };
