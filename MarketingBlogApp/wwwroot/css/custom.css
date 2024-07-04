@@ -1,0 +1,56 @@
+﻿/* custom.css */
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.hero-section {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+    .hero-section img {
+        width: 100%;
+        height: auto;
+    }
+
+.hero-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+    .hero-text h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-text .btn {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+.list-group-item {
+    transition: transform 0.2s ease-in-out;
+}
+
+    .list-group-item:hover {
+        transform: translateY(-5px);
+    }
+
+.btn-primary, .btn-warning, .btn-danger {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}

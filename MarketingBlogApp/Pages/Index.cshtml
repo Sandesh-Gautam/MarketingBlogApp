@@ -1,4 +1,4 @@
-﻿@page
+﻿@* @page
 @model MarketingBlogApp.Pages.IndexModel
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<MarketingBlogApp.Models.ApplicationUser> UserManager
@@ -119,3 +119,191 @@
         }
     </style>
 }
+ *@
+
+@page
+@model MarketingBlogApp.Pages.IndexModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<MarketingBlogApp.Models.ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid d-flex">
+    <!-- Sidebar -->
+    <div class="sidebar flex-shrink-0 p-3">
+        <h5 class="my-4">Categories</h5>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="?SearchCategory=" class="text-decoration-none @(string.IsNullOrEmpty(Model.SearchCategory) ? "active" : "")"></a>
+            </li>
+            @foreach (var category in Model.CategoryOptions)
+            {
+                <li class="list-group-item">
+                    <a href="?SearchCategory=@category.Value" class="text-decoration-none @(category.Value == Model.SearchCategory ? "active" : "")">@category.Text</a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content flex-grow-1 p-3">
+        <h1 class="my-4">All Blog Posts</h1>
+        <div class="row">
+            @foreach (var post in Model.BlogPosts)
+            {
+                <div class="col-12 mb-4">
+                    <div class="post-card h-100">
+                        @if (!string.IsNullOrEmpty(post.ImageUrl))
+                        {
+                            <img src="@post.ImageUrl" class="card-img-top" alt="Post Image">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@post.Title</h5>
+                            <p class="card-text">@post.Content.Substring(0, Math.Min(100, post.Content.Length))...</p>
+                            <p class="card-text">
+                                <small class="text-muted">@string.Join(", ", post.BlogPostCategories.Select(bc => bc.Category.Name))</small>
+                                <br />
+                                <small class="text-muted">Author: @post.Author.UserName</small>
+                            </p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <form method="post" asp-page-handler="ToggleLike" class="d-inline">
+                                <input type="hidden" name="postId" value="@post.Id" />
+                                <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                                    @if (post.Likes.Any(l => l.UserId == UserManager.GetUserId(User)))
+                                    {
+                                        <box-icon name='like' type='solid'></box-icon>
+                                    }
+                                    else
+                                    {
+                                        <box-icon name='like'></box-icon>
+                                    }
+                                    @post.Likes.Count
+                                </button>
+                            </form>
+                            <small>@post.PublishedDate.ToString("yyyy-MM-dd")</small>
+                        </div>
+                        <div class="comment-section">
+                            <h6>Comments</h6>
+                            @foreach (var comment in post.Comments)
+                            {
+                                <div class="border p-2 mb-2 rounded">
+                                    <strong>@comment.User.UserName:</strong>
+                                    <p class="mb-0">@comment.Content</p>
+                                    <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
+                                    @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId)
+                                    {
+                                        <form method="post" asp-page-handler="DeleteComment" class="mt-2">
+                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    }
+                                </div>
+                            }
+                            <form method="post" asp-page-handler="AddComment" class="mt-2">
+                                <div class="input-group">
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <input type="text" name="commentContent" class="form-control" placeholder="Add a comment..." />
+                                    <button type="submit" class="btn btn-primary">Comment</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}
+
+@section Styles {
+    <style>
+        .post-card {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease-in-out;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+            .post-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .post-card img {
+                border-bottom: 1px solid #ddd;
+            }
+
+            .post-card .card-body {
+                padding: 1.5rem;
+            }
+
+            .post-card .card-title {
+                font-size: 1.25rem;
+                font-weight: bold;
+            }
+
+            .post-card .card-text {
+                color: #555;
+            }
+
+            .post-card .card-footer {
+                background-color: #f9f9f9;
+                border-top: 1px solid #ddd;
+            }
+
+            .post-card .btn-link {
+                color: #007bff;
+            }
+
+                .post-card .btn-link:hover {
+                    text-decoration: underline;
+                }
+
+        .comment-section {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+        }
+
+            .sidebar .list-group-item.active {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+            }
+
+            .sidebar .list-group-item {
+                transition: background-color 0.2s ease-in-out;
+            }
+
+                .sidebar .list-group-item:hover {
+                    background-color: #f8f9fa;
+                }
+
+        .container-fluid {
+            display: flex;
+        }
+
+        .main-content {
+            flex-grow: 1;
+        }
+    </style>
+}
+

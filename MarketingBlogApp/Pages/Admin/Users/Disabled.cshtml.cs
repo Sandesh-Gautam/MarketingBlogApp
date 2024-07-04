@@ -4,18 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages.Admin.Users
 {
     [Authorize(Roles = "Admin")]
-    public class DisabledModel : PageModel
+    public class DisabledModel : PageModel  // Fixed the class name
     {
         private readonly UserManager<ApplicationUser> _userManager;
         public readonly ApplicationDbContext _context;
 
-        public DisabledModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
+        public DisabledModel(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -36,7 +35,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var userActivity = new UserActivity
                 {
                     UserId = User.Id,
-                    ActivityType = "Viewed Disabled Page",
+                    ActivityType = "Viewed Disable Page",
                     ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(userActivity);

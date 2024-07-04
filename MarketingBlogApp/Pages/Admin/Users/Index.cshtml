@@ -20,21 +20,26 @@
     <tbody>
         @foreach (var user in Model.Users)
         {
-            <tr>
-                <td>@(user.IsDisabled ? $"<del>{user.FirstName}</del>" : user.FirstName)</td>
-                <td>@(user.IsDisabled ? $"<del>{user.LastName}</del>" : user.LastName)</td>
-                <td>@(user.IsDisabled ? $"<del>{user.Email}</del>" : user.Email)</td>
-                <td>@(user.IsDisabled ? $"<del>{user.UserName}</del>" : user.UserName)</td>
+            <tr class="@(user.IsDisabled ? "table-danger" : "")">
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.Email</td>
+                <td>@user.UserName</td>
                 <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a>
-                    @if (!Model.UserRoles[user.Id].Contains("Admin"))
+                    @if (!user.IsDisabled)
                     {
-                        <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
-                        @if (!user.IsDisabled)
+                        <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a>
+                        @if (!Model.UserRoles[user.Id].Contains("Admin"))
                         {
-                            <a asp-page="./Disable" asp-route-id="@user.Id">Disable</a>
+                            <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
+                            <a asp-page="./Disabled" asp-route-id="@user.Id">Disable</a>
                         }
+                    }
+                    else
+                    {
+                        <a asp-page="./Enable" asp-route-id="@user.Id">Enable</a>
+                        <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
                     }
                 </td>
             </tr>

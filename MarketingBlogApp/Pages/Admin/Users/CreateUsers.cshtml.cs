@@ -75,7 +75,6 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 return Page();
             }
 
-            // Check if the email is already registered
             var existingEmail = await _userManager.FindByEmailAsync(Input.Email);
             if (existingEmail != null)
             {
@@ -105,7 +104,6 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 CreatedAt = DateTime.Now,
             };
 
-            // Hash the temporary password
             var passwordHasher = new PasswordHasher<ApplicationUser>();
             var hashedPassword = passwordHasher.HashPassword(user, temporaryPassword);
 
