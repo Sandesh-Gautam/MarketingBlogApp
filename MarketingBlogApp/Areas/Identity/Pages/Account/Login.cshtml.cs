@@ -121,10 +121,6 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                         {
                             return LocalRedirect(Url.Content("~/Admin/Dashboard"));
                         }
-                        else if (await _userManager.IsInRoleAsync(user, "User"))
-                        {
-                            return LocalRedirect(Url.Content("~/User/Index"));
-                        }
 
                         return LocalRedirect(returnUrl);
                     }

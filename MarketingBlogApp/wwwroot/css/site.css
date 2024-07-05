@@ -8,8 +8,9 @@ html {
   }
 }
 
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
@@ -19,4 +20,34 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 400px;
+}
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 200px; 
+    color:aliceblue/* Adjust height as needed */
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.card-title {
+    margin-bottom: 15px;
+    font-size: 1.25rem;
 }

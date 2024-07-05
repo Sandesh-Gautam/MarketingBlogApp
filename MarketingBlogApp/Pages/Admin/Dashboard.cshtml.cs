@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages.Admin
@@ -16,6 +17,10 @@ namespace MarketingBlogApp.Pages.Admin
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
+        public int TotalPosts { get; set; }
+        public int TotalCategories { get; set; }
+        public int TotalVisits { get; set; }
+
         public DashboardModel(ILogger<DashboardModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _logger = logger;
@@ -25,6 +30,10 @@ namespace MarketingBlogApp.Pages.Admin
 
         public async Task OnGetAsync()
         {
+            TotalPosts = _context.BlogPosts.Count();
+            TotalCategories = _context.Categories.Count();
+            TotalVisits = _context.UserActivities.Count(ua => ua.ActivityType == "Page Visit");
+
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {

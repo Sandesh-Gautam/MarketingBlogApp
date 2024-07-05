@@ -29,6 +29,42 @@ namespace MarketingBlogApp.Pages
 
         public async Task OnGetAsync()
         {
+            // Ensure the guest user exists
+            const string guestUserId = "1";
+            var guestUser = await _userManager.FindByIdAsync(guestUserId);
+            if (guestUser == null)
+            {
+                var newGuestUser = new ApplicationUser
+                {
+                    Id = guestUserId,
+                    UserName = "guest",
+                    Email = "guest@example.com",
+                    EmailConfirmed = true,
+                    Address = "Guest Address", // Provide a default address
+                    FirstName = "Guest", // Provide a default first name
+                    LastName = "User" // Provide a default last name
+                                      // Add any other required fields with default values here
+                };
+                var result = await _userManager.CreateAsync(newGuestUser);
+                if (!result.Succeeded)
+                {
+                    throw new Exception("Failed to create guest user.");
+                }
+            }
+
+            // Track the page visit
+            var userId = User.Identity.IsAuthenticated ? _userManager.GetUserId(User) : guestUserId;
+            var activity = new UserActivity
+            {
+                UserId = userId,
+                ActivityType = "Page Visit",
+                ActivityDate = DateTime.Now
+            };
+
+            _context.UserActivities.Add(activity);
+            await _context.SaveChangesAsync();
+
+            // Fetch blog posts based on the search category
             var query = _context.BlogPosts
                 .Include(bp => bp.BlogPostCategories)
                     .ThenInclude(bc => bc.Category)
@@ -45,6 +81,7 @@ namespace MarketingBlogApp.Pages
 
             BlogPosts = await query.ToListAsync();
 
+            // Fetch categories for the dropdown
             var categories = await _context.Categories.ToListAsync();
             CategoryOptions = categories.Select(c => new SelectListItem
             {
@@ -54,6 +91,10 @@ namespace MarketingBlogApp.Pages
 
             CategoryOptions.Insert(0, new SelectListItem { Value = "All Categories", Text = "All Categories" });
         }
+
+
+
+
 
         public async Task<IActionResult> OnPostAddCommentAsync(int postId, string commentContent)
         {
