@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Cryptography;
 
 namespace MarketingBlogApp.Pages
 {
@@ -92,16 +93,19 @@ namespace MarketingBlogApp.Pages
             CategoryOptions.Insert(0, new SelectListItem { Value = "All Categories", Text = "All Categories" });
         }
 
-
-
-
-
         public async Task<IActionResult> OnPostAddCommentAsync(int postId, string commentContent)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return Challenge();
+            }
+
+            if (string.IsNullOrEmpty(commentContent))
+            {
+                ModelState.AddModelError("commentContent", "Comment content cannot be empty.");
+                await OnGetAsync(); // Refresh the page data
+                return Page();
             }
 
             var post = await _context.BlogPosts

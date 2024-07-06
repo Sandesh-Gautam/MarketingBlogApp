@@ -89,7 +89,12 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                 {
                     user = await _userManager.FindByNameAsync(Input.Identifier);
                 }
-
+                const string guestUserId = "1";
+                if (user != null && user.Id == guestUserId)
+                {
+                    ModelState.AddModelError(string.Empty, "Guest user cannot log in.");
+                    return Page();
+                }
                 if (user != null)
                 {
                     if (user.IsDisabled)
