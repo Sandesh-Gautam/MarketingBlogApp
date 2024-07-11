@@ -68,6 +68,24 @@ namespace MarketingBlogApp.Pages.Admin.Users
             var userActivities = _context.UserActivities.Where(ua => ua.UserId == id);
             _context.UserActivities.RemoveRange(userActivities);
 
+            // Delete related BlogPosts and Comments
+            var userPosts = await _context.BlogPosts.Where(bp => bp.AuthorId == id).ToListAsync();
+            var userComments = await _context.Comments.Where(c => c.UserId == id).ToListAsync();
+
+            foreach (var post in userPosts)
+            {
+                _context.BlogPosts.Remove(post);
+            }
+
+            foreach (var comment in userComments)
+            {
+                _context.Comments.Remove(comment);
+            }
+
+            // Save changes to delete posts and comments
+            await _context.SaveChangesAsync();
+
+            // Delete the user
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
@@ -76,6 +94,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 return Page();
             }
 
+            // Save changes to delete the user
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

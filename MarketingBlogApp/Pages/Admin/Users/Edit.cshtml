@@ -7,8 +7,6 @@
 <h1>Edit User</h1>
 
 <form method="post">
-   
-
     <div class="form-group">
         <label asp-for="UserToUpdate.FirstName">First Name</label>
         <input asp-for="UserToUpdate.FirstName" class="form-control" placeholder="First Name" />
@@ -29,13 +27,13 @@
 
     <div class="form-group">
         <label asp-for="UserToUpdate.Email">Email</label>
-        <input asp-for="UserToUpdate.Email" class="form-control" placeholder="Email" required/>
+        <input asp-for="UserToUpdate.Email" class="form-control" placeholder="Email" required />
         <span asp-validation-for="UserToUpdate.Email" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="UserToUpdate.UserName">Username</label>
-        <input asp-for="UserToUpdate.UserName" class="form-control" placeholder="Username" required/>
+        <input asp-for="UserToUpdate.UserName" class="form-control" placeholder="Username" required />
         <span asp-validation-for="UserToUpdate.UserName" class="text-danger"></span>
     </div>
 
@@ -59,4 +57,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

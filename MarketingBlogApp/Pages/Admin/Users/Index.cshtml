@@ -20,26 +20,25 @@
     <tbody>
         @foreach (var user in Model.Users)
         {
+            var roles = Model.UserRoles[user.Id];
             <tr class="@(user.IsDisabled ? "table-danger" : "")">
                 <td>@user.FirstName</td>
                 <td>@user.LastName</td>
                 <td>@user.Email</td>
                 <td>@user.UserName</td>
-                <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
+                <td>@string.Join(", ", roles)</td>
                 <td>
-                    @if (!user.IsDisabled)
+                    @if (roles.Any())
                     {
                         <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a>
-                        @if (!Model.UserRoles[user.Id].Contains("Admin"))
+                        @if (!roles.Contains("Admin"))
                         {
                             <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
-                            <a asp-page="./Disabled" asp-route-id="@user.Id">Disable</a>
+                            @if (!user.IsDisabled)
+                            {
+                                <a asp-page="./Disabled" asp-route-id="@user.Id">Disable</a>
+                            }
                         }
-                    }
-                    else
-                    {
-                        <a asp-page="./Enable" asp-route-id="@user.Id">Enable</a>
-                        <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
                     }
                 </td>
             </tr>

@@ -1,17 +1,25 @@
 ﻿@page
 @model MarketingBlogApp.Pages.Admin.Users.DisabledUsersModel
 @{
-    Layout = "/Pages/Shared/_Admin.cshtml";
+    ViewData["Title"] = "Disabled Users";
 }
 
 <h1>Disabled Users</h1>
 
-<table class="table">
+@if (ModelState.ErrorCount > 0)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
+
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>Username</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>User Name</th>
             <th>Email</th>
             <th>Actions</th>
         </tr>
@@ -21,13 +29,10 @@
         {
             <tr>
                 <td>@user.UserName</td>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
                 <td>@user.Email</td>
                 <td>
-                    <form method="post">
-                        <input type="hidden" name="id" value="@user.Id" />
-                        <a asp-page="./Enable" asp-route-id="@user.Id">Enable</a>
+                    <form method="post" asp-route-id="@user.Id">
+                        <button type="submit" class="btn btn-success">Enable</button>
                     </form>
                 </td>
             </tr>

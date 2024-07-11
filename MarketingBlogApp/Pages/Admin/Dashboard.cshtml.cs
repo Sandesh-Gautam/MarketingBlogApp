@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace MarketingBlogApp.Pages.Admin
 {
@@ -21,6 +23,9 @@ namespace MarketingBlogApp.Pages.Admin
         public int TotalCategories { get; set; }
         public int TotalVisits { get; set; }
 
+        public IList<ManagerAction> ManagerActions { get; set; }
+        public IList<Warning> Warnings { get; set; }
+
         public DashboardModel(ILogger<DashboardModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _logger = logger;
@@ -30,9 +35,16 @@ namespace MarketingBlogApp.Pages.Admin
 
         public async Task OnGetAsync()
         {
-            TotalPosts = _context.BlogPosts.Count();
-            TotalCategories = _context.Categories.Count();
-            TotalVisits = _context.UserActivities.Count(ua => ua.ActivityType == "Page Visit");
+            TotalPosts = await _context.BlogPosts.CountAsync();
+            TotalCategories = await _context.Categories.CountAsync();
+            TotalVisits = await _context.UserActivities.CountAsync(ua => ua.ActivityType == "Page Visit");
+
+            ManagerActions = await _context.ManagerActions
+                .Include(ma => ma.Manager)
+                .ToListAsync();
+            Warnings = await _context.Warnings
+                            .Include(w => w.User)
+                            .ToListAsync();
 
             var user = await _userManager.GetUserAsync(User);
             if (user != null)

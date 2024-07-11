@@ -61,6 +61,10 @@
                                 </button>
                             </form>
                             <small>@post.PublishedDate.ToString("yyyy-MM-dd")</small>
+                            @if (User.IsInRole("Manager"))
+                            {
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletePostModal-@post.Id">Delete</button>
+                            }
                         </div>
                         <div id="commentSection-@post.Id" class="comment-section">
                             <h6>Comments</h6>
@@ -70,12 +74,9 @@
                                     <strong>@comment.User.UserName:</strong>
                                     <p class="mb-0">@comment.Content</p>
                                     <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
-                                    @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId)
+                                    @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId || User.IsInRole("Manager"))
                                     {
-                                        <form method="post" asp-page-handler="DeleteComment" class="mt-2">
-                                            <input type="hidden" name="commentId" value="@comment.Id" />
-                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Delete</button>
-                                        </form>
+                                        <button class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#deleteCommentModal-@comment.Id"><i class="fa-solid fa-trash"></i> Delete</button>
                                     }
                                 </div>
                             }
@@ -93,10 +94,123 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Delete Post Modal -->
+                <div class="modal fade" id="deletePostModal-@post.Id" tabindex="-1" aria-labelledby="deletePostModalLabel-@post.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deletePostModalLabel-@post.Id">Delete Post</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" enctype="multipart/form-data" asp-page-handler="DeletePost">
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <div class="mb-3">
+                                        <label for="reason" class="form-label">Reason for deletion</label>
+                                        <textarea name="reason" class="form-control" id="reason" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="proofImage" class="form-label">Proof Image</label>
+                                        <input type="file" name="proofImage" class="form-control" id="proofImage" required />
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Comment Modal -->
+                @foreach (var comment in post.Comments)
+                {
+                    <div class="modal fade" id="deleteCommentModal-@comment.Id" tabindex="-1" aria-labelledby="deleteCommentModalLabel-@comment.Id" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteCommentModalLabel-@comment.Id">Delete Comment</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    @if (UserManager.GetUserId(User) == comment.UserId)
+                                    {
+                                        <form method="post" asp-page-handler="DeleteComment">
+                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post" enctype="multipart/form-data" asp-page-handler="DeleteComment">
+                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                            <div class="mb-3">
+                                                <label for="reason" class="form-label">Reason for deletion</label>
+                                                <textarea name="reason" class="form-control" id="reason" required></textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="proofImage" class="form-label">Proof Image</label>
+                                                <input type="file" name="proofImage" class="form-control" id="proofImage" required />
+                                            </div>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             }
         </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i" asp-route-searchCategory="@Model.SearchCategory">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
+
+<!-- Warning Modal -->
+@if (TempData["Warnings"] != null)
+{
+    <div class="modal fade" id="warningModal" tabindex="-1" aria-labelledby="warningModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="warningModalLabel">Unresolved Warnings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @foreach (var warning in TempData["Warnings"].ToString().Split('\n'))
+                    {
+                        <div class="alert alert-warning">
+                            <strong>@warning</strong>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            if ("@TempData["Warnings"]" !== "") {
+                $('#warningModal').modal('show');
+            }
+        });
+    </script>
+}
 
 @section Styles {
     <style>

@@ -1,0 +1,66 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.ManagerActionsModel
+@{
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1 class="mt-4">Manager Actions</h1>
+
+<div class="container">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>Actions Taken by Managers</h2>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Action Type</th>
+                <th scope="col">Manager</th>
+                <th scope="col">Date</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var action in Model.ManagerActions)
+            {
+                <tr>
+                    <td>@action.ActionType</td>
+                    <td>@action.Manager.UserName</td>
+                    <td>@action.ActionDate.ToString("g")</td>
+                    <td>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#managerActionModal-@action.Id">View Details</button>
+                        <a asp-page="/Admin/IssueWarning" asp-route-id="@action.Id" class="btn btn-warning">Issue Warning</a>
+                    </td>
+                </tr>
+
+                <!-- Manager Action Details Modal -->
+                <div class="modal fade" id="managerActionModal-@action.Id" tabindex="-1" aria-labelledby="managerActionModalLabel-@action.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="managerActionModalLabel-@action.Id">Manager Action Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>Manager:</strong> @action.Manager.UserName</p>
+                                <p><strong>Date:</strong> @action.ActionDate.ToString("g")</p>
+                                <p><strong>Reason:</strong> @action.Reason</p>
+                                @if (!string.IsNullOrEmpty(action.ProofImagePath))
+                                {
+                                    <img src="@action.ProofImagePath" class="img-fluid" alt="Proof Image">
+                                }
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+}

@@ -78,6 +78,10 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public async Task<IActionResult> OnPostAsync(string id)
         {
+            ModelState.Remove("UserToUpdate.Likes");
+            ModelState.Remove("UserToUpdate.Comments");
+            ModelState.Remove("UserToUpdate.BlogPosts");
+            ModelState.Remove("UserToUpdate.UserActivities");
             if (!ModelState.IsValid)
             {
                 Roles = _roleManager.Roles.Where(r => r.Name != "Admin").Select(r => new SelectListItem
@@ -107,6 +111,13 @@ namespace MarketingBlogApp.Pages.Admin.Users
             {
                 ModelState.AddModelError("UserToUpdate.Email", "Email is already taken.");
                 return Page();
+            }
+
+            // Exclude navigation properties from being updated
+            var propertiesToExclude = new[] { "Likes", "Comments", "BlogPosts", "UserActivities" };
+            foreach (var property in propertiesToExclude)
+            {
+                ModelState.Remove($"UserToUpdate.{property}");
             }
 
             user.FirstName = UserToUpdate.FirstName;
@@ -139,7 +150,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
             }
 
             var updateResult = await _userManager.UpdateAsync(user);
-            if (user != null)
+            if (updateResult.Succeeded)
             {
                 var editUsers = new UserActivity
                 {
@@ -150,7 +161,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 _context.UserActivities.Add(editUsers);
                 await _context.SaveChangesAsync();
             }
-            if (!updateResult.Succeeded)
+            else
             {
                 ModelState.AddModelError("", "Failed to update user.");
                 return Page();

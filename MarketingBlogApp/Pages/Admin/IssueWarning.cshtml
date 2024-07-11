@@ -1,0 +1,22 @@
+﻿@page "{id:int}"
+@model MarketingBlogApp.Pages.Admin.IssueWarningModel
+@{
+    ViewData["Title"] = "Issue Warning";
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <a asp-page="./Dashboard" class="btn btn-secondary mb-4">Back to Dashboard</a>
+</div>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Reason">Reason for warning</label>
+        <textarea asp-for="Reason" class="form-control" required></textarea>
+        <span asp-validation-for="Reason" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-warning">Issue Warning</button>
+    <a asp-page="./Dashboard" class="btn btn-secondary">Cancel</a>
+</form>

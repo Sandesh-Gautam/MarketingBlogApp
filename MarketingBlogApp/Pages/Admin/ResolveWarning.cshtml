@@ -1,0 +1,17 @@
+﻿@page "{id:int}"
+@model MarketingBlogApp.Pages.Admin.ResolveWarningModel
+@{
+    ViewData["Title"] = "Resolve Warning";
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <a asp-page="./Dashboard" class="btn btn-secondary mb-4">Back to Dashboard</a>
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-success">Resolve Warning</button>
+    <a asp-page="./Dashboard" class="btn btn-secondary">Cancel</a>
+</form>

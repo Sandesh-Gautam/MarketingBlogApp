@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MarketingBlogApp.Data;
+using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using MarketingBlogApp.Models;
-using MarketingBlogApp.Data;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 
 namespace MarketingBlogApp.Areas.Identity.Pages.Account
 {
@@ -42,6 +41,9 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
 
         [TempData]
         public string ErrorMessage { get; set; }
+
+        [TempData]
+        public string Warnings { get; set; }
 
         public class InputModel
         {
@@ -89,35 +91,56 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                 {
                     user = await _userManager.FindByNameAsync(Input.Identifier);
                 }
-                const string guestUserId = "1";
-                if (user != null && user.Id == guestUserId)
-                {
-                    ModelState.AddModelError(string.Empty, "Guest user cannot log in.");
-                    return Page();
-                }
+
                 if (user != null)
                 {
+                    var blacklisted = await _context.Blacklists.FirstOrDefaultAsync(b => b.Email == user.Email && b.IsActive);
+                    if (blacklisted != null)
+                    {
+                        ModelState.AddModelError(string.Empty, "Your account has been blacklisted. Please contact support.");
+                        return Page();
+                    }
+
+                    var unresolvedWarnings = await _context.Warnings
+                        .Where(w => w.UserId == user.Id && !w.IsResolved)
+                        .ToListAsync();
+
+                    var warningsCount = unresolvedWarnings.Count;
+
+                    if (warningsCount >= 3)
+                    {
+                        var lastWarning = unresolvedWarnings.OrderByDescending(w => w.DateIssued).First();
+                        var disableUntil = lastWarning.DateIssued.AddDays(7);
+
+                        if (DateTime.Now < disableUntil)
+                        {
+                            user.IsDisabled = true;
+                            await _userManager.UpdateAsync(user);
+                        }
+                        else
+                        {
+                            user.IsDisabled = false;
+                            await _userManager.UpdateAsync(user);
+                        }
+                    }
+
                     if (user.IsDisabled)
                     {
-                        ModelState.AddModelError(string.Empty, "Your account has been disabled. Please contact support.");
+                        ModelState.AddModelError(string.Empty, "Your account is disabled. Please contact support.");
                         return Page();
                     }
 
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                     if (result.Succeeded)
                     {
-                        var users = await _userManager.FindByEmailAsync(Input.Identifier);
-                        if (users != null)
+                        var loginActivity = new UserActivity
                         {
-                            var loginActivity = new UserActivity
-                            {
-                                UserId = users.Id,
-                                ActivityType = "Logged in",
-                                ActivityDate = DateTime.Now
-                            };
-                            _context.UserActivities.Add(loginActivity);
-                            await _context.SaveChangesAsync();
-                        }
+                            UserId = user.Id,
+                            ActivityType = "Logged in",
+                            ActivityDate = DateTime.Now
+                        };
+                        _context.UserActivities.Add(loginActivity);
+                        await _context.SaveChangesAsync();
 
                         _logger.LogInformation("User logged in.");
                         TempData["message"] = "Logged In Successfully";
@@ -125,6 +148,12 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
                         if (await _userManager.IsInRoleAsync(user, "Admin"))
                         {
                             return LocalRedirect(Url.Content("~/Admin/Dashboard"));
+                        }
+                        else if (await _userManager.IsInRoleAsync(user, "User") || await _userManager.IsInRoleAsync(user, "Manager"))
+                        {
+                            TempData["Warnings"] = string.Join("\n", unresolvedWarnings.Select(w => $"Warning: {w.Reason}"));
+
+                            return LocalRedirect(Url.Content("~/Index"));
                         }
 
                         return LocalRedirect(returnUrl);
@@ -152,5 +181,6 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account
             }
             return Page();
         }
+
     }
 }

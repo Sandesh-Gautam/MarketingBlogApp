@@ -5,12 +5,12 @@
 @{
     Layout = "/Pages/Shared/_Layout.cshtml";
 }
-
-<head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
-    <!-- or -->
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
-</head>
+@if (TempData["warning"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["warning"]
+    </div>
+}
 
 <h1 class="my-4">My Blog Posts</h1>
 

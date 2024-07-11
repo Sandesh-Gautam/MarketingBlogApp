@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using System;
 
 namespace MarketingBlogApp.Pages.Admin.Users
 {
@@ -16,7 +18,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public DisabledUsersModel(UserManager<ApplicationUser> userManager,ApplicationDbContext context)
+        public DisabledUsersModel(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
@@ -49,16 +51,48 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 return NotFound();
             }
 
-            user.IsDisabled = true; // Disable the user
-            var result = await _userManager.UpdateAsync(user);
+            var unresolvedWarnings = await _context.Warnings
+                .Where(w => w.UserId == user.Id && !w.IsResolved)
+                .ToListAsync();
 
-            if (!result.Succeeded)
+            if (unresolvedWarnings.Count >= 3)
             {
-                ModelState.AddModelError("", "Failed to disable user.");
-                return Page();
-            }
+                var lastWarning = unresolvedWarnings.OrderByDescending(w => w.DateIssued).First();
+                var disableUntil = lastWarning.DateIssued.AddDays(7);
+                var remainingDays = (disableUntil - DateTime.Now).Days;
 
-            return RedirectToPage("./Index");
+                if (remainingDays > 0)
+                {
+                    ModelState.AddModelError("", $"The user has been disabled for 1 week due to unresolved warnings. {remainingDays} days left before enabling.");
+                    return Page();
+                }
+                else
+                {
+                    user.IsDisabled = false;
+                    var result = await _userManager.UpdateAsync(user);
+
+                    if (!result.Succeeded)
+                    {
+                        ModelState.AddModelError("", "Failed to enable user.");
+                        return Page();
+                    }
+
+                    return RedirectToPage("./Index");
+                }
+            }
+            else
+            {
+                user.IsDisabled = false;
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to enable user.");
+                    return Page();
+                }
+
+                return RedirectToPage("./Index");
+            }
         }
     }
 }

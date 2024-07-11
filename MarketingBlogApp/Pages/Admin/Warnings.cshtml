@@ -1,0 +1,66 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.WarningsModel
+@{
+    Layout = "/Pages/Shared/_Admin.cshtml";
+}
+
+<h1 class="mt-4">Warnings</h1>
+
+<div class="container">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h2>Warnings Issued to Users</h2>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Date Issued</th>
+                <th scope="col">Resolved</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var warning in Model.Warnings)
+            {
+                <tr>
+                    <td>@warning.User.UserName</td>
+                    <td>@warning.DateIssued.ToString("g")</td>
+                    <td>@(warning.IsResolved ? "Yes" : "No")</td>
+                    <td>
+                        <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#warningDetailsModal-@warning.Id">View Details</button>
+                        @if (!warning.IsResolved)
+                        {
+                            <a asp-page="/Admin/ResolveWarning" asp-route-id="@warning.Id" class="btn btn-success">Resolve</a>
+                        }
+                    </td>
+                </tr>
+
+                <!-- Warning Details Modal -->
+                <div class="modal fade" id="warningDetailsModal-@warning.Id" tabindex="-1" aria-labelledby="warningDetailsModalLabel-@warning.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="warningDetailsModalLabel-@warning.Id">Warning Details</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p><strong>User:</strong> @warning.User.UserName</p>
+                                <p><strong>Date Issued:</strong> @warning.DateIssued.ToString("g")</p>
+                                <p><strong>Reason:</strong> @warning.Reason</p>
+                                <p><strong>Resolved:</strong> @(warning.IsResolved ? "Yes" : "No")</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+}

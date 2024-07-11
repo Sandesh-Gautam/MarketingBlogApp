@@ -17,6 +17,12 @@ namespace MarketingBlogApp.Data
         public DbSet<Like> Likes { get; set; }
         public DbSet<UserActivity> UserActivities { get; set; }
         public DbSet<BlogPostCategory> BlogPostCategories { get; set; }
+        public DbSet<Warning> Warnings { get; set; }
+        public DbSet<BlackList> Blacklists { get; set; }
+        public DbSet<DeletionReason> DeletionReasons { get; set; }
+        public DbSet<ManagerAction> ManagerActions { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
