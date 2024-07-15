@@ -31,3 +31,108 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+
+<style>
+    <style >
+    :root {
+        /* Define colors */
+        --color--teal-blue: #4a90e2; /* Teal/Blue color used as the primary color */
+        --color--darker-teal-blue: #3a70b2; /* Darker shade of teal/blue used for headers */
+        --color--dark: #333; /* Dark text color */
+        --color--white: #ffffff; /* Background color for the body and form elements */
+        --color--light-border: #dddddd; /* Light border color for form inputs */
+        --color--navbar-bg: #4a90e2; /* Background color for the navbar, set to teal/blue */
+        --color--navbar-text: #ffffff; /* Text color for navbar links, set to white */
+    }
+
+    body {
+        background-color: var(--color--white); /* Background: White */
+        color: var(--color--dark); /* Text Color: Dark */
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+    }
+
+    h3 {
+        color: var(--color--darker-teal-blue); /* Headers: Darker Teal/Blue */
+        font-size: 2.2rem; /* Larger font size */
+        margin-bottom: 20px;
+        text-align: center; /* Center align the text */
+    }
+
+    .alert-warning {
+        background-color: var(--color--white); /* Primary color (70%): White */
+        border-color: #ffeeba; /* Light yellow border */
+        color: #856404; /* Dark yellow text */
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .col-md-6 {
+        background-color: var(--color--white); /* Primary color (70%): White */
+        padding: 30px; /* Increased padding for larger appearance */
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center; /* Center align content */
+    }
+
+    .form-floating input {
+        background-color: var(--color--white); /* Background: White */
+        border: 2px solid var(--color--teal-blue); /* Primary color: Teal/Blue */
+        color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        border-radius: 6px; /* Increased border radius */
+        font-size: 1.3rem; /* Larger font size */
+        padding: 12px; /* Increased padding */
+        width: 100%; /* Full width input */
+        box-sizing: border-box;
+        margin-bottom: 15px; /* Increased bottom margin */
+    }
+
+    .form-floating label {
+        color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        font-size: 1.2rem; /* Larger font size */
+    }
+
+    .form-floating input:focus {
+        border-color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        box-shadow: 0 0 10px rgba(74, 144, 226, 0.5); /* Adjusted for Teal/Blue focus */
+    }
+
+    .text-danger {
+        color: #d32f2f; /* Red for error messages */
+        font-size: 1.2rem; /* Larger font size */
+    }
+
+    .btn-danger {
+        background-color: #d32f2f; /* Red button for dangerous actions */
+        border-color: #d32f2f;
+        font-size: 1.3rem; /* Larger font size */
+        padding: 12px 30px; /* Increased padding */
+        margin-top: 20px;
+        border-radius: 6px; /* Increased border radius */
+        width: 100%; /* Full width button */
+        box-sizing: border-box;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        color: var(--color--white); /* Navbar and Nav-link Text: White */
+    }
+
+        .btn-danger:hover {
+            background-color: #c62828; /* Darker red on hover */
+            border-color: #c62828;
+        }
+
+    .btn-lg {
+        font-size: 1.5rem; /* Larger font size */
+        padding: 15px 30px; /* Increased padding */
+        border-radius: 8px; /* Increased border radius */
+        width: 100%; /* Full width button */
+        box-sizing: border-box;
+        margin-top: 20px;
+    }
+</style>

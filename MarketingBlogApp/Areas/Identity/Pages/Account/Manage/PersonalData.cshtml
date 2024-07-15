@@ -19,3 +19,114 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+
+<style>
+    :root {
+        /* Define colors */
+        --color--teal-blue: #4a90e2; /* Teal/Blue color used as the primary color */
+        --color--darker-teal-blue: #3a70b2; /* Darker shade of teal/blue used for headers */
+        --color--dark: #333; /* Dark text color */
+        --color--white: #ffffff; /* Background color for the body and form elements */
+        --color--light-border: #dddddd; /* Light border color for form inputs */
+        --color--navbar-bg: #4a90e2; /* Background color for the navbar, set to teal/blue */
+        --color--navbar-text: #ffffff; /* Text color for navbar links, set to white */
+    }
+
+    body {
+        background-color: var(--color--white); /* Background: White */
+        color: var(--color--teal-blue); /* Text Color: Teal/Blue */
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+    }
+
+    h3 {
+        color: var(--color--teal-blue); /* Headers: Teal/Blue */
+        font-size: 2rem;
+        margin-bottom: 20px;
+        text-align: center; /* Center align the title */
+    }
+
+    p {
+        color: var(--color--dark); /* Text: Teal/Blue */
+        font-size: 1.1rem;
+    }
+
+    strong {
+        color: var(--color--dark); /* Strong: Teal/Blue */
+    }
+
+    a {
+        color: var(--color--white); /* Links: White */
+        transition: color 0.3s; /* Smooth transition for color change */
+    }
+
+        a:hover {
+            color: var(--color--teal-blue); /* Teal/Blue on hover */
+        }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .col-md-6 {
+        background-color: var(--color--white); /* White background for the content */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-floating input {
+        background-color: var(--color--white); /* Background: White */
+        border: 1px solid var(--color--teal-blue); /* Border: Teal/Blue */
+        color: var(--color--teal-blue); /* Text: Teal/Blue */
+        border-radius: 4px;
+    }
+
+    .form-floating label {
+        color: var(--color--teal-blue); /* Label: Teal/Blue */
+    }
+
+    .form-floating input:focus {
+        border-color: var(--color--teal-blue); /* Focus Border: Teal/Blue */
+        box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Focus Shadow: Teal/Blue */
+    }
+
+    .text-danger {
+        color: #d32f2f; /* Red for error messages */
+    }
+
+    .btn-primary {
+        background-color: var(--color--teal-blue); /* Teal/Blue button for primary actions */
+        border-color: var(--color--teal-blue);
+        color: var(--color--white); /* White text */
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        margin-top: 20px;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--color--white); /* White on hover */
+            border-color: var(--color--white);
+            color: var(--color--teal-blue); /* Teal/Blue text */
+        }
+
+    .btn-danger {
+        background-color: var(--color--white); /* White button for destructive actions */
+        border-color: var(--color--white);
+        color: var(--color--teal-blue); /* Teal/Blue text */
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        margin-top: 10px;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+        .btn-danger:hover {
+            background-color: var(--color--teal-blue); /* Teal/Blue on hover */
+            border-color: var(--color--teal-blue);
+            color: var(--color--white); /* White text */
+        }
+</style>

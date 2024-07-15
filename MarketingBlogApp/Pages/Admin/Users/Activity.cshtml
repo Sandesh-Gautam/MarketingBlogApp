@@ -2,6 +2,7 @@
 @model MarketingBlogApp.Pages.Admin.Users.ActivityModel
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
+    ViewData["Title"] = "User Activity";
 }
 
 <h1>User Activity</h1>
@@ -13,6 +14,20 @@
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
+
+<div class="text-right mb-4">
+    <a asp-page="/Admin/Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+@if (ModelState.ErrorCount > 0)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
 <table class="table mt-4">
     <thead>
@@ -33,3 +48,114 @@
         }
     </tbody>
 </table>
+
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --secondary-color: #888888; /* Slightly lighter grey */
+        --text-color: #333333; /* Dark grey */
+        --link-color: #444444; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+        --taleblue-light: #CCE5FF;
+        --taleblue: #6699CC;
+        --taleblue-dark: #336699;
+        --taleblue-darker: #003366;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7; /* Light grey background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    form {
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        color: var(--taleblue-darker); /* Darker taleblue text */
+        font-weight: bold;
+    }
+
+    .form-control {
+        padding: 10px;
+        border: 1px solid var(--taleblue); /* Taleblue border */
+        border-radius: var(--border-radius); /* Small border radius */
+        background-color: #ffffff; /* White background */
+        color: var(--text-color); /* Dark grey text */
+    }
+
+    .btn-primary {
+        background-color: var(--taleblue); /* Taleblue */
+        color: #ffffff; /* White text */
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--taleblue-dark); /* Darker taleblue on hover */
+        }
+
+    .btn-secondary {
+        background-color: var(--taleblue-light); /* Light taleblue background */
+        color: var(--text-color); /* Dark grey text */
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-color); /* Slightly darker grey on hover */
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff; /* White background */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+        border-radius: var(--border-radius); /* Rounded corners */
+        overflow: hidden; /* Ensure rounded corners work */
+    }
+
+    th, td {
+        padding: 15px; /* Increased padding for better spacing */
+        border: 1px solid var(--taleblue-light); /* Light taleblue border */
+        color: var(--text-color); /* Dark grey text */
+        text-align: left; /* Left-align text */
+    }
+
+    th {
+        background-color: var(--taleblue-light); /* Taleblue for headers */
+        color: black; /* White text */
+        font-weight: bold; /* Bold text */
+    }
+
+    tr:nth-child(even) {
+        background-color: var(--taleblue-light); /* Light taleblue for even rows */
+    }
+
+    tr:nth-child(odd) {
+        background-color: #f9f9f9; /* Very light grey for odd rows */
+    }
+
+    tr:hover {
+        background-color: var(--taleblue-light); /* Light taleblue on hover */
+    }
+
+</style>

@@ -13,3 +13,91 @@
     <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
     <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
 </ul>
+
+
+<style>
+    :root {
+        --color-primary: #4a90e2; /* Teal blue color */
+        --color-secondary: #7ed321; /* Secondary color: green */
+        --color-dark: #333; /* Dark text color */
+        --color-light: #f0f0f0; /* Light background color */
+        --color-highlight: #ff4081; /* Highlight color: pink */
+        --color-button: #f5511e; /* Button background color: orange */
+        --color-white: #ffffff; /* White color */
+        --color-border: #dddddd; /* Light border color */
+        --color-arrow: #333; /* Arrow color */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: var(--color-light); /* Light background */
+        color: var(--color-dark); /* Dark text */
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-container {
+        background-color: var(--color-white); /* White background */
+        padding: 20px;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        max-width: 400px;
+        margin: 20px auto;
+    }
+
+    .nav-pills .nav-link {
+        color: var(--color-dark); /* Dark text */
+        background-color: var(--color-light); /* Light background */
+        margin-bottom: 10px;
+        border-radius: 10px; /* Rounded corners */
+        position: relative; /* Positioning for arrow */
+        transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        font-size: 1.3rem; /* Larger font size */
+        padding: 18px 22px; /* Increased padding */
+    }
+
+        .nav-pills .nav-link::after {
+            content: '>'; /* Arrow symbol */
+            color: var(--color-arrow); /* Arrow color */
+            position: absolute;
+            right: 18px; /* Positioning from the right */
+            top: 50%; /* Vertical centering */
+            transform: translateY(-50%); /* Vertical centering */
+            font-size: 1.4rem; /* Match arrow size to text size */
+            font-weight: bold; /* Bold arrow */
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: var(--color-primary); /* Teal blue on hover */
+            color: var(--color-white); /* White text on hover */
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--color-primary); /* Teal blue active */
+            color: var(--color-white); /* White text active */
+        }
+
+    h1 {
+        text-align: center;
+        color: var(--color-primary); /* Teal blue header */
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--color-primary);
+    }
+
+    footer {
+        padding: 5px 0; /* Padding for footer */
+        background-color: var(--color--white); /* White background */
+        text-align: center; /* Center-align text in footer */
+        font-size: 0.8rem; /* Smaller font size */
+        height: 40px; /* Adjust height of the footer */
+        margin-top: 20px; /* Add margin to separate from content */
+    }
+
+        footer a {
+            color: var(--color--teal-blue); /* Accent color for links in footer */
+            text-decoration: none; /* Remove underline from links */
+        }
+</style>

@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO; // Ensure this is included for file handling
 
 namespace MarketingBlogApp.Pages
 {
@@ -34,7 +32,7 @@ namespace MarketingBlogApp.Pages
 
         public async Task OnGetAsync(string searchCategory, int? pageNumber)
         {
-            const int pageSize = 10;
+            const int pageSize = 5; // Set page size to 5
             CurrentPage = pageNumber ?? 1;
             CurrentPage = CurrentPage < 1 ? 1 : CurrentPage;
 
@@ -197,31 +195,6 @@ namespace MarketingBlogApp.Pages
 
             // Delete the comment
             _context.Comments.Remove(comment);
-
-            // Check for warnings count
-            var warningsCount = await _context.Warnings
-                .CountAsync(w => w.UserId == comment.UserId && !w.IsResolved);
-
-            if (warningsCount >= 3)
-            {
-                var user = await _context.Users.FindAsync(comment.UserId);
-                user.IsDisabled = true;
-
-                // If warnings exceed limit after user is already disabled, blacklist the email
-                if (warningsCount > 3)
-                {
-                    var blacklist = new BlackList
-                    {
-                        Email = user.Email,
-                        IsActive = true,
-                        DateBlacklisted = DateTime.Now
-                    };
-                    _context.Blacklists.Add(blacklist);
-                }
-
-                await _userManager.UpdateAsync(user);
-            }
-
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { searchCategory = SearchCategory, pageNumber = CurrentPage });

@@ -1,20 +1,12 @@
 body {
     font-family: 'Arial', sans-serif;
-    background: #f6f5f7;
+    background: #f6f5f7; /* Light gray background */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
 }
-
-@media (max-width: 600px) {
-    .error-message {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
-
 
 .container {
     background-color: #fff;
@@ -23,77 +15,184 @@ body {
     overflow: hidden;
     max-width: 1000px;
     width: 100%;
-}
-
-.row {
     display: flex;
     flex-wrap: wrap;
 }
 
-.col-md-6 {
-    flex: 1;
-    padding: 0;
+.left-panel, .right-panel {
+    padding: 40px;
+    box-sizing: border-box; /* Ensure padding is included in width calculation */
 }
 
 .left-panel {
-    background-color: #a3d9c5;
+    background-color: #A2D5D7; /* Slightly lighter blue for the left panel */
+    color: white;
+    border-radius: 10px 0 0 10px; /* Rounded left edge */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    text-align: center;
+    width: 50%;
 }
 
     .left-panel img {
-        max-width: 80%;
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 10px;
+    }
+
+    .left-panel p {
+        font-size: 1.2rem;
+        margin: 10px 0;
+    }
+
+    .left-panel h3 {
+        color: #00A4BD; /* Different shade of blue for emphasis */
+        margin: 10px 0;
     }
 
 .right-panel {
-    padding: 60px 40px;
+    background-color: white;
+    border-radius: 0 10px 10px 0; /* Rounded right edge */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 50%;
 }
 
-h1 {
-    font-family: 'Georgia', serif;
-    margin-bottom: 20px;
+    .right-panel h1 {
+        margin-bottom: 20px;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        color: #000f55; /* Navy blue text */
+    }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
 }
 
 .form-control {
-    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
     border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.form-check-label {
+    margin-left: 5px;
 }
 
 .btn {
-    border-radius: 20px;
-    padding: 10px 30px;
-    display: block;
-    margin: 0 auto;
+    background-color: #5DA9B1; /* Matching button color */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin: 10px 0;
+}
+
+    .btn:hover {
+        background-color: #487D82; /* Darker shade on hover */
+    }
+
+.btn-google {
+    background-color: white;
+    border: 1px solid #ced4da;
+    color: #757575;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin: 10px 0;
+}
+
+    .btn-google img {
+        margin-right: 5px;
+    }
+
+    .btn-google:hover {
+        background-color: #f1f1f1;
+    }
+
+.text-center {
     text-align: center;
 }
 
-
-.btn-google {
-    background-color: #4285f4;
-    color: #fff;
-    margin-top: 20px;
+.text-muted {
+    color: #6c757d !important;
 }
 
-.text-muted a {
-    color: #4285f4;
+    .text-muted a {
+        color: #4285f4;
+    }
+
+        .text-muted a:hover {
+            text-decoration: underline;
+        }
+
+.text-danger {
+    color: #dc3545 !important;
 }
 
-    .text-muted a:hover {
+a {
+    color: #00A4BD;
+    text-decoration: none;
+}
+
+    a:hover {
         text-decoration: underline;
     }
 
+.mt-3 {
+    margin-top: 1rem !important;
+}
+
 @media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .left-panel, .right-panel {
+        width: 100%;
+        border-radius: 10px;
+    }
+
     .left-panel {
         display: none;
     }
 
     .right-panel {
         padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .right-panel {
+        padding: 15px 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+    }
+
+    .btn-google {
+        padding: 10px 20px;
     }
 }

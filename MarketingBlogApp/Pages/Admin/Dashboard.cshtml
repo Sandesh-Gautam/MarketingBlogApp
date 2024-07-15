@@ -88,7 +88,7 @@
             <div class="card text-white bg-dark mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Manager Actions</h5>
-                    <p class="card-text">View and manage actions performed by managers.</p>
+                    <p class="card-text">Manage actions performed by managers.</p>
                     <a href="/Admin/ManagerActions" class="btn btn-light">View Manager Actions</a>
                 </div>
             </div>
@@ -104,6 +104,17 @@
         </div>
     </div>
 </div>
+<style>
+    .equal-height {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+        .equal-height .card-body {
+            flex: 1;
+        }
+</style>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

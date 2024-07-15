@@ -3,7 +3,61 @@
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
 }
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --taleblue: #6699CC; /* Taleblue */
+        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
+        --text-color: #333333; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+    }
 
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #ffffff; /* White background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        color: var(--taleblue); /* Taleblue label text color */
+    }
+
+    .form-control {
+        padding: 10px;
+        border: 1px solid var(--taleblue-light); /* Light taleblue border */
+        border-radius: var(--border-radius); /* Small border radius */
+    }
+
+    .text-danger {
+        color: #dc3545; /* Bootstrap's danger color */
+    }
+
+    .btn-primary {
+        background-color: var(--taleblue); /* Taleblue button background color */
+        color: #ffffff; /* White text */
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: #357ca5; /* Darker taleblue on hover */
+        }
+</style>
 <h1>Edit Category</h1>
 
 <form method="post">

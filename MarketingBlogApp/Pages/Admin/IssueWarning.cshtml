@@ -4,7 +4,6 @@
     ViewData["Title"] = "Issue Warning";
     Layout = "/Pages/Shared/_Admin.cshtml";
 }
-
 <h1>@ViewData["Title"]</h1>
 
 <div>
@@ -20,3 +19,65 @@
     <button type="submit" class="btn btn-warning">Issue Warning</button>
     <a asp-page="./Dashboard" class="btn btn-secondary">Cancel</a>
 </form>
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #666666; /* Medium grey */
+            --taleblue: #6699CC; /* Taleblue */
+            --text-color: #333333; /* Dark grey */
+            --border-radius: 5px; /* Small border radius */
+            --taleblue-light: #CCE5FF;
+            --taleblue-dark: #336699;
+            --taleblue-darker: #003366;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffff; /* White background */
+            color: var(--text-color); /* Dark grey text */
+            margin: 20px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--taleblue); /* Taleblue text color */
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: var(--text-color); /* Dark grey text */
+            font-weight: bold;
+        }
+
+        .form-control {
+            padding: 10px;
+            border: 1px solid var(--taleblue); /* Taleblue border */
+            border-radius: var(--border-radius); /* Small border radius */
+            background-color: #ffffff; /* White background */
+            color: var(--text-color); /* Dark grey text */
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius); /* Small border radius */
+            cursor: pointer;
+            text-decoration: none;
+            color: #ffffff; /* White text */
+        }
+
+        .btn-primary {
+            background-color: var(--taleblue); /* Taleblue */
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: var(--taleblue-dark); /* Darker taleblue on hover */
+            }
+    </style>
+}

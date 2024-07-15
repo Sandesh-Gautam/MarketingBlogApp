@@ -2,13 +2,118 @@
 @model MarketingBlogApp.Pages.Admin.Categories.IndexModel
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
+    ViewData["Title"] = "Categories";
 }
+
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --taleblue: #6699CC; /* Taleblue */
+        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
+        --text-color: #333333; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #ffffff; /* White background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 10px 20px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none;
+        color: #ffffff; /* White text */
+    }
+
+    .btn-primary {
+        background-color: var(--taleblue); /* Taleblue button background color */
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #357ca5; /* Darker taleblue on hover */
+        }
+
+    .btn-secondary {
+        background-color: var(--taleblue-light); /* Light Taleblue */
+        border: 1px solid var(--taleblue-light); /* Light Taleblue border */
+        color: var(--taleblue); /* Taleblue text color */
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--taleblue); /* Darker Taleblue on hover */
+            border-color: var(--taleblue); /* Darker Taleblue border on hover */
+        }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff; /* White background */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+        border-radius: var(--border-radius); /* Rounded corners */
+        overflow: hidden; /* Ensure rounded corners work */
+    }
+
+    th, td {
+        padding: 15px; /* Increased padding for better spacing */
+        border: 1px solid var(--taleblue-light); /* Light taleblue border */
+        color: var(--text-color); /* Dark grey text */
+        text-align: left; /* Left-align text */
+    }
+
+    th {
+        background-color: var(--taleblue-light); /* Taleblue for headers */
+        color: black; /* Black text */
+        font-weight: bold; /* Bold text */
+    }
+
+    .table-header {
+        background-color: var(--taleblue-light); /* Light taleblue for the first row */
+    }
+
+    .table-row {
+        background-color: #ffffff; /* White background for all other rows */
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Bootstrap's warning color */
+        color: #ffffff; /* White text */
+        border: none;
+        padding: 8px 16px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Bootstrap's danger color */
+        color: #ffffff; /* White text */
+        border: none;
+        padding: 8px 16px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none;
+    }
+</style>
 
 <h1>Categories</h1>
 
-<p>
+<div class="d-flex justify-content-between mb-3">
     <a asp-page="Create" class="btn btn-primary">Add New Category</a>
-</p>
+    <a asp-page="/Admin/Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+</div>
 
 <table class="table">
     <thead>

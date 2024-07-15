@@ -23,3 +23,91 @@
         <button class="btn btn-danger" type="submit">Disable 2FA</button>
     </form>
 </div>
+
+
+
+<style>
+    :root {
+        --color--teal-blue: #008080; /* Teal/Blue color used as the primary color */
+        --color--darker-teal-blue: #004d4d; /* Darker shade of teal/blue used for headers */
+        --color--dark: #333; /* Dark text color */
+        --color--white: #ffffff; /* Background color for the body and form elements */
+        --color--light-border: #ccc; /* Light border color for form inputs */
+        --color--button-dark: #333; /* Dark background for buttons */
+    }
+
+    body {
+        background-color: var(--color--white); /* White background */
+        color: var(--color--teal-blue); /* Teal/Blue text color */
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+    }
+
+    h3 {
+        color: var(--color--darker-teal-blue); /* Darker teal/blue for headers */
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .alert-warning {
+        background-color: var(--color--white); /* White background */
+        border-color: #ffeeba; /* Light yellow border */
+        color: #856404; /* Dark yellow text */
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .col-md-6 {
+        background-color: var(--color--white); /* White background */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    }
+
+    .form-floating input {
+        background-color: var(--color--white); /* White background */
+        border: 1px solid var(--color--teal-blue); /* Teal/Blue border */
+        color: var(--color--teal-blue); /* Teal/Blue text */
+        border-radius: 4px;
+    }
+
+    .form-floating label {
+        color: var(--color--teal-blue); /* Teal/Blue label */
+    }
+
+    .form-floating input:focus {
+        border-color: var(--color--teal-blue); /* Teal/Blue on focus */
+        box-shadow: 0 0 5px rgba(0, 128, 128, 0.5); /* Teal/Blue shadow on focus */
+    }
+
+    .text-danger {
+        color: #d32f2f; /* Red color for error messages */
+    }
+
+    .btn-danger {
+        background-color: #d32f2f; /* Red background for danger button */
+        border-color: #d32f2f; /* Red border color */
+        color: var(--color--white); /* White text */
+        font-size: 1.1rem;
+        padding: 10px;
+        margin-top: 20px;
+        width: 100%;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    }
+
+        .btn-danger:hover {
+            background-color: #c62828; /* Darker red on hover */
+            border-color: #c62828; /* Darker red border on hover */
+        }
+
+    .btn-lg {
+        font-size: 1.2rem;
+        padding: 12px 24px;
+    }
+</style>

@@ -5,6 +5,10 @@
 }
 <h1>Delete User</h1>
 
+<div>
+    <a asp-page="/Admin/Dashboard" class="btn btn-secondary mb-4">Back to Dashboard</a>
+</div>
+
 <h3>Are you sure you want to delete this user?</h3>
 <div>
     <h4>@Model.User.UserName</h4>
@@ -36,3 +40,70 @@
         <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --taleblue: #6699CC; /* Taleblue */
+        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
+        --text-color: #333333; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7; /* Light grey background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none;
+        color: #ffffff; /* White text */
+    }
+
+    .btn-primary {
+        background-color: var(--taleblue); /* Taleblue */
+        border: none;
+    }
+
+    .btn-secondary {
+        background-color: var(--taleblue-light); /* Light Taleblue */
+        border: 1px solid var(--taleblue-light); /* Light Taleblue border */
+        color: var(--taleblue-darker); /* Darker Taleblue text */
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--taleblue); /* Darker Taleblue on hover */
+            border-color: var(--taleblue); /* Darker Taleblue border on hover */
+        }
+
+    .btn-danger {
+        background-color: #dc3545; /* Bootstrap's danger color */
+        border: none;
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Bootstrap's warning color */
+        border: none;
+    }
+
+    .btn-success {
+        background-color: #28a745; /* Bootstrap's success color */
+        border: none;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+}

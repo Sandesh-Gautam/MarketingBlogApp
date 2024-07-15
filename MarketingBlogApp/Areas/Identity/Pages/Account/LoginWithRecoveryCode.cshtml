@@ -27,3 +27,86 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+    :root {
+        --color--teal-blue: #008080; /* Teal/Blue color used as the primary color */
+        --color--darker-teal-blue: #005353; /* Darker shade of teal/blue used for headers */
+        --color--dark: #333333; /* Dark text color */
+        --color--white: #ffffff; /* Background color for the body and form elements */
+        --color--light-border: #cccccc; /* Light border color for form inputs */
+    }
+
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--color--white); /* White background */
+        color: var(--color--teal-blue); /* Teal/blue text */
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        color: var(--color--teal-blue); /* Teal/blue for headers */
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    hr {
+        border-top: 2px solid var(--color--teal-blue); /* Teal/blue for horizontal rule */
+        width: 50%;
+        margin: auto;
+        margin-bottom: 30px;
+    }
+
+    p {
+        color: var(--color--teal-blue); /* Teal/blue for informational text */
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 50px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .col-md-4 {
+        background-color: var(--color--white); /* White background for form container */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Box shadow for form container */
+    }
+
+    .form-floating .form-control {
+        border: 1px solid var(--color--teal-blue); /* Teal/blue border for input fields */
+        padding: 1rem;
+        border-radius: 8px;
+        width: 100%;
+    }
+
+    .form-floating .form-label {
+        color: var(--color--teal-blue); /* Teal/blue color for labels */
+    }
+
+    .text-danger {
+        color: var(--color--teal-blue); /* Teal/blue color for error messages */
+    }
+
+    .btn-primary {
+        background-color: var(--color--teal-blue); /* Teal/blue for primary button */
+        border-color: var(--color--teal-blue);
+        color: var(--color--white); /* White text */
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        width: 100%;
+        padding: 10px;
+        border-radius: 4px;
+        text-transform: uppercase; /* Uppercase button text */
+    }
+
+        .btn-primary:hover {
+            background-color: var(--color--darker-teal-blue); /* Darker teal/blue on hover */
+            border-color: var(--color--darker-teal-blue);
+        }
+</style>

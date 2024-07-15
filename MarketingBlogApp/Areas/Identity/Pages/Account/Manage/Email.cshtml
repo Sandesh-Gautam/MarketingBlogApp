@@ -42,3 +42,113 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+
+
+<style>
+    :root {
+        --color-white: #ffffff; /* Primary color: White */
+        --color-beige: #f5f5dc; /* Beige */
+        --color-teal-blue: #4a90e2; /* Teal/Blue */
+        --color-darker-teal-blue: #3a70b2; /* Darker Teal/Blue */
+        --color-dark: #333; /* Dark text color */
+        --color-light-border: #dddddd; /* Light border color */
+    }
+
+    body {
+        background-color: var(--color-white); /* White background */
+        color: var(--color-dark); /* Dark text color */
+        font-family: 'Arial', sans-serif;
+        font-size: 1.2rem; /* Base font size */
+    }
+
+    h3 {
+        color: var(--color-darker-teal-blue); /* Darker Teal/Blue for headers */
+        font-size: 2.5rem; /* Larger font size for header */
+        margin-bottom: 30px; /* Increased bottom margin */
+        text-align: center; /* Center align the heading */
+    }
+
+    .alert-warning {
+        background-color: #fff3cd; /* Light yellow background for warning */
+        border-color: #ffeeba; /* Light yellow border */
+        color: #856404; /* Dark yellow text */
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px; /* Increased top margin */
+    }
+
+    .col-md-6 {
+        background-color: var(--color-white); /* White background for the form container */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-floating {
+        position: relative;
+    }
+
+        .form-floating input {
+            background-color: var(--color-white); /* White for input fields */
+            border: 1px solid var(--color-light-border); /* Light border */
+            color: var(--color-dark); /* Dark text */
+            border-radius: 4px;
+            font-size: 1.3rem; /* Larger font size for inputs */
+        }
+
+        .form-floating label {
+            color: var(--color-dark); /* Dark text for labels */
+        }
+
+        .form-floating input:focus {
+            border-color: var(--color-teal-blue); /* Teal/Blue border on focus */
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Teal/Blue shadow on focus */
+        }
+
+    .text-danger {
+        color: #d32f2f; /* Red for error messages */
+        font-size: 1.1rem; /* Larger font size for error messages */
+    }
+
+    .btn-primary {
+        background-color: var(--color-teal-blue); /* Teal/Blue button for primary actions */
+        border-color: var(--color-teal-blue); /* Teal/Blue border */
+        font-size: 1.3rem; /* Larger font size for buttons */
+        padding: 12px;
+        margin-top: 20px;
+        width: 100%;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        color: var(--color-white); /* White text */
+    }
+
+        .btn-primary:hover {
+            background-color: var(--color-darker-teal-blue); /* Darker Teal/Blue on hover */
+            border-color: var(--color-darker-teal-blue); /* Darker Teal/Blue border on hover */
+            color: var(--color-white); /* White text on hover */
+        }
+
+    .btn-link {
+        color: var(--color-teal-blue); /* Teal/Blue for links */
+        text-decoration: none;
+        transition: color 0.3s, text-decoration 0.3s;
+        font-size: 1.2rem; /* Larger font size for links */
+    }
+
+        .btn-link:hover {
+            color: var(--color-darker-teal-blue); /* Darker Teal/Blue on hover */
+            text-decoration: underline;
+        }
+
+    .input-group-text {
+        background-color: var(--color-white); /* White background */
+        color: var(--color-dark); /* Dark text */
+        border: 1px solid var(--color-light-border); /* Light border */
+        font-size: 1.2rem; /* Larger font size for input group text */
+    }
+</style>

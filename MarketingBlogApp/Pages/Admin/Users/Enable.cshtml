@@ -37,3 +37,113 @@
         <a asp-page="./Disabled" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
+<style>
+    :root {
+        --primary-color: #5bb6c7; /* Primary teal color */
+        --secondary-color: rgb(96, 179, 194); /* Light teal */
+        --text-color: #000; /* Black text */
+        --link-color: #57b0b9; /* Link color */
+        --border-radius: 10px; /* Border radius */
+        --white-color: #ffffff; /* White */
+        --dark-grey-color: #333333; /* Dark grey */
+        --light-grey-color: #bdbdbd; /* Light grey */
+        --dark-red-color: #d32f2f; /* Dark red */
+        --secondary-grey-color: #757575; /* Secondary grey */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: var(--primary-color); /* Primary teal background */
+        color: var(--text-color); /* Black text */
+        margin: 0;
+        padding: 0;
+    }
+
+    h1, h3 {
+        text-align: center;
+        color: var(--text-color); /* Black text */
+    }
+
+    h4 {
+        color: var(--dark-grey-color); /* Dark grey */
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    hr {
+        border-top: 1px solid var(--dark-grey-color); /* Dark grey */
+        margin-bottom: 20px;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .col-sm-2 {
+        font-weight: bold;
+        color: var(--dark-grey-color); /* Dark grey */
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--light-grey-color); /* Light grey */
+        border-radius: var(--border-radius);
+        background-color: var(--white-color); /* White */
+        color: var(--dark-grey-color); /* Dark grey */
+        box-sizing: border-box;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: var(--secondary-color); /* Light teal */
+            outline: none;
+        }
+
+    .btn-success {
+        background-color: var(--secondary-color); /* Light teal */
+        color: var(--white-color); /* White */
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-success:hover {
+            background-color: var(--dark-grey-color); /* Dark grey */
+        }
+
+    .btn-secondary {
+        background-color: var(--secondary-grey-color); /* Secondary grey */
+        color: var(--dark-grey-color); /* Dark grey */
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        margin-left: 10px;
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--dark-grey-color); /* Dark grey */
+        }
+
+    .btn-danger {
+        background-color: var(--dark-red-color); /* Dark red */
+        color: var(--white-color); /* White */
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            background-color: #c62828; /* Darker red */
+        }
+</style>

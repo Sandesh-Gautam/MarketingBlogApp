@@ -69,3 +69,89 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+
+<style>
+    :root {
+        /* Define colors */
+        --color--teal-blue: #4a90e2; /* Primary color: Teal/Blue */
+        --color--darker-teal-blue: #3a70b2; /* Headers: Darker Teal/Blue */
+        --color--dark: #333; /* Text Color: Dark */
+        --color--white: #ffffff; /* Background: White */
+        --color--light-border: #dddddd; /* Border Color: Light Border */
+        --color--navbar-bg: #4a90e2; /* Navbar Background: Teal/Blue */
+        --color--navbar-text: #ffffff; /* Navbar and Nav-link Text: White */
+    }
+
+    body {
+        background-color: var(--color--white); /* Background: White */
+        color: var(--color--dark); /* Text Color: Dark */
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+    }
+
+    h3 {
+        color: var(--color--darker-teal-blue); /* Headers: Darker Teal/Blue */
+        font-size: 2.5rem; /* Larger font size for headers */
+        margin-bottom: 30px; /* Increased bottom margin */
+        text-align: center; /* Center align the text */
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px; /* Increased top margin */
+    }
+
+    .col-md-6 {
+        background-color: var(--color--white); /* Background: White */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-floating input {
+        background-color: var(--color--white); /* Background: White */
+        border: 2px solid var(--color--teal-blue); /* Primary color: Teal/Blue */
+        color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        border-radius: 6px;
+        font-size: 1.4rem; /* Larger font size for inputs */
+        padding: 14px; /* Increased padding */
+    }
+
+    .form-floating label {
+        color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        font-size: 1.2rem; /* Larger font size for labels */
+    }
+
+    .form-floating input:focus {
+        border-color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        box-shadow: 0 0 8px rgba(74, 144, 226, 0.7); /* Adjusted shadow for focus */
+    }
+
+    .text-danger {
+        color: #d32f2f; /* Red for error messages */
+        font-size: 1.2rem; /* Larger font size for error messages */
+    }
+
+    .btn-primary {
+        background-color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        border-color: var(--color--teal-blue); /* Primary color: Teal/Blue */
+        color: var(--color--white); /* Navbar and Nav-link Text: White */
+        font-size: 1.4rem; /* Larger font size for buttons */
+        padding: 14px 28px; /* Increased padding */
+        margin-top: 30px; /* Increased top margin */
+    }
+
+        .btn-primary:hover {
+            background-color: #003366; /* Darker navy blue on hover */
+            border-color: #003366; /* Darker navy blue on hover */
+        }
+
+    .btn-lg {
+        font-size: 1.6rem; /* Larger font size for large buttons */
+        padding: 16px 32px; /* Increased padding for large buttons */
+    }
+
+    }
+</style>

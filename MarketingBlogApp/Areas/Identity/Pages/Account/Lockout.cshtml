@@ -8,3 +8,36 @@
     <h1 class="text-danger">@ViewData["Title"]</h1>
     <p class="text-danger">This account has been locked out, please try again later.</p>
 </header>
+<style>
+    :root {
+        --color--teal-blue: #008080; /* Teal/Blue color used as the primary color */
+        --color--darker-teal-blue: #005353; /* Darker shade of teal/blue used for headers */
+        --color--dark: #333333; /* Dark text color */
+        --color--white: #ffffff; /* Background color for the body and form elements */
+        --color--light-border: #cccccc; /* Light border color for form inputs */
+    }
+
+    /* Global Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: var(--color--white); /* White background */
+        color: var(--color--dark); /* Dark text */
+        margin: 0;
+        padding: 0;
+    }
+
+    h1, p {
+        text-align: center;
+    }
+
+    h1 {
+        color: var(--color--teal-blue); /* Teal/blue for title */
+        margin-top: 50px;
+    }
+
+    p {
+        color: var(--color--teal-blue); /* Teal/blue for message */
+        font-size: 18px;
+        margin-bottom: 50px;
+    }
+</style>

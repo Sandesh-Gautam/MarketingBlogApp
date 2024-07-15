@@ -1,0 +1,35 @@
+@media (max-width: 575.98px) {
+    .nav-pills .nav-link {
+        font-size: 0.9rem; /* Adjust font size for small screens */
+        padding: 12px 16px; /* Adjust padding for small screens */
+    }
+
+    /* Adjust footer for small screens */
+    footer {
+        font-size: 0.8rem; /* Smaller font size for footer */
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    .nav-pills .nav-link {
+        font-size: 1rem; /* Adjust font size for medium screens */
+        padding: 14px 18px; /* Adjust padding for medium screens */
+    }
+
+    /* Adjust footer for medium screens */
+    footer {
+        font-size: 0.9rem; /* Smaller font size for footer */
+    }
+}
+
+@media (min-width: 992px) {
+    .nav-pills .nav-link {
+        font-size: 1.1rem; /* Maintain font size for large screens */
+        padding: 16px 20px; /* Maintain padding for large screens */
+    }
+
+    /* Maintain default footer size for large screens */
+    footer {
+        font-size: 0.9rem; /* Smaller font size for footer */
+    }
+}

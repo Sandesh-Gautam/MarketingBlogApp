@@ -33,3 +33,86 @@
     </div>
     <button type="submit" class="btn btn-dark btn-block">Register User</button>
 </form>
+
+
+<style>
+    /* Custom CSS variables */
+    :root {
+        --color--white: #ffffff; /* Primary color - white */
+        /* --color--beige: #b2ab9e; /* Secondary color - beige */
+        --color--navy-blue: #000f55; /* Accent color - navy blue */
+        --primary-color: #5bb6c7;
+        --secondary-color: rgb(96, 179, 194);
+        --text-color: #000;
+        --link-color: #57b0b9;
+        --border-radius: 10px;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: var(--color--white);
+        color: var(--color--navy-blue);
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h2 {
+        text-align: center;
+        color: var(--color--navy-blue);
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+
+    form {
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #c8e6c9; /* Default border color */
+        border-radius: var(--border-radius); /* Use border radius variable */
+        background-color: var(--color--white);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        color: var(--color--navy-blue);
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #c8e6c9; /* Default border color */
+        border-radius: 5px;
+        background-color: var(--color--white);
+        color: var(--color--navy-blue);
+        box-sizing: border-box;
+    }
+
+    .text-danger {
+        color: var(--color--navy-blue);
+    }
+
+    .btn-dark {
+        background-color: var(--primary-color); /* Use primary color variable */
+        color: var(--color--white); /* White text color */
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--border-radius); /* Use border radius variable */
+        cursor: pointer;
+        font-weight: bold;
+        display: block;
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-dark:hover {
+            background-color: var(--link-color); /* Use link color variable on hover */
+        }
+
+</style>

@@ -28,3 +28,179 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+<style>
+    :root {
+        --color-primary: #4a90e2; /* Teal/blue */
+        --color-header: #3a70b2; /* Darker teal/blue for headers */
+        --color-text: #333; /* Dark text color */
+        --color-background: #ffffff; /* White background */
+        --color-border: #dddddd; /* Light border color */
+        --color-navbar-bg: #4a90e2; /* Teal/blue background for navbar */
+        --color-navbar-text: #ffffff; /* White text for navbar and nav-links */
+    }
+
+    body {
+        background-color: var(--color-background); /* White background */
+        color: var(--color-text); /* Dark text */
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        font-size: 1.2rem; /* Base font size */
+    }
+
+    h3 {
+        font-size: 2.5rem; /* Larger header size */
+        text-align: center;
+        margin-top: 30px; /* Adjusted margin */
+        margin-bottom: 30px; /* Increased bottom margin */
+    }
+
+    .form-floating input {
+        font-size: 1.3rem; /* Larger font size for inputs */
+    }
+
+    .btn-primary, .btn-danger {
+        font-size: 1.3rem; /* Larger font size for buttons */
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px; /* Increased top margin */
+    }
+
+    .col-md-6 {
+        background-color: var(--color-background); /* White background for the form container */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-floating {
+        position: relative;
+    }
+
+        .form-floating input {
+            background-color: var(--color-background); /* White for input fields */
+            border: 1px solid var(--color-border); /* Light border */
+            color: var(--color-text); /* Dark text */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .form-floating label {
+            color: var(--color-text); /* Dark text for labels */
+        }
+
+        .form-floating input:focus {
+            border-color: var(--color-primary); /* Teal/blue border on focus */
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Teal/blue shadow on focus */
+        }
+
+    .text-danger {
+        color: #d32f2f; /* Red for error messages */
+    }
+
+    .btn-primary {
+        background-color: var(--color-primary); /* Teal/blue button for primary actions */
+        border-color: var(--color-primary);
+        color: var(--color-navbar-text); /* White text */
+        font-size: 1.3rem;
+        padding: 12px;
+        margin-top: 20px;
+        width: 100%;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--color-header); /* Darker teal/blue on hover */
+            border-color: var(--color-header);
+            color: var(--color-navbar-text); /* White text */
+        }
+
+    .btn-danger {
+        background-color: var(--color-background); /* White button for danger actions */
+        border-color: var(--color-background);
+        color: var(--color-text); /* Dark text */
+        font-size: 1.3rem;
+        padding: 12px;
+        margin-top: 20px;
+        width: 100%;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+        .btn-danger:hover {
+            background-color: var(--color-primary); /* Teal/blue on hover */
+            border-color: var(--color-primary);
+            color: var(--color-navbar-text); /* White text */
+        }
+
+    .navbar {
+        background-color: var(--color-navbar-bg); /* Teal/blue background */
+        border-bottom: 2px solid var(--color-border); /* Light border */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Box shadow for navbar */
+        padding: 5px 10px;
+    }
+
+    .navbar-brand, .nav-link {
+        color: var(--color-navbar-text); /* White text */
+    }
+
+        .nav-link:hover {
+            background-color: var(--color-header); /* Darker teal/blue on hover */
+            color: var(--color-navbar-text); /* White text */
+            border-radius: 10px; /* Rounded corners on hover */
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+    .header {
+        background-color: var(--color-primary); /* Teal/blue background */
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .header .back-button {
+            align-self: flex-start;
+            color: var(--color-navbar-text); /* White text */
+        }
+
+        .header .profile-picture {
+            margin: 0 auto;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .header .edit-profile {
+            text-align: center;
+            color: var(--color-navbar-text); /* White text */
+            margin-top: 10px;
+        }
+
+    .form-container {
+        background-color: var(--color-background); /* White background */
+        padding: 20px;
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        max-width: 400px;
+        margin: 20px auto;
+    }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--color-text); /* Dark text */
+            text-align: left; /* Left-aligned labels */
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="password"] {
+            width: calc(100% - 24px);
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--color-border); /* Light border */
+            border-radius: 10px; /* Rounded corners */
+            box-sizing: border-box;
+        }
+</style>

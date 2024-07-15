@@ -6,6 +6,10 @@
 
 <h1>Edit User</h1>
 
+<div>
+    <a asp-page="/Admin/Dashboard" class="btn btn-secondary mb-4">Back to Dashboard</a>
+</div>
+
 <form method="post">
     <div class="form-group">
         <label asp-for="UserToUpdate.FirstName">First Name</label>
@@ -53,6 +57,79 @@
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
 </form>
+
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --taleblue: #6699CC; /* Taleblue */
+        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
+        --text-color: #333333; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7; /* Light grey background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        color: var(--text-color); /* Dark grey text */
+        font-weight: bold;
+    }
+
+    .form-control {
+        padding: 10px;
+        border: 1px solid var(--taleblue); /* Taleblue border */
+        border-radius: var(--border-radius); /* Small border radius */
+        background-color: #ffffff; /* White background */
+        color: var(--text-color); /* Dark grey text */
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none;
+        color: #ffffff; /* White text */
+    }
+
+    .btn-primary {
+        background-color: var(--taleblue); /* Taleblue */
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #336699; /* Darker taleblue on hover */
+        }
+
+    .btn-secondary {
+        background-color: var(--taleblue-light); /* Light Taleblue */
+        border: 1px solid var(--taleblue-light); /* Light Taleblue border */
+        color: var(--taleblue); /* Taleblue text */
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--taleblue); /* Darker Taleblue on hover */
+            border-color: var(--taleblue); /* Darker Taleblue border on hover */
+        }
+
+    .text-danger {
+        color: #dc3545; /* Bootstrap's danger color */
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

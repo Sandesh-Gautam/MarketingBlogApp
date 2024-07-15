@@ -4,6 +4,85 @@
     Layout = "/Pages/Shared/_Admin.cshtml";
 }
 
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --taleblue: #6699CC; /* Taleblue */
+        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
+        --text-color: #333333; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #ffffff; /* White background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    h3 {
+        color: var(--text-color); /* Dark grey text */
+        margin-bottom: 20px;
+    }
+
+    h4 {
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 10px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da; /* Bootstrap's alert-danger background color */
+        color: #721c24; /* Bootstrap's alert-danger text color */
+        padding: 10px;
+        border-radius: var(--border-radius); /* Small border radius */
+        margin-bottom: 20px;
+    }
+
+    .row {
+        margin-top: 20px;
+    }
+
+    .col-sm-2 {
+        font-weight: bold;
+    }
+
+    .btn-danger {
+        background-color: #dc3545; /* Bootstrap's danger color */
+        color: #ffffff; /* White text */
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+
+    .btn-back {
+        background-color: var(--taleblue); /* Taleblue button background color */
+        color: #ffffff; /* White text */
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none; /* Remove underline */
+        display: inline-block; /* Ensure it's displayed as a block */
+        margin-right: 10px; /* Margin for spacing */
+    }
+
+        .btn-back:hover {
+            background-color: var(--taleblue-light); /* Lighter taleblue on hover */
+        }
+</style>
+
 <h1>Delete Category</h1>
 
 <h3>Are you sure you want to delete this category?</h3>
@@ -29,6 +108,7 @@
     <form method="post">
         <input type="hidden" asp-for="Category.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-page="./Index">Back to List</a>
+        <a asp-page="./Index" class="btn-back">Back to List</a>
     </form>
 </div>
+

@@ -1,53 +1,30 @@
+/* Base font size and media query for medium screens (iPad) */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/* Styles for focus states */
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+/* Ensure body stretches to bottom of viewport */
 html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-.card {
-    border-radius: 15px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 400px;
-}
-
-    .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    }
-.chart-container {
     position: relative;
-    width: 100%;
-    height: 200px; 
-    color:aliceblue/* Adjust height as needed */
+    min-height: 100%;
 }
 
-.card-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.card-title {
-    margin-bottom: 15px;
-    font-size: 1.25rem;
+/* Margin to accommodate fixed footer */
+body {
+    margin-bottom: 60px;
 }

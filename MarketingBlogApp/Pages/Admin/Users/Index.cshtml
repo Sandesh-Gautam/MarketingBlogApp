@@ -6,6 +6,10 @@
 
 <h1>Manage Users</h1>
 
+<div>
+    <a asp-page="/Admin/Dashboard" class="btn btn-secondary mb-4">Back to Dashboard</a>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -20,28 +24,126 @@
     <tbody>
         @foreach (var user in Model.Users)
         {
-            var roles = Model.UserRoles[user.Id];
             <tr class="@(user.IsDisabled ? "table-danger" : "")">
                 <td>@user.FirstName</td>
                 <td>@user.LastName</td>
                 <td>@user.Email</td>
                 <td>@user.UserName</td>
-                <td>@string.Join(", ", roles)</td>
+                <td>@string.Join(", ", Model.UserRoles[user.Id])</td>
                 <td>
-                    @if (roles.Any())
+                    @if (!user.IsDisabled)
                     {
-                        <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a>
-                        @if (!roles.Contains("Admin"))
+                        <a asp-page="./Edit" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+                        @if (!Model.UserRoles[user.Id].Contains("Admin"))
                         {
-                            <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a>
-                            @if (!user.IsDisabled)
-                            {
-                                <a asp-page="./Disabled" asp-route-id="@user.Id">Disable</a>
-                            }
+                            <a asp-page="./Delete" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
+                            <a asp-page="./Disabled" asp-route-id="@user.Id" class="btn btn-warning">Disable</a>
                         }
+                    }
+                    else
+                    {
+                        <a asp-page="./Enable" asp-route-id="@user.Id" class="btn btn-success">Enable</a>
+                        <a asp-page="./Delete" asp-route-id="@user.Id" class="btn btn-danger">Delete</a>
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<style>
+    :root {
+        --primary-color: #666666; /* Medium grey */
+        --taleblue: #6699CC; /* Taleblue */
+        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
+        --text-color: #333333; /* Dark grey */
+        --border-radius: 5px; /* Small border radius */
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f7f7f7; /* Light grey background */
+        color: var(--text-color); /* Dark grey text */
+        margin: 20px;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: var(--taleblue); /* Taleblue text color */
+        margin-bottom: 30px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff; /* White background */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+        border-radius: var(--border-radius); /* Rounded corners */
+        overflow: hidden; /* Ensure rounded corners work */
+    }
+
+    th, td {
+        padding: 15px; /* Increased padding for better spacing */
+        border: 1px solid var(--taleblue-light); /* Light taleblue border */
+        color: var(--text-color); /* Dark grey text */
+        text-align: left; /* Left-align text */
+    }
+
+    th {
+        background-color: var(--taleblue-light); /* Taleblue for headers */
+        color: black; /* White text */
+        font-weight: bold; /* Bold text */
+    }
+
+    tr:nth-child(even) {
+        background-color: var(--taleblue-light); /* Light taleblue for even rows */
+    }
+
+    tr:nth-child(odd) {
+        background-color: #f9f9f9; /* Very light grey for odd rows */
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border-radius: var(--border-radius); /* Small border radius */
+        cursor: pointer;
+        text-decoration: none;
+        color: #ffffff; /* White text */
+    }
+
+    .btn-primary {
+        background-color: var(--taleblue); /* Taleblue */
+        border: none;
+    }
+
+    .btn-secondary {
+        background-color: var(--taleblue-light); /* Light Taleblue */
+        border: 1px solid var(--taleblue-light); /* Light Taleblue border */
+        color: var(--taleblue-darker); /* Darker Taleblue text */
+    }
+
+        .btn-secondary:hover {
+            background-color: var(--taleblue); /* Darker Taleblue on hover */
+            border-color: var(--taleblue); /* Darker Taleblue border on hover */
+        }
+
+    .btn-danger {
+        background-color: #dc3545; /* Bootstrap's danger color */
+        border: none;
+    }
+
+    .btn-warning {
+        background-color: #ffc107; /* Bootstrap's warning color */
+        border: none;
+    }
+
+    .btn-success {
+        background-color: #28a745; /* Bootstrap's success color */
+        border: none;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+}
