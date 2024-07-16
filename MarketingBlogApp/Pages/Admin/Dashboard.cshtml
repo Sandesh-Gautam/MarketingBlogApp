@@ -7,49 +7,79 @@
 <h1 class="mt-4">Admin Dashboard</h1>
 
 <div class="container">
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h2>Webpage Activity</h2>
-    </div>
+    <!-- Overview Cards -->
     <div class="row mb-3">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3 equal-height">
                 <div class="card-body">
                     <h5 class="card-title text-center">Total Posts</h5>
-                    <div class="chart-container">
-                        <canvas id="totalPostsChart"></canvas>
-                    </div>
+                    <h3 class="card-text text-center">@Model.TotalPosts</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-success mb-3">
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3 equal-height">
                 <div class="card-body">
                     <h5 class="card-title text-center">Total Categories</h5>
-                    <div class="chart-container">
-                        <canvas id="totalCategoriesChart"></canvas>
-                    </div>
+                    <h3 class="card-text text-center">@Model.TotalCategories</h3>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-warning mb-3">
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3 equal-height">
                 <div class="card-body">
                     <h5 class="card-title text-center">Total Visits</h5>
-                    <div class="chart-container">
-                        <canvas id="totalVisitsChart"></canvas>
-                    </div>
+                    <h3 class="card-text text-center">@Model.TotalVisits</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3 equal-height">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Total Users</h5>
+                    <h3 class="card-text text-center">@Model.TotalUsers</h3>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Charts Section -->
+    <div class="row">
+        <div class="col-md-8 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Posts Over Time</h5>
+                    <canvas id="postsOverTimeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">User Growth</h5>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Visits Over Time</h5>
+                    <canvas id="visitsOverTimeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Section -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h2>Management</h2>
     </div>
-
     <div class="row">
-        <div class="col-md-4">
-            <div class="card text-white bg-danger mb-3">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-danger">
                 <div class="card-body">
                     <h5 class="card-title">Manage Users</h5>
                     <p class="card-text">View, edit, and disable user accounts.</p>
@@ -57,8 +87,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info mb-3">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-info">
                 <div class="card-body">
                     <h5 class="card-title">Disabled Users</h5>
                     <p class="card-text">View and enable disabled user accounts.</p>
@@ -66,8 +96,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-secondary mb-3">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-secondary">
                 <div class="card-body">
                     <h5 class="card-title">User Activity</h5>
                     <p class="card-text">View recent user activities.</p>
@@ -75,17 +105,17 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-dark mb-3">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-dark">
                 <div class="card-body">
-                    <h5 class="card-title">Category</h5>
+                    <h5 class="card-title">Categories</h5>
                     <p class="card-text">Manage blog categories.</p>
                     <a href="/Admin/Categories/Index" class="btn btn-light">Create Category</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-dark mb-3">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-dark">
                 <div class="card-body">
                     <h5 class="card-title">Manager Actions</h5>
                     <p class="card-text">Manage actions performed by managers.</p>
@@ -93,8 +123,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-dark mb-3">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-dark">
                 <div class="card-body">
                     <h5 class="card-title">Warnings</h5>
                     <p class="card-text">View and resolve warnings issued to users.</p>
@@ -104,6 +134,7 @@
         </div>
     </div>
 </div>
+
 <style>
     .equal-height {
         display: flex;
@@ -114,95 +145,88 @@
         .equal-height .card-body {
             flex: 1;
         }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
 </style>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        var totalPostsChart = new Chart(document.getElementById('totalPostsChart'), {
-            type: 'doughnut',
+        var postsOverTimeChart = new Chart(document.getElementById('postsOverTimeChart'), {
+            type: 'line',
             data: {
-                labels: ['Total Posts'],
+                labels: @Html.Raw(Json.Serialize(Model.PostsOverTime.Select(p => p.Date.ToString("yyyy-MM-dd")))),
                 datasets: [{
-                    label: 'Total Posts',
-                    data: [@Model.TotalPosts],
-                    backgroundColor: ['rgba(255, 255, 255, 0.2)'],
-                    borderColor: ['rgba(255, 255, 255, 1)'],
-                    borderWidth: 1
+                    label: 'Posts',
+                    data: @Html.Raw(Json.Serialize(Model.PostsOverTime.Select(p => p.Count))),
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    fill: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.raw + ' Posts';
-                            }
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month'
                         }
                     }
                 }
             }
         });
 
-        var totalCategoriesChart = new Chart(document.getElementById('totalCategoriesChart'), {
-            type: 'doughnut',
+        var userGrowthChart = new Chart(document.getElementById('userGrowthChart'), {
+            type: 'bar',
             data: {
-                labels: ['Total Categories'],
+                labels: @Html.Raw(Json.Serialize(Model.UserGrowth.Select(u => u.Date.ToString("yyyy-MM-dd")))),
                 datasets: [{
-                    label: 'Total Categories',
-                    data: [@Model.TotalCategories],
-                    backgroundColor: ['rgba(255, 255, 255, 0.2)'],
-                    borderColor: ['rgba(255, 255, 255, 1)'],
+                    label: 'New Users',
+                    data: @Html.Raw(Json.Serialize(Model.UserGrowth.Select(u => u.Count))),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.raw + ' Categories';
-                            }
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month'
                         }
                     }
                 }
             }
         });
 
-        var totalVisitsChart = new Chart(document.getElementById('totalVisitsChart'), {
-            type: 'doughnut',
+        var visitsOverTimeChart = new Chart(document.getElementById('visitsOverTimeChart'), {
+            type: 'line',
             data: {
-                labels: ['Total Visits'],
+                labels: @Html.Raw(Json.Serialize(Model.VisitsOverTime.Select(v => v.Date.ToString("yyyy-MM-dd")))),
                 datasets: [{
-                    label: 'Total Visits',
-                    data: [@Model.TotalVisits],
-                    backgroundColor: ['rgba(255, 255, 255, 0.2)'],
-                    borderColor: ['rgba(255, 255, 255, 1)'],
-                    borderWidth: 1
+                    label: 'Visits',
+                    data: @Html.Raw(Json.Serialize(Model.VisitsOverTime.Select(v => v.Count))),
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 2,
+                    fill: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.raw + ' Visits';
-                            }
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month'
                         }
                     }
                 }
