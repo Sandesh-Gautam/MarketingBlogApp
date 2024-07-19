@@ -2,8 +2,10 @@ using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +27,13 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public IList<ApplicationUser> Users { get; set; }
         public Dictionary<string, IList<string>> UserRoles { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchQuery { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public DateTime? StartDate { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public DateTime? EndDate { get; set; }
+
         public async Task OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -40,7 +49,27 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 await _context.SaveChangesAsync();
             }
 
-            var users = await _userManager.Users.ToListAsync();
+            var query = _userManager.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(SearchQuery))
+            {
+                query = query.Where(u => u.FirstName.Contains(SearchQuery) ||
+                                         u.LastName.Contains(SearchQuery) ||
+                                         u.Email.Contains(SearchQuery) ||
+                                         u.UserName.Contains(SearchQuery));
+            }
+
+            if (StartDate.HasValue)
+            {
+                query = query.Where(u => u.CreatedAt >= StartDate.Value);
+            }
+
+            if (EndDate.HasValue)
+            {
+                query = query.Where(u => u.CreatedAt <= EndDate.Value);
+            }
+
+            var users = await query.ToListAsync();
             Users = new List<ApplicationUser>();
             UserRoles = new Dictionary<string, IList<string>>();
 

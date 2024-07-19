@@ -154,63 +154,12 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script>
-        var postsOverTimeChart = new Chart(document.getElementById('postsOverTimeChart'), {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Json.Serialize(Model.PostsOverTime.Select(p => p.Date.ToString("yyyy-MM-dd")))),
-                datasets: [{
-                    label: 'Posts',
-                    data: @Html.Raw(Json.Serialize(Model.PostsOverTime.Select(p => p.Count))),
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 2,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'month'
-                        }
-                    }
-                }
-            }
-        });
-
-        var userGrowthChart = new Chart(document.getElementById('userGrowthChart'), {
-            type: 'bar',
-            data: {
-                labels: @Html.Raw(Json.Serialize(Model.UserGrowth.Select(u => u.Date.ToString("yyyy-MM-dd")))),
-                datasets: [{
-                    label: 'New Users',
-                    data: @Html.Raw(Json.Serialize(Model.UserGrowth.Select(u => u.Count))),
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'month'
-                        }
-                    }
-                }
-            }
-        });
-
-        var visitsOverTimeChart = new Chart(document.getElementById('visitsOverTimeChart'), {
-            type: 'line',
-            data: {
-                labels: @Html.Raw(Json.Serialize(Model.VisitsOverTime.Select(v => v.Date.ToString("yyyy-MM-dd")))),
+        document.addEventListener('DOMContentLoaded', function () {
+            var visitsOverTimeData = {
+                labels: @Html.Raw(Json.Serialize(Model.VisitsOverTime.Select(v => v.Date))),
                 datasets: [{
                     label: 'Visits',
                     data: @Html.Raw(Json.Serialize(Model.VisitsOverTime.Select(v => v.Count))),
@@ -218,19 +167,95 @@
                     borderWidth: 2,
                     fill: false
                 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'month'
+            };
+
+            var postsOverTimeData = {
+                labels: @Html.Raw(Json.Serialize(Model.PostsOverTime.Select(p => p.Date))),
+                datasets: [{
+                    label: 'Posts',
+                    data: @Html.Raw(Json.Serialize(Model.PostsOverTime.Select(p => p.Count))),
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }]
+            };
+
+            var userGrowthData = {
+                labels: @Html.Raw(Json.Serialize(Model.UserGrowth.Select(u => u.Date))),
+                datasets: [{
+                    label: 'New Users',
+                    data: @Html.Raw(Json.Serialize(Model.UserGrowth.Select(u => u.Count))),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            var visitsOverTimeCtx = document.getElementById('visitsOverTimeChart').getContext('2d');
+            new Chart(visitsOverTimeCtx, {
+                type: 'line',
+                data: visitsOverTimeData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'MMM d, yyyy',
+                                displayFormats: {
+                                    day: 'MMM d'
+                                }
+                            }
                         }
                     }
                 }
-            }
+            });
+
+            var postsOverTimeCtx = document.getElementById('postsOverTimeChart').getContext('2d');
+            new Chart(postsOverTimeCtx, {
+                type: 'line',
+                data: postsOverTimeData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'MMM d, yyyy',
+                                displayFormats: {
+                                    day: 'MMM d'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            var userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+            new Chart(userGrowthCtx, {
+                type: 'bar',
+                data: userGrowthData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'MMM d, yyyy',
+                                displayFormats: {
+                                    day: 'MMM d'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         });
     </script>
 }

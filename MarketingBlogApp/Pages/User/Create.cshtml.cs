@@ -98,6 +98,14 @@ namespace MarketingBlogApp.Pages.User
                 });
             }
             await _context.SaveChangesAsync();
+            var userActivity = new UserActivity
+            {
+                UserId = user.Id,
+                ActivityType = "Created a blog post",
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }
