@@ -3,6 +3,7 @@
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
     ViewData["Title"] = "User Activity";
+    ModelState.Clear(); // Clear the ModelState to remove any pre-existing validation errors
 }
 
 <h1>User Activity</h1>
@@ -48,6 +49,21 @@
         }
     </tbody>
 </table>
+
+<!-- Pagination -->
+@if (ViewData["TotalPages"] != null && (int)ViewData["TotalPages"] > 1)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @for (var i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            {
+                <li class="page-item @(i == (int)ViewData["PageIndex"] ? "active" : "")">
+                    <a class="page-link" asp-page="./Activity" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
 
 <style>
     :root {
@@ -157,5 +173,4 @@
     tr:hover {
         background-color: var(--taleblue-light); /* Light taleblue on hover */
     }
-
 </style>

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System;
 
 namespace MarketingBlogApp.Pages.Admin
 {
@@ -25,11 +26,27 @@ namespace MarketingBlogApp.Pages.Admin
             _context = context;
         }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string searchQuery, DateTime? startDate, DateTime? endDate)
         {
-            ManagerActions = await _context.ManagerActions
-                .Include(ma => ma.Manager)
-                .ToListAsync();
+            var query = _context.ManagerActions.Include(ma => ma.Manager).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                query = query.Where(ma => ma.ActionType.Contains(searchQuery) || ma.Manager.UserName.Contains(searchQuery));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(ma => ma.ActionDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(ma => ma.ActionDate <= endDate.Value);
+            }
+
+            ManagerActions = await query.ToListAsync();
         }
     }
 }
+

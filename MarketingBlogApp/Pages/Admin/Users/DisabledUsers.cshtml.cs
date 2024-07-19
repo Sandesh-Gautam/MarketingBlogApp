@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 
 namespace MarketingBlogApp.Pages.Admin.Users
 {
@@ -26,24 +26,41 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public IList<ApplicationUser> DisabledUsers { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string SearchQuery { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTime? StartDate { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTime? EndDate { get; set; }
+
         public async Task OnGetAsync()
         {
-            DisabledUsers = await _userManager.Users.Where(u => u.IsDisabled).ToListAsync();
-            var user = await _userManager.GetUserAsync(User);
-            if (user != null)
+            IQueryable<ApplicationUser> query = _userManager.Users.Where(u => u.IsDisabled);
+
+            if (!string.IsNullOrEmpty(SearchQuery))
             {
-                var userActivity = new UserActivity
-                {
-                    UserId = user.Id,
-                    ActivityType = "Viewed Disabled Users",
-                    ActivityDate = DateTime.Now
-                };
-                _context.UserActivities.Add(userActivity);
-                await _context.SaveChangesAsync();
+                query = query.Where(u => u.UserName.Contains(SearchQuery) || u.Email.Contains(SearchQuery));
             }
+
+            if (StartDate.HasValue)
+            {
+                query = query.Where(u => u.CreatedAt >= StartDate.Value);
+            }
+
+            if (EndDate.HasValue)
+            {
+                query = query.Where(u => u.CreatedAt <= EndDate.Value);
+            }
+
+            DisabledUsers = await query.ToListAsync();
+
+            // Log user activity
+            await LogUserActivity("Viewed Disabled Users");
         }
 
-        public async Task<IActionResult> OnPostAsync(string id)
+        public async Task<IActionResult> OnPostEnableAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -64,34 +81,39 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 if (remainingDays > 0)
                 {
                     ModelState.AddModelError("", $"The user has been disabled for 1 week due to unresolved warnings. {remainingDays} days left before enabling.");
+                    await LogUserActivity($"Failed to enable {user.UserName} due to unresolved warnings.");
                     return Page();
-                }
-                else
-                {
-                    user.IsDisabled = false;
-                    var result = await _userManager.UpdateAsync(user);
-
-                    if (!result.Succeeded)
-                    {
-                        ModelState.AddModelError("", "Failed to enable user.");
-                        return Page();
-                    }
-
-                    return RedirectToPage("./Index");
                 }
             }
-            else
+
+            // If no unresolved warnings or enough time has passed, enable the user
+            user.IsDisabled = false;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
             {
-                user.IsDisabled = false;
-                var result = await _userManager.UpdateAsync(user);
+                ModelState.AddModelError("", "Failed to enable user.");
+                await LogUserActivity($"Failed to enable {user.UserName}.");
+                return Page();
+            }
 
-                if (!result.Succeeded)
+            await LogUserActivity($"Enabled {user.UserName}.");
+            return RedirectToPage("./DisabledUsers"); // Redirect to the same page
+        }
+
+        private async Task LogUserActivity(string activityType)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
                 {
-                    ModelState.AddModelError("", "Failed to enable user.");
-                    return Page();
-                }
-
-                return RedirectToPage("./Index");
+                    UserId = user.Id,
+                    ActivityType = activityType,
+                    ActivityDate = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
             }
         }
     }
