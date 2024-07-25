@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,13 +18,16 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context; // Add this line to use the context
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext context) // Add this parameter to the constructor
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context; // Initialize the context
         }
 
         /// <summary>
@@ -83,7 +87,23 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+
+            // Log the activity
+            LogUserActivity("Viewed Profile Page");
+
             return Page();
+        }
+
+        private void LogUserActivity(string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = _userManager.GetUserId(User),
+                ActivityType = activity,
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            _context.SaveChanges();
         }
 
         public async Task<IActionResult> OnPostAsync()

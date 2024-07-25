@@ -33,6 +33,9 @@ namespace MarketingBlogApp.Pages.Admin.Users
         public DateTime? StartDate { get; set; }
         [BindProperty(SupportsGet = true)]
         public DateTime? EndDate { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int PageIndex { get; set; } = 1;
+        public int TotalPages { get; set; }
 
         public async Task OnGetAsync()
         {
@@ -69,14 +72,15 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 query = query.Where(u => u.CreatedAt <= EndDate.Value);
             }
 
-            var users = await query.ToListAsync();
-            Users = new List<ApplicationUser>();
+            int pageSize = 10; // Number of items per page
+            TotalPages = (int)Math.Ceiling(await query.CountAsync() / (double)pageSize);
+
+            Users = await query.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             UserRoles = new Dictionary<string, IList<string>>();
 
-            foreach (var obj in users)
+            foreach (var obj in Users)
             {
                 var roles = await _userManager.GetRolesAsync(obj);
-                Users.Add(obj);
                 UserRoles[obj.Id] = roles;
             }
         }

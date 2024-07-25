@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using MarketingBlogApp.Models;
+using MarketingBlogApp.Data; // Add this using statement for ApplicationDbContext
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,60 +19,39 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly ApplicationDbContext _context; // Add this field for ApplicationDbContext
 
         public ChangePasswordModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            ILogger<ChangePasswordModel> logger,
+            ApplicationDbContext context) // Update the constructor to include ApplicationDbContext
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context; // Assign the context
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [DataType(DataType.Password)]
             [Display(Name = "Current password")]
             public string OldPassword { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
             public string NewPassword { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm new password")]
             [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
@@ -91,6 +71,9 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
             {
                 return RedirectToPage("./SetPassword");
             }
+
+            // Log the "Visited Password Page" activity
+            LogUserActivity("Viewed Password Page");
 
             return Page();
         }
@@ -123,6 +106,18 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
             StatusMessage = "Your password has been changed.";
 
             return RedirectToPage();
+        }
+
+        private void LogUserActivity(string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = _userManager.GetUserId(User),
+                ActivityType = activity,
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            _context.SaveChanges();
         }
     }
 }

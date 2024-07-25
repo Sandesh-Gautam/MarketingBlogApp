@@ -94,10 +94,16 @@
         font-size: 0.8rem; /* Smaller font size */
         height: 40px; /* Adjust height of the footer */
         margin-top: 20px; /* Add margin to separate from content */
+        position: fixed; /* Fixed position */
+        bottom: 0; /* Stick to the bottom */
+        width: 100%; /* Full width */
+        z-index: 999; /* Ensure it stays above other content */
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better separation */
     }
 
         footer a {
             color: var(--color--teal-blue); /* Accent color for links in footer */
             text-decoration: none; /* Remove underline from links */
         }
+
 </style>

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -20,15 +21,18 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly ApplicationDbContext _context; // Add this line to use the context
 
         public ExternalLoginsModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IUserStore<ApplicationUser> userStore)
+            IUserStore<ApplicationUser> userStore,
+            ApplicationDbContext context) // Add this parameter to the constructor
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userStore = userStore;
+            _context = context; // Initialize the context
         }
 
         /// <summary>
@@ -76,7 +80,23 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
             }
 
             ShowRemoveButton = passwordHash != null || CurrentLogins.Count > 1;
+
+            // Log the activity
+            LogUserActivity("Viewed External Logins");
+
             return Page();
+        }
+
+        private void LogUserActivity(string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = _userManager.GetUserId(User),
+                ActivityType = activity,
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            _context.SaveChanges();
         }
 
         public async Task<IActionResult> OnPostRemoveLoginAsync(string loginProvider, string providerKey)

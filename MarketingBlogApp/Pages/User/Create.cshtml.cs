@@ -98,6 +98,8 @@ namespace MarketingBlogApp.Pages.User
                 });
             }
             await _context.SaveChangesAsync();
+
+            // Log the activity for creating a blog post
             var userActivity = new UserActivity
             {
                 UserId = user.Id,

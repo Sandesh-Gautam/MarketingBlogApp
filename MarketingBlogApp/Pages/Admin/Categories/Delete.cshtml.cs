@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,10 +11,12 @@ namespace MarketingBlogApp.Pages.Admin.Categories
     public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DeleteModel(ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -50,6 +53,17 @@ namespace MarketingBlogApp.Pages.Admin.Categories
             }
 
             _context.Categories.Remove(Category);
+            await _context.SaveChangesAsync();
+
+            // Log the activity for deleting a category
+            var user = await _userManager.GetUserAsync(User);
+            var userActivity = new UserActivity
+            {
+                UserId = user.Id,
+                ActivityType = "Deleted a category",
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");

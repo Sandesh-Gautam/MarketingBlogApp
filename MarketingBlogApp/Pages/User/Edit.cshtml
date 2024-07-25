@@ -3,6 +3,89 @@
 @{
     Layout = "/Pages/Shared/_Layout.cshtml";
 }
+<style>
+    :root {
+        --color--teal-blue: #008080; /* Teal Blue */
+        --color--darker-teal-blue: #004d4d; /* Darker Teal Blue */
+        --color--dark: #333333; /* Dark Text Color */
+        --color--white: #ffffff; /* White Background Color */
+        --color--light-border: #d3d3d3; /* Light Border Color */
+        --color--navbar-bg: #008080; /* Navbar Background Color */
+        --color--navbar-text: #ffffff; /* Navbar Text Color */
+        --color--yellow: #ffc107; /* Yellow Color for Save Button */
+    }
+
+    body {
+        background-color: var(--color--white);
+        color: var(--color--dark);
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        color: var(--color--darker-teal-blue);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        background-color: var(--color--white);
+        border: 1px solid var(--color--light-border);
+        color: var(--color--dark);
+        border-radius: 0.25rem;
+    }
+
+    .form-control-file {
+        background-color: var(--color--white);
+        border: 1px solid var(--color--light-border);
+        border-radius: 0.25rem;
+    }
+
+    .form-check-input {
+        margin-right: 0.5rem;
+    }
+
+    .form-check-label {
+        color: var(--color--dark);
+    }
+
+    .btn-primary {
+        background-color: var(--color--teal-blue);
+        border: none;
+        color: var(--color--white);
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--color--darker-teal-blue);
+        }
+
+    .btn-yellow {
+        background-color: var(--color--yellow);
+        border: none;
+        color: var(--color--dark);
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+
+        .btn-yellow:hover {
+            background-color: #e0a800; /* Darker Shade of Yellow */
+        }
+
+    .text-danger {
+        color: #dc3545; /* Bootstrap's default error color */
+    }
+
+    .img-preview {
+        margin-top: 1rem;
+    }
+</style>
 
 <h1>Edit Blog Post</h1>
 
@@ -39,85 +122,13 @@
         <span asp-validation-for="Image" class="text-danger"></span>
         @if (!string.IsNullOrEmpty(Model.BlogPost.ImageUrl))
         {
-            <div>
+            <div class="img-preview">
                 <img src="@Model.BlogPost.ImageUrl" alt="Current Image" width="200" />
             </div>
             <input type="hidden" asp-for="BlogPost.ImageUrl" />
         }
     </div>
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="submit" value="Save" class="btn btn-yellow" />
     </div>
 </form>
-
-<style>
-    :root {
-        --primary-color: #666666; /* Medium grey */
-        --taleblue: #6699CC; /* Taleblue */
-        --taleblue-light: #CCE5FF; /* Lighter Taleblue */
-        --text-color: #333333; /* Dark grey */
-        --border-radius: 5px; /* Small border radius */
-    }
-
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f7f7f7; /* Light grey background */
-        color: var(--text-color); /* Dark grey text */
-        margin: 20px;
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-        color: var(--taleblue); /* Taleblue text color */
-        margin-bottom: 30px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    label {
-        color: var(--text-color); /* Dark grey text */
-        font-weight: bold;
-    }
-
-    .form-control {
-        padding: 10px;
-        border: 1px solid var(--taleblue); /* Taleblue border */
-        border-radius: var(--border-radius); /* Small border radius */
-        background-color: #ffffff; /* White background */
-        color: var(--text-color); /* Dark grey text */
-    }
-
-    .form-control-file {
-        margin-top: 10px;
-    }
-
-    .btn {
-        padding: 8px 16px;
-        border-radius: var(--border-radius); /* Small border radius */
-        cursor: pointer;
-        text-decoration: none;
-        color: #ffffff; /* White text */
-    }
-
-    .btn-primary {
-        background-color: var(--taleblue); /* Taleblue */
-        border: none;
-    }
-
-        .btn-primary:hover {
-            background-color: var(--taleblue-dark); /* Darker taleblue on hover */
-        }
-
-    .text-danger {
-        color: #dc3545; /* Bootstrap's danger color */
-    }
-</style>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

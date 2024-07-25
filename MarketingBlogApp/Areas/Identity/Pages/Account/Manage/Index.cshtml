@@ -39,6 +39,7 @@
         --color-navbar-text: #ffffff; /* White text for navbar and nav-links */
     }
 
+
     body {
         background-color: var(--color-background); /* White background */
         color: var(--color-text); /* Dark text */
@@ -49,10 +50,10 @@
     }
 
     h3 {
-        font-size: 2.5rem; /* Larger header size */
-        text-align: center;
-        margin-top: 30px; /* Adjusted margin */
+        color: var(--color-darker-teal-blue); /* Darker Teal/Blue for headers */
+        font-size: 2.5rem; /* Larger font size for header */
         margin-bottom: 30px; /* Increased bottom margin */
+        text-align: center; /* Center align the heading */
     }
 
     .form-floating input {
@@ -138,18 +139,19 @@
         background-color: var(--color-navbar-bg); /* Teal/blue background */
         border-bottom: 2px solid var(--color-border); /* Light border */
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Box shadow for navbar */
-        padding: 5px 10px;
+        padding: 10px 20px;
     }
 
     .navbar-brand, .nav-link {
         color: var(--color-navbar-text); /* White text */
+        text-decoration: none;
     }
 
         .nav-link:hover {
-            background-color: var(--color-header); /* Darker teal/blue on hover */
+            background-color: var(--color-primary); /* Light teal/blue on hover */
             color: var(--color-navbar-text); /* White text */
-            border-radius: 10px; /* Rounded corners on hover */
             transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+            /
         }
 
     .header {

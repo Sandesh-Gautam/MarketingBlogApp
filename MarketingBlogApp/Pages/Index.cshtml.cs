@@ -7,6 +7,7 @@ using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace MarketingBlogApp.Pages
 {
@@ -33,6 +34,13 @@ namespace MarketingBlogApp.Pages
 
         public async Task<IActionResult> OnGetAsync(string searchString, string searchCategory, string sortBy = "date", string sortOrder = "desc", int page = 1)
         {
+            var userId = _userManager.GetUserId(User);
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await LogUserActivity(userId, "Viewed Home Page");
+            }
+
             SearchString = searchString;
             SearchCategory = searchCategory;
             SortBy = sortBy;
@@ -78,7 +86,13 @@ namespace MarketingBlogApp.Pages
         public async Task<IActionResult> OnPostToggleLikeAsync(int postId)
         {
             var userId = _userManager.GetUserId(User);
+
+            if (userId == null)
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
             var like = await _context.Likes.FirstOrDefaultAsync(l => l.BlogPostId == postId && l.UserId == userId);
+
 
             if (like == null)
             {
@@ -147,7 +161,18 @@ namespace MarketingBlogApp.Pages
 
             return RedirectToPage();
         }
+
+        private async Task LogUserActivity(string userId, string activityType)
+        {
+            var activity = new UserActivity
+            {
+                UserId = userId,
+                ActivityType = activityType,
+                ActivityDate = DateTime.Now
+            };
+
+            _context.UserActivities.Add(activity);
+            await _context.SaveChangesAsync();
+        }
     }
 }
-
-

@@ -16,13 +16,15 @@ namespace MarketingBlogApp.Pages.Admin
     {
         private readonly ILogger<WarningsModel> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public IList<Warning> Warnings { get; set; }
 
-        public WarningsModel(ILogger<WarningsModel> logger, ApplicationDbContext context)
+        public WarningsModel(ILogger<WarningsModel> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task OnGetAsync()
@@ -30,6 +32,24 @@ namespace MarketingBlogApp.Pages.Admin
             Warnings = await _context.Warnings
                 .Include(w => w.User)
                 .ToListAsync();
+
+            await LogUserActivity();
+        }
+
+        private async Task LogUserActivity()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    ActivityType = "Viewed Warnings",
+                    ActivityDate = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

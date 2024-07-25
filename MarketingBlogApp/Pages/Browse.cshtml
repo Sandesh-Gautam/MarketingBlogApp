@@ -1,0 +1,264 @@
+﻿@page
+@model MarketingBlogApp.Pages.BrowseModel
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<MarketingBlogApp.Models.ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Browse Page";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<style>
+    .contributor-card, .blog-post-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: #fff;
+    }
+
+        .contributor-card:hover, .blog-post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    .card-content {
+        position: relative;
+        z-index: 1;
+        color: #000;
+        padding: 15px;
+    }
+
+    .contributor-card img, .blog-post-card img {
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .blog-post-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+    }
+
+    .blog-post-details {
+        margin-left: 10px;
+        flex-grow: 1;
+    }
+
+    .blog-post-title {
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .modal-header h5 {
+        margin: 0;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .card {
+        flex: 1 1 calc(33.333% - 1rem);
+        box-sizing: border-box;
+    }
+</style>
+
+<h1>Top Contributors</h1>
+<div class="card-container">
+    @foreach (var user in Model.TopContributors)
+    {
+        <div class="card contributor-card p-3">
+            <div class="d-flex align-items-center">
+                <img src="@((user.ProfileImage != null) ? user.ProfileImage : "/uploads/BlankProfile.jpeg")" alt="@user.UserName's profile picture" width="50" height="50" class="img-fluid">
+                <div>
+                    <p class="font-weight-bold mb-0">@user.UserName </p>
+                    <p class="text-muted mb-0">Posts: @user.BlogPosts.Count</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<h1>Trending Blog Posts</h1>
+<div class="card-container">
+    @if (Model.TrendingPosts.Count == 0)
+    {
+        <p class="text-muted">There are no trending posts at the moment.</p>
+    }
+    else
+    {
+        @foreach (var post in Model.TrendingPosts)
+        {
+            <div class="card blog-post-card p-3" data-bs-toggle="modal" data-bs-target="#postDetailsModal-@post.Id">
+                @if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    <img src="@post.ImageUrl" alt="@post.Title" class="blog-post-image img-fluid">
+                }
+                <div class="card-content">
+                    <h2 class="h5 blog-post-title">@post.Title</h2>
+                    <p><strong>Author:</strong> @post.Author.UserName</p>
+                    <p><strong>Comments:</strong> @post.Comments.Count</p>
+                    <form method="post" asp-page-handler="ToggleLike" class="d-inline">
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                            @if (post.Likes.Any(l => l.UserId == UserManager.GetUserId(User)))
+                            {
+                                <i class="fa-solid fa-heart"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-regular fa-heart"></i>
+                            }
+                            @post.Likes.Count
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Post Details Modal -->
+            <div class="modal fade" id="postDetailsModal-@post.Id" tabindex="-1" aria-labelledby="postDetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="postDetailsModalLabel">@post.Title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (!string.IsNullOrEmpty(post.ImageUrl))
+                            {
+                                <img src="@post.ImageUrl" class="img-fluid mb-3" alt="@post.Title" />
+                            }
+                            <p>@post.Content</p>
+                            <p><strong>Author:</strong> @post.Author.UserName</p>
+                            <p><strong>Comments:</strong> @post.Comments.Count</p>
+                            <div id="commentSection-@post.Id" class="comment-section">
+                                <h6>Comments</h6>
+                                @foreach (var comment in post.Comments)
+                                {
+                                    <div class="border p-2 mb-2 rounded">
+                                        <strong>@comment.User.UserName:</strong>
+                                        <p class="mb-0">@comment.Content</p>
+                                        <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
+                                        @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId || User.IsInRole("Manager"))
+                                        {
+                                            <button class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#deleteCommentModal-@comment.Id"><i class="fa-solid fa-trash"></i> Delete</button>
+                                        }
+                                    </div>
+                                }
+                                <form method="post" asp-page-handler="AddComment" class="mt-2">
+                                    <div class="input-group">
+                                        <input type="hidden" name="postId" value="@post.Id" />
+                                        <input type="text" name="commentContent" class="form-control" placeholder="Add a comment..." />
+                                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+                                    </div>
+                                    @if (ModelState["commentContent"]?.Errors.Count > 0)
+                                    {
+                                        <div class="text-danger">@ModelState["commentContent"].Errors[0].ErrorMessage</div>
+                                    }
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<h1>Popular Blog Posts</h1>
+<div class="card-container">
+    @if (Model.PopularPosts.Count == 0)
+    {
+        <p class="text-muted">There are no popular posts at the moment.</p>
+    }
+    else
+    {
+        @foreach (var post in Model.PopularPosts)
+        {
+            <div class="card blog-post-card p-3" data-bs-toggle="modal" data-bs-target="#postDetailsModal-@post.Id">
+                @if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    <img src="@post.ImageUrl" alt="@post.Title" class="blog-post-image img-fluid">
+                }
+                <div class="card-content">
+                    <h2 class="h5 blog-post-title">@post.Title</h2>
+                    <p><strong>Author:</strong> @post.Author.UserName</p>
+                    <p><strong>Comments:</strong> @post.Comments.Count</p>
+                    <form method="post" asp-page-handler="ToggleLike" class="d-inline">
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                            @if (post.Likes.Any(l => l.UserId == UserManager.GetUserId(User)))
+                            {
+                                <i class="fa-solid fa-heart"></i>
+                            }
+                            else
+                            {
+                                <i class="fa-regular fa-heart"></i>
+                            }
+                            @post.Likes.Count
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Post Details Modal -->
+            <div class="modal fade" id="postDetailsModal-@post.Id" tabindex="-1" aria-labelledby="postDetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="postDetailsModalLabel">@post.Title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (!string.IsNullOrEmpty(post.ImageUrl))
+                            {
+                                <img src="@post.ImageUrl" class="img-fluid mb-3" alt="@post.Title" />
+                            }
+                            <p>@post.Content</p>
+                            <p><strong>Author:</strong> @post.Author.UserName</p>
+                            <p><strong>Comments:</strong> @post.Comments.Count</p>
+                            <div id="commentSection-@post.Id" class="comment-section">
+                                <h6>Comments</h6>
+                                @foreach (var comment in post.Comments)
+                                {
+                                    <div class="border p-2 mb-2 rounded">
+                                        <strong>@comment.User.UserName:</strong>
+                                        <p class="mb-0">@comment.Content</p>
+                                        <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
+                                        @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId || User.IsInRole("Manager"))
+                                        {
+                                            <button class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#deleteCommentModal-@comment.Id"><i class="fa-solid fa-trash"></i> Delete</button>
+                                        }
+                                    </div>
+                                }
+                                <form method="post" asp-page-handler="AddComment" class="mt-2">
+                                    <div class="input-group">
+                                        <input type="hidden" name="postId" value="@post.Id" />
+                                        <input type="text" name="commentContent" class="form-control" placeholder="Add a comment..." />
+                                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+                                    </div>
+                                    @if (ModelState["commentContent"]?.Errors.Count > 0)
+                                    {
+                                        <div class="text-danger">@ModelState["commentContent"].Errors[0].ErrorMessage</div>
+                                    }
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>

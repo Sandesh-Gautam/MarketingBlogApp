@@ -2,6 +2,12 @@
 @model MarketingBlogApp.Pages.Admin.Users.CreateUsersModel
 @{
     Layout = "/Pages/Shared/_Admin.cshtml";
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 }
 <h2>Create User</h2>
 <form method="post">

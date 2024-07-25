@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -21,15 +22,18 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context; // Add this line to use the context
 
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context) // Add this parameter to the constructor
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _context = context; // Initialize the context
         }
 
         /// <summary>
@@ -96,7 +100,23 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
             }
 
             await LoadAsync(user);
+
+            // Log the activity
+            LogUserActivity("Viewed Email Page");
+
             return Page();
+        }
+
+        private void LogUserActivity(string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = _userManager.GetUserId(User),
+                ActivityType = activity,
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            _context.SaveChanges();
         }
 
         public async Task<IActionResult> OnPostChangeEmailAsync()

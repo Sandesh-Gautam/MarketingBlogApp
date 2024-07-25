@@ -17,13 +17,15 @@ namespace MarketingBlogApp.Pages.Admin
     {
         private readonly ILogger<ManagerActionsModel> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public IList<ManagerAction> ManagerActions { get; set; }
 
-        public ManagerActionsModel(ILogger<ManagerActionsModel> logger, ApplicationDbContext context)
+        public ManagerActionsModel(ILogger<ManagerActionsModel> logger, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task OnGetAsync(string searchQuery, DateTime? startDate, DateTime? endDate)
@@ -46,7 +48,23 @@ namespace MarketingBlogApp.Pages.Admin
             }
 
             ManagerActions = await query.ToListAsync();
+            await LogUserActivity();
+        }
+
+        private async Task LogUserActivity()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    ActivityType = "Viewed Manager Actions",
+                    ActivityDate = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
-

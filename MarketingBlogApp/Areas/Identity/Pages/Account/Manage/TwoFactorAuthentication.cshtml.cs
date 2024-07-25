@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,46 +18,39 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<TwoFactorAuthenticationModel> _logger;
+        private readonly ApplicationDbContext _context; // Add this line
 
         public TwoFactorAuthenticationModel(
-            UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<TwoFactorAuthenticationModel> logger)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ILogger<TwoFactorAuthenticationModel> logger,
+            ApplicationDbContext context) // Add this parameter
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context; // Initialize the context
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public bool HasAuthenticator { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public int RecoveryCodesLeft { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public bool Is2faEnabled { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public bool IsMachineRemembered { get; set; }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
+
+        private void LogUserActivity(string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = _userManager.GetUserId(User), // Get the current user's ID
+                ActivityType = activity, // Activity type (e.g., "Viewed Two Factor Authentication")
+                ActivityDate = DateTime.Now // The date and time of the activity
+            };
+            _context.UserActivities.Add(userActivity); // Add the new activity to the context
+            _context.SaveChanges(); // Save changes to the database
+        }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -70,6 +64,9 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
             Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
             IsMachineRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user);
             RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user);
+
+            // Log the activity
+            LogUserActivity("Viewed Two Factor Authentication");
 
             return Page();
         }

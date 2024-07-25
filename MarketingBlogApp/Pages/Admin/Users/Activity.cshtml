@@ -65,6 +65,7 @@
     </nav>
 }
 
+
 <style>
     :root {
         --primary-color: #666666; /* Medium grey */
@@ -151,26 +152,22 @@
 
     th, td {
         padding: 15px; /* Increased padding for better spacing */
-        border: 1px solid var(--taleblue-light); /* Light taleblue border */
+        border: 1px solid #e0e0e0; /* Light grey border */
         color: var(--text-color); /* Dark grey text */
         text-align: left; /* Left-align text */
     }
 
     th {
-        background-color: var(--taleblue-light); /* Taleblue for headers */
-        color: black; /* White text */
+        background-color: #ffffff; /* White background for headers */
+        color: var(--text-color); /* Dark grey text */
         font-weight: bold; /* Bold text */
     }
 
-    tr:nth-child(even) {
-        background-color: var(--taleblue-light); /* Light taleblue for even rows */
-    }
-
-    tr:nth-child(odd) {
-        background-color: #f9f9f9; /* Very light grey for odd rows */
+    tr:nth-child(even), tr:nth-child(odd) {
+        background-color: #ffffff; /* White background for all rows */
     }
 
     tr:hover {
-        background-color: var(--taleblue-light); /* Light taleblue on hover */
+        background-color: var(--taleblue-light); /* Taleblue background on hover */
     }
 </style>

@@ -51,3 +51,106 @@
         </div>
     </form>
 }
+
+
+
+<style>
+    :root {
+        --color-white: #ffffff; /* Primary color: White */
+        --color-teal-blue: #4a90e2; /* Teal/Blue */
+        --color-darker-teal-blue: #3a70b2; /* Darker Teal/Blue */
+        --color-dark: #333; /* Dark text color */
+        --color-light-border: #dddddd; /* Light border color */
+    }
+
+    body {
+        background-color: var(--color-white); /* White background */
+        color: var(--color-dark); /* Dark text color */
+        font-family: 'Arial', sans-serif;
+        font-size: 1.2rem; /* Base font size */
+    }
+
+    h3, h4 {
+        color: var(--color-darker-teal-blue); /* Darker Teal/Blue for headers */
+        text-align: center; /* Center align the heading */
+    }
+
+    h3 {
+        font-size: 2.5rem; /* Larger font size for header */
+        margin-bottom: 30px; /* Increased bottom margin */
+    }
+
+    h4 {
+        font-size: 2rem; /* Slightly smaller font size for sub-header */
+        margin-bottom: 20px; /* Margin for spacing */
+    }
+
+    .table {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+        background-color: transparent;
+    }
+
+        .table th,
+        .table td {
+            padding: 1.5rem;
+            vertical-align: top;
+            border-top: 1px solid var(--color-light-border); /* Light border color */
+        }
+
+    .btn-primary {
+        background-color: var(--color-teal-blue); /* Teal/Blue button for primary actions */
+        border-color: var(--color-teal-blue); /* Teal/Blue border */
+        font-size: 1.3rem; /* Larger font size for buttons */
+        padding: 12px;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        color: var(--color-white); /* White text */
+    }
+
+        .btn-primary:hover {
+            background-color: var(--color-darker-teal-blue); /* Darker Teal/Blue on hover */
+            border-color: var(--color-darker-teal-blue); /* Darker Teal/Blue border on hover */
+            color: var(--color-white); /* White text on hover */
+        }
+
+    form {
+        display: inline;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+        .form-horizontal .form-group label {
+            margin-bottom: 0;
+            font-size: 1.2rem; /* Font size for labels */
+        }
+
+        .form-horizontal .form-group .col-form-label {
+            padding-top: calc(0.375rem + 1px);
+            padding-bottom: calc(0.375rem + 1px);
+            margin-bottom: 0;
+            font-size: inherit;
+            line-height: 1.5;
+        }
+
+        .form-horizontal .form-group .form-control {
+            display: inline-block;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .form-horizontal .form-group .form-control-plaintext {
+            display: inline-block;
+        }
+
+        .form-horizontal .form-group .form-control:focus {
+            border-color: var(--color-teal-blue); /* Teal/Blue border on focus */
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5); /* Teal/Blue shadow on focus */
+        }
+</style>

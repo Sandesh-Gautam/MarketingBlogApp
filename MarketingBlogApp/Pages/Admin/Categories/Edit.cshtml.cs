@@ -3,17 +3,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace MarketingBlogApp.Pages.Admin.Categories
 {
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public EditModel(ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -49,6 +53,17 @@ namespace MarketingBlogApp.Pages.Admin.Categories
 
             try
             {
+                await _context.SaveChangesAsync();
+
+                // Log the activity for editing a category
+                var user = await _userManager.GetUserAsync(User);
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    ActivityType = "Edited a category",
+                    ActivityDate = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

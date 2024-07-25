@@ -1,19 +1,19 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using MarketingBlogApp.Data;
+using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Threading.Tasks;
-using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Security.Cryptography;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using MarketingBlogApp.Data;
 
 namespace MarketingBlogApp.Pages.Admin.Users
 {
@@ -25,7 +25,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
 
-        public CreateUsersModel(UserManager<ApplicationUser> userManager, ILogger<CreateUsersModel> logger, IEmailSender emailSender,ApplicationDbContext context)
+        public CreateUsersModel(UserManager<ApplicationUser> userManager, ILogger<CreateUsersModel> logger, IEmailSender emailSender, ApplicationDbContext context)
         {
             _userManager = userManager;
             _logger = logger;
@@ -60,6 +60,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
         public void OnGet()
         {
+            // Log the "Viewed Create Users Page" activity
+            LogUserActivity("Viewed Create Users Page");
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -147,7 +149,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                     await _emailSender.SendEmailAsync(Input.Email, "Set up your password",
                         $"Your temporary password is {temporaryPassword}. Please set up your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    return RedirectToPage("/Admin/CreatedConfirmation");
+                    TempData["SuccessMessage"] = "User created successfully.";
+                    return RedirectToPage("/Admin/Dashboard");
                 }
                 catch (Exception ex)
                 {
@@ -164,6 +167,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
 
             return Page();
         }
+
 
         private string GenerateTemporaryPassword(int length = 12)
         {
@@ -216,6 +220,18 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 (array[n], array[k]) = (array[k], array[n]);
             }
             return new string(array);
+        }
+
+        private void LogUserActivity(string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = _userManager.GetUserId(User),
+                ActivityType = activity,
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            _context.SaveChanges();
         }
     }
 }

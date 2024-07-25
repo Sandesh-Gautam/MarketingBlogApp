@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using MarketingBlogApp.Models;
+using MarketingBlogApp.Data;  // Add this using statement for ApplicationDbContext
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -18,43 +19,30 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly ApplicationDbContext _context;  // Add this field for ApplicationDbContext
 
         public DeletePersonalDataModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            ApplicationDbContext context)  // Update the constructor to include ApplicationDbContext
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;  // Assign the context
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public bool RequirePassword { get; set; }
 
         public async Task<IActionResult> OnGet()
@@ -98,7 +86,22 @@ namespace MarketingBlogApp.Areas.Identity.Pages.Account.Manage
 
             _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
+            // Log the "Personal data deleted" activity
+            LogUserActivity(userId, "Personal data deleted");
+
             return Redirect("~/");
+        }
+
+        private void LogUserActivity(string userId, string activity)
+        {
+            var userActivity = new UserActivity
+            {
+                UserId = userId,
+                ActivityType = activity,
+                ActivityDate = DateTime.Now
+            };
+            _context.UserActivities.Add(userActivity);
+            _context.SaveChanges();
         }
     }
 }

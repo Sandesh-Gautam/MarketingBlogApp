@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +11,12 @@ namespace MarketingBlogApp.Pages.User
     public class DeleteModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DeleteModel(ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -53,6 +56,19 @@ namespace MarketingBlogApp.Pages.User
 
             // Remove the BlogPost itself
             _context.BlogPosts.Remove(BlogPost);
+
+            // Log the activity for deleting a blog post
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    ActivityType = "Deleted a blog post",
+                    ActivityDate = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+            }
 
             await _context.SaveChangesAsync();
 

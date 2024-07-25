@@ -122,6 +122,20 @@ namespace MarketingBlogApp.Pages.User
             _context.Entry(blogPostToUpdate).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
+            // Log the activity for editing a blog post
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var userActivity = new UserActivity
+                {
+                    UserId = user.Id,
+                    ActivityType = "Edited a blog post",
+                    ActivityDate = DateTime.Now
+                };
+                _context.UserActivities.Add(userActivity);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToPage("./Index");
         }
     }
