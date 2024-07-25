@@ -21,6 +21,7 @@ namespace MarketingBlogApp.Data
         public DbSet<BlackList> Blacklists { get; set; }
         public DbSet<DeletionReason> DeletionReasons { get; set; }
         public DbSet<ManagerAction> ManagerActions { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
 
 
 

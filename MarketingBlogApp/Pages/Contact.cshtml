@@ -1,0 +1,28 @@
+﻿@page
+@model MarketingBlogApp.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact";
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+<div class="container mt-4">
+    <h1>Contact Us</h1>
+    <form method="post">
+        <div class="mb-3">
+            <label for="Name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="Name" name="Name" asp-for="Contact.Name" required>
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="Email" name="Email" asp-for="Contact.Email" required>
+        </div>
+        <div class="mb-3">
+            <label for="Message" class="form-label">Message</label>
+            <textarea class="form-control" id="Message" name="Message" asp-for="Contact.Message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    @if (Model.MessageSent)
+    {
+        <div class="alert alert-success mt-3">Your message has been sent.</div>
+    }
+</div>
