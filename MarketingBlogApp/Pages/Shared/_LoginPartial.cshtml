@@ -1,9 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using MarketingBlogApp.Models
-
+@using MarketingBlogApp.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ApplicationDbContext _context
 
+@{
+    var userId = UserManager.GetUserId(HttpContextAccessor.HttpContext.User);
+    var warnings = new List<Warning>();
+
+    if (!string.IsNullOrEmpty(userId))
+    {
+        warnings = _context.Warnings.Where(w => w.UserId == userId && !w.IsResolved).ToList();
+    }
+}
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
@@ -62,3 +73,12 @@
         </li>
     }
 </ul>
+@if (warnings.Count > 0)
+{
+    <div class="alert alert-warning" role="alert">
+        @foreach (var warning in warnings)
+        {
+            <p>@warning.Reason</p>
+        }
+    </div>
+}

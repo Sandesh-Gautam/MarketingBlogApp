@@ -23,6 +23,7 @@ namespace MarketingBlogApp.Models
         public string? ImageUrl { get; set; }
 
         public int ViewCount { get; set; }
+        public bool IsVisible { get; set; } = true;
 
         public ApplicationUser Author { get; set; }
         public string AuthorId { get; set; }

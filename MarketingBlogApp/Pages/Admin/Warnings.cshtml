@@ -103,7 +103,7 @@
             @foreach (var warning in Model.Warnings)
             {
                 <tr>
-                    <td>@warning.User.UserName</td>
+                    <td>@warning.UserName</td>
                     <td>@warning.DateIssued.ToString("g")</td>
                     <td>@(warning.IsResolved ? "Yes" : "No")</td>
                     <td>
@@ -124,10 +124,15 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <p><strong>User:</strong> @warning.User.UserName</p>
+                                <p><strong>User:</strong> @warning.UserName</p>
                                 <p><strong>Date Issued:</strong> @warning.DateIssued.ToString("g")</p>
                                 <p><strong>Reason:</strong> @warning.Reason</p>
                                 <p><strong>Resolved:</strong> @(warning.IsResolved ? "Yes" : "No")</p>
+                                @if (!string.IsNullOrEmpty(warning.ProofImageUrl))
+                                {
+                                    <p><strong>Proof Image:</strong></p>
+                                    <img src="@warning.ProofImageUrl" alt="Proof Image" class="img-fluid" />
+                                }
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

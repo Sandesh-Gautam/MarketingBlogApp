@@ -1,13 +1,13 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages
 {
@@ -46,11 +46,18 @@ namespace MarketingBlogApp.Pages
             SortBy = sortBy;
             SortOrder = sortOrder;
 
+            // Get all unresolved warnings
+            var unresolvedWarnings = await _context.Warnings
+                .Where(w => !w.IsResolved)
+                .Select(w => w.UserId)
+                .ToListAsync();
+
             IQueryable<BlogPost> blogPostsIQ = _context.BlogPosts
                 .Include(b => b.BlogPostCategories).ThenInclude(bc => bc.Category)
                 .Include(b => b.Likes)
                 .Include(b => b.Author)
-                .Include(b => b.Comments).ThenInclude(c => c.User);
+                .Include(b => b.Comments).ThenInclude(c => c.User)
+                .Where(b => !unresolvedWarnings.Contains(b.AuthorId));
 
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -62,7 +69,6 @@ namespace MarketingBlogApp.Pages
                 blogPostsIQ = blogPostsIQ.Where(b => b.BlogPostCategories.Any(bc => bc.Category.Name == SearchCategory));
             }
 
-            // Apply sorting
             blogPostsIQ = SortBy switch
             {
                 "likes" => SortOrder == "asc" ? blogPostsIQ.OrderBy(b => b.Likes.Count) : blogPostsIQ.OrderByDescending(b => b.Likes.Count),
@@ -91,8 +97,8 @@ namespace MarketingBlogApp.Pages
             {
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
-            var like = await _context.Likes.FirstOrDefaultAsync(l => l.BlogPostId == postId && l.UserId == userId);
 
+            var like = await _context.Likes.FirstOrDefaultAsync(l => l.BlogPostId == postId && l.UserId == userId);
 
             if (like == null)
             {
@@ -149,17 +155,64 @@ namespace MarketingBlogApp.Pages
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostDeletePostAsync(int postId)
+        public async Task<IActionResult> OnPostDeletePostAsync(int postId, string reason, IFormFile proofImage)
         {
             var post = await _context.BlogPosts.FindAsync(postId);
+            var userId = _userManager.GetUserId(User);
 
             if (post != null)
             {
-                _context.BlogPosts.Remove(post);
+                post.IsVisible = false;
+                _context.BlogPosts.Update(post);
+                await _context.SaveChangesAsync();
+
+                // Save the proof image
+                var proofImageUrl = await SaveProofImageAsync(proofImage);
+
+                // Add deletion reason
+                var deletionReason = new DeletionReason
+                {
+                    UserId = post.AuthorId,
+                    Reason = reason,
+                    ProofImageUrl = proofImageUrl,
+                    DateIssued = DateTime.Now,
+                    IsResolved = false
+                };
+
+                _context.DeletionReasons.Add(deletionReason);
+                await _context.SaveChangesAsync();
+
+                // Add a warning
+                var warning = new Warning
+                {
+                    UserId = post.AuthorId,
+                    Reason = "Your post was deleted: " + reason,
+                    DateIssued = DateTime.Now,
+                    IsResolved = false
+                };
+
+                _context.Warnings.Add(warning);
                 await _context.SaveChangesAsync();
             }
 
             return RedirectToPage();
+        }
+
+        private async Task<string> SaveProofImageAsync(IFormFile proofImage)
+        {
+            if (proofImage == null || proofImage.Length == 0)
+            {
+                return null;
+            }
+
+            var filePath = Path.Combine("wwwroot/uploads", proofImage.FileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await proofImage.CopyToAsync(stream);
+            }
+
+            return "/uploads/" + proofImage.FileName;
         }
 
         private async Task LogUserActivity(string userId, string activityType)
