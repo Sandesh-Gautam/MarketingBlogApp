@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using MarketingBlogApp.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MarketingBlogApp.Pages
 {
+    [Authorize]
     public class BrowseModel : PageModel
     {
         private readonly ApplicationDbContext _context;

@@ -1,5 +1,6 @@
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace MarketingBlogApp.Pages
 {
+    [Authorize]
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -36,9 +38,27 @@ namespace MarketingBlogApp.Pages
         {
             var userId = _userManager.GetUserId(User);
 
-            if (!string.IsNullOrEmpty(userId))
+            try
             {
-                await LogUserActivity(userId, "Viewed Home Page");
+                if (User.Identity.IsAuthenticated && Request.Cookies["WarningsShown"] == null)
+                {
+                    var unresolvedWarnings = await GetUnresolvedWarningsAsync();
+
+                    if (unresolvedWarnings.Any())
+                    {
+                        TempData["Warnings"] = unresolvedWarnings;
+                    }
+
+                    Response.Cookies.Append("WarningsShown", "true", new CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(30)
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (e.g., using a logging framework or service)
+                Console.WriteLine($"Error checking warnings: {ex.Message}");
             }
 
             SearchString = searchString;
@@ -47,7 +67,7 @@ namespace MarketingBlogApp.Pages
             SortOrder = sortOrder;
 
             // Get all unresolved warnings
-            var unresolvedWarnings = await _context.Warnings
+            var unresolvedWarningsQuery = await _context.Warnings
                 .Where(w => !w.IsResolved)
                 .Select(w => w.UserId)
                 .ToListAsync();
@@ -57,7 +77,7 @@ namespace MarketingBlogApp.Pages
                 .Include(b => b.Likes)
                 .Include(b => b.Author)
                 .Include(b => b.Comments).ThenInclude(c => c.User)
-                .Where(b => !unresolvedWarnings.Contains(b.AuthorId));
+                .Where(b => !unresolvedWarningsQuery.Contains(b.AuthorId));
 
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -87,6 +107,17 @@ namespace MarketingBlogApp.Pages
             CurrentPage = page;
 
             return Page();
+        }
+
+        private async Task<List<string>> GetUnresolvedWarningsAsync()
+        {
+            var userId = _userManager.GetUserId(User);
+            var warnings = await _context.Warnings
+                .Where(w => w.UserId == userId && !w.IsResolved)
+                .Select(w => w.Reason)
+                .ToListAsync();
+
+            return warnings;
         }
 
         public async Task<IActionResult> OnPostToggleLikeAsync(int postId)

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MarketingBlogApp.Data;
 using MarketingBlogApp.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MarketingBlogApp.Pages
 {
+    [Authorize]
     public class ContactModel : PageModel
     {
         private readonly ApplicationDbContext _context;

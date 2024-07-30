@@ -1,4 +1,15 @@
-﻿@if (TempData["message"] != null)
+﻿@if (TempData["Warnings"] is List<string> warnings && warnings.Count > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        @foreach (var warning in warnings)
+        {
+            <p>@warning</p>
+        }
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["message"] != null)
 {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -6,11 +17,21 @@
         toastr.success('@TempData["message"]');
     </script>
 }
+
 @if (TempData["error"] != null)
 {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         toastr.error('@TempData["error"]');
+    </script>
+}
+
+@section Scripts {
+    <script>
+        // Hide the warning alert after 5 seconds
+        setTimeout(() => {
+            $('.alert-warning').alert('close');
+        }, 5000);
     </script>
 }
