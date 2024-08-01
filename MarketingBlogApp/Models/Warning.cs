@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MarketingBlogApp.Models
+﻿namespace MarketingBlogApp.Models
 {
     public class Warning
     {
@@ -10,5 +8,7 @@ namespace MarketingBlogApp.Models
         public string Reason { get; set; }
         public DateTime DateIssued { get; set; }
         public bool IsResolved { get; set; }
+        public int? BlogPostId { get; set; }
+        public int? CommentId { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MarketingBlogApp.Pages.User
 {
+
     [Authorize]
     public class CreateModel : PageModel
     {

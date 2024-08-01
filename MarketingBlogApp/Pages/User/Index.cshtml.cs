@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MarketingBlogApp.Pages.User
 {
+
     [Authorize]
     public class IndexModel : PageModel
     {
@@ -24,19 +25,32 @@ namespace MarketingBlogApp.Pages.User
         }
 
         public IList<BlogPost> BlogPosts { get; set; }
+        public int PageIndex { get; set; }
+        public int TotalPages { get; set; }
+        private const int PageSize = 10; // Number of posts per page
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int pageIndex = 1)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            BlogPosts = await _context.BlogPosts
+            var query = _context.BlogPosts
                 .Where(bp => bp.AuthorId == user.Id)
                 .Include(bp => bp.BlogPostCategories)
                     .ThenInclude(bc => bc.Category)
                 .Include(bp => bp.Comments)
                     .ThenInclude(c => c.User)
-                .Include(bp => bp.Likes)
+                .Include(bp => bp.Likes);
+
+            var totalPosts = await query.CountAsync();
+            TotalPages = (int)System.Math.Ceiling(totalPosts / (double)PageSize);
+
+            BlogPosts = await query
+                .OrderByDescending(bp => bp.PublishedDate)
+                .Skip((pageIndex - 1) * PageSize)
+                .Take(PageSize)
                 .ToListAsync();
+
+            PageIndex = pageIndex;
         }
 
         public async Task<IActionResult> OnPostAddCommentAsync(int postId, string commentContent)

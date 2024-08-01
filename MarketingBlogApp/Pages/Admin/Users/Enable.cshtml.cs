@@ -61,7 +61,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var enableUserActivity = new UserActivity
                 {
                     UserId = user.Id,
-                    ActivityType = "Enabled a User",
+                    ActivityType = "User Enabled",
                     ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(enableUserActivity);

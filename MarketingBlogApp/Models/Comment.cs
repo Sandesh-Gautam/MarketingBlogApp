@@ -14,6 +14,7 @@ namespace MarketingBlogApp.Models
 
         public ApplicationUser User { get; set; }
         public string UserId { get; set; }
+        public bool IsVisible { get; set; } = true;
 
         public BlogPost BlogPost { get; set; }
         public int BlogPostId { get; set; }

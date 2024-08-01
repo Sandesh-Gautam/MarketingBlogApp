@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,7 +34,6 @@ namespace MarketingBlogApp.Pages
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public int PageSize { get; set; } = 10;
-
         public async Task<IActionResult> OnGetAsync(string searchString, string searchCategory, string sortBy = "date", string sortOrder = "desc", int page = 1)
         {
             var userId = _userManager.GetUserId(User);
@@ -66,18 +66,12 @@ namespace MarketingBlogApp.Pages
             SortBy = sortBy;
             SortOrder = sortOrder;
 
-            // Get all unresolved warnings
-            var unresolvedWarningsQuery = await _context.Warnings
-                .Where(w => !w.IsResolved)
-                .Select(w => w.UserId)
-                .ToListAsync();
-
             IQueryable<BlogPost> blogPostsIQ = _context.BlogPosts
                 .Include(b => b.BlogPostCategories).ThenInclude(bc => bc.Category)
                 .Include(b => b.Likes)
                 .Include(b => b.Author)
                 .Include(b => b.Comments).ThenInclude(c => c.User)
-                .Where(b => !unresolvedWarningsQuery.Contains(b.AuthorId));
+                .Where(b => b.IsVisible); // Only fetch posts that are marked as visible
 
             if (!string.IsNullOrEmpty(SearchString))
             {
@@ -96,7 +90,7 @@ namespace MarketingBlogApp.Pages
             };
 
             int totalCount = await blogPostsIQ.CountAsync();
-            TotalPages = (int)System.Math.Ceiling(totalCount / (double)PageSize);
+            TotalPages = (int)Math.Ceiling(totalCount / (double)PageSize);
 
             BlogPosts = await blogPostsIQ
                 .Skip((page - 1) * PageSize)
@@ -108,6 +102,7 @@ namespace MarketingBlogApp.Pages
 
             return Page();
         }
+
 
         private async Task<List<string>> GetUnresolvedWarningsAsync()
         {
@@ -164,7 +159,8 @@ namespace MarketingBlogApp.Pages
                 BlogPostId = postId,
                 UserId = userId,
                 Content = commentContent,
-                CommentedDate = DateTime.Now
+                CommentedDate = DateTime.Now,
+                IsVisible = true
             };
 
             _context.Comments.Add(comment);
@@ -175,59 +171,84 @@ namespace MarketingBlogApp.Pages
 
         public async Task<IActionResult> OnPostDeleteCommentAsync(int commentId)
         {
-            var comment = await _context.Comments.FindAsync(commentId);
-
-            if (comment != null)
+            try
             {
-                _context.Comments.Remove(comment);
-                await _context.SaveChangesAsync();
-            }
+                var comment = await _context.Comments.FindAsync(commentId);
 
-            return RedirectToPage();
+                if (comment != null)
+                {
+                    comment.IsVisible = false;
+                    _context.Comments.Update(comment);
+                    await _context.SaveChangesAsync();
+
+                    var warning = new Warning
+                    {
+                        UserId = comment.UserId,
+                        Reason = $"Your comment with ID {commentId} was deleted.",
+                        DateIssued = DateTime.Now,
+                        IsResolved = false,
+                        CommentId = commentId
+                    };
+
+                    _context.Warnings.Add(warning);
+                    await _context.SaveChangesAsync();
+                }
+
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you might want to use a logging framework here)
+                Console.WriteLine($"Error deleting comment: {ex.Message}");
+                // Optionally, you could also show an error message to the user
+                ModelState.AddModelError(string.Empty, "An error occurred while deleting the comment.");
+                return RedirectToPage();
+            }
         }
 
         public async Task<IActionResult> OnPostDeletePostAsync(int postId, string reason, IFormFile proofImage)
         {
-            var post = await _context.BlogPosts.FindAsync(postId);
-            var userId = _userManager.GetUserId(User);
-
-            if (post != null)
+            try
             {
-                post.IsVisible = false;
-                _context.BlogPosts.Update(post);
-                await _context.SaveChangesAsync();
+                var post = await _context.BlogPosts.FindAsync(postId);
+                var userId = _userManager.GetUserId(User);
 
-                // Save the proof image
-                var proofImageUrl = await SaveProofImageAsync(proofImage);
-
-                // Add deletion reason
-                var deletionReason = new DeletionReason
+                if (post != null)
                 {
-                    UserId = post.AuthorId,
-                    Reason = reason,
-                    ProofImageUrl = proofImageUrl,
-                    DateIssued = DateTime.Now,
-                    IsResolved = false
-                };
+                    // Set the specific post to be invisible
+                    post.IsVisible = false;
+                    _context.BlogPosts.Update(post);
+                    await _context.SaveChangesAsync();
 
-                _context.DeletionReasons.Add(deletionReason);
-                await _context.SaveChangesAsync();
+                    // Save the proof image if provided
+                    var proofImageUrl = await SaveProofImageAsync(proofImage);
 
-                // Add a warning
-                var warning = new Warning
-                {
-                    UserId = post.AuthorId,
-                    Reason = "Your post was deleted: " + reason,
-                    DateIssued = DateTime.Now,
-                    IsResolved = false
-                };
+                    // Issue a warning to the user for this specific post
+                    var warning = new Warning
+                    {
+                        UserId = post.AuthorId,
+                        Reason = $"Your post with ID {postId} was deleted: {reason}",
+                        DateIssued = DateTime.Now,
+                        IsResolved = false,
+                        BlogPostId = postId
+                    };
 
-                _context.Warnings.Add(warning);
-                await _context.SaveChangesAsync();
+                    _context.Warnings.Add(warning);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you might want to use a logging framework here)
+                Console.WriteLine($"Error deleting post: {ex.Message}");
+                // Optionally, you could also show an error message to the user
+                ModelState.AddModelError(string.Empty, "An error occurred while deleting the post.");
+                return RedirectToPage();
             }
 
             return RedirectToPage();
         }
+
 
         private async Task<string> SaveProofImageAsync(IFormFile proofImage)
         {

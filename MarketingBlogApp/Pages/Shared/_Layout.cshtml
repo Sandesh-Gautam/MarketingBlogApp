@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MarketingBlogApp</title>
+    <title>@ViewData["Title"] - MarketingBlog</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
@@ -13,8 +13,8 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f5f5f5;
-            padding-top: 0px; 
-            padding-bottom: 0px; 
+            margin-bottom: 60px; /* Adjust space for the footer */
+            position: relative;
         }
 
         .navbar-brand {
@@ -27,40 +27,49 @@
         }
 
         .footer {
-            padding: 10px 0; 
-            background-color: #f8f9fa; 
-            text-align: center;
+            padding: 10px 0;
+            background-color: #f8f9fa; /* Light grey background */
+            text-align: center; /* Center-align text in footer */
+            position: fixed; /* Fixed positioning */
+            left: 0;
+            bottom: 0; /* Fixed to the bottom */
+            width: 100%;
+            z-index: 1000; /* Ensure it's above other content */
         }
 
         footer a {
-            color: #007bff;
-            text-decoration: none; 
+            color: #007bff; /* Blue color for links in footer */
+            text-decoration: none; /* Remove underline from links */
         }
+
+            footer a:hover {
+                text-decoration: underline; /* Add underline on hover */
+            }
     </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">MarketingBlogApp</a>
+                <a class="navbar-brand" asp-page="/Index">MarketingBlog</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Browse">Browse</a>
+                            <a class="nav-link" asp-page="/Browse">Browse</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Contact">Contact</a>
+                            <a class="nav-link" asp-page="/Contact">Contact</a>
                         </li>
                         @if (User.IsInRole("User"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-page="/User/Index">My Posts</a>
+                                <a class="nav-link" asp-page="/User/Index">My Posts</a>
                             </li>
                         }
                     </ul>

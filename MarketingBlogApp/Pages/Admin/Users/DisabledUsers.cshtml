@@ -54,16 +54,36 @@
 </table>
 
 <!-- Pagination -->
-@if (ViewData["TotalPages"] != null && (int)ViewData["TotalPages"] > 1)
+@if (Model.TotalPages > 1)
 {
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
-            @for (var i = 1; i <= (int)ViewData["TotalPages"]; i++)
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" href="?PageIndex=1&SearchQuery=@Model.SearchQuery&StartDate=@Model.StartDate&EndDate=@Model.EndDate" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                <a class="page-link" href="?PageIndex=@(Model.PageIndex - 1)&SearchQuery=@Model.SearchQuery&StartDate=@Model.StartDate&EndDate=@Model.EndDate" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= Model.TotalPages; i++)
             {
-                <li class="page-item @(i == (int)ViewData["PageIndex"] ? "active" : "")">
-                    <a class="page-link" asp-page="./DisabledUsers" asp-route-pageIndex="@i">@i</a>
+                <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                    <a class="page-link" href="?PageIndex=@i&SearchQuery=@Model.SearchQuery&StartDate=@Model.StartDate&EndDate=@Model.EndDate">@i</a>
                 </li>
             }
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?PageIndex=@(Model.PageIndex + 1)&SearchQuery=@Model.SearchQuery&StartDate=@Model.StartDate&EndDate=@Model.EndDate" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?PageIndex=@Model.TotalPages&SearchQuery=@Model.SearchQuery&StartDate=@Model.StartDate&EndDate=@Model.EndDate" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
         </ul>
     </nav>
 }
@@ -113,7 +133,7 @@
 
     th {
         background-color: #ffffff; /* White background for headers */
-        color: var (--text-color); /* Dark grey text */
+        color: var(--text-color); /* Dark grey text */
         font-weight: bold; /* Bold text */
     }
 
@@ -141,11 +161,11 @@
     .btn-secondary {
         background-color: var(--taleblue-light); /* Light Taleblue */
         border: 1px solid var(--taleblue-light); /* Light Taleblue border */
-        color: var(--taleblue-darker); /* Darker Taleblue text */
+        color: var(--primary-color); /* Primary color text */
     }
 
         .btn-secondary:hover {
-            background-color: var(--taleblue-light); /* Darker Taleblue on hover */
+            background-color: var(--taleblue); /* Taleblue on hover */
             border-color: var(--taleblue); /* Darker Taleblue border on hover */
         }
 
@@ -162,5 +182,18 @@
     .btn-success {
         background-color: #28a745; /* Bootstrap's success color */
         border: none;
+    }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+    .page-item.active .page-link {
+        background-color: var(--taleblue);
+        border-color: var(--taleblue);
+    }
+
+    .page-link {
+        color: var(--primary-color);
     }
 </style>

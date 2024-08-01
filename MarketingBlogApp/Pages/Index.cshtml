@@ -42,7 +42,7 @@
             <button class="btn btn-outline-primary" type="submit">Search</button>
         </form>
 
-        <!--Styling for the search bar-->
+        <!-- Styling for the search bar -->
         <style>
             .search-input {
                 flex: 2; /* Make the search input larger */
@@ -56,6 +56,13 @@
 
             .form-select, .form-control {
                 height: 38px; /* Ensure consistent height for all form controls */
+            }
+
+            .delete-icon {
+                color: #e40707; /* Red color */
+                font-size: 1.5rem; /* Increase size */
+                position: relative;
+                top: -2px; /* Slightly raise the icon */
             }
         </style>
 
@@ -78,24 +85,28 @@
                             </p>
                         </div>
                         <div class="card-footer d-flex justify-content-between align-items-center">
-                            <form method="post" asp-page-handler="ToggleLike" class="d-inline">
-                                <input type="hidden" name="postId" value="@post.Id" />
-                                <button type="submit" class="btn btn-link p-0 text-decoration-none">
-                                    @if (post.Likes.Any(l => l.UserId == UserManager.GetUserId(User)))
-                                    {
-                                        <i class="fa-solid fa-heart"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="fa-regular fa-heart"></i>
-                                    }
-                                    @post.Likes.Count
-                                </button>
-                            </form>
-                            <small>@post.PublishedDate.ToString("yyyy-MM-dd")</small>
+                            <div>
+                                <form method="post" asp-page-handler="ToggleLike" class="d-inline">
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <button type="submit" class="btn btn-link p-0 text-decoration-none">
+                                        @if (post.Likes.Any(l => l.UserId == UserManager.GetUserId(User)))
+                                        {
+                                            <i class="fa-solid fa-heart"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa-regular fa-heart"></i>
+                                        }
+                                        @post.Likes.Count
+                                    </button>
+                                </form>
+                                <small>@post.PublishedDate.ToString("yyyy-MM-dd")</small>
+                            </div>
                             @if (User.IsInRole("Manager"))
                             {
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deletePostModal-@post.Id">Delete</button>
+                                <button class="btn p-0 text-decoration-none" data-bs-toggle="modal" data-bs-target="#deletePostModal-@post.Id">
+                                    <i class="fa-solid fa-delete-left delete-icon"></i>
+                                </button>
                             }
                         </div>
                         <div id="commentSection-@post.Id" class="comment-section">
@@ -108,10 +119,11 @@
                                     <small class="text-muted">@comment.CommentedDate.ToString("yyyy-MM-dd HH:mm")</small>
                                     @if (UserManager.GetUserId(User) == comment.UserId || UserManager.GetUserId(User) == post.AuthorId || User.IsInRole("Manager"))
                                     {
-                                        <button class="btn btn-danger btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#deleteCommentModal-@comment.Id"><i class="fa-solid fa-trash"></i> Delete</button>
+                                        <button class="btn p-0 text-decoration-none mt-2" data-bs-toggle="modal" data-bs-target="#deleteCommentModal-@comment.Id">
+                                            <i class="fa-solid fa-delete-left delete-icon"></i>
+                                        </button>
                                     }
                                 </div>
-
                             }
                             <form method="post" asp-page-handler="AddComment" class="mt-2">
                                 <div class="input-group">
@@ -170,7 +182,10 @@
                                     <div class="modal-footer">
                                         <form method="post" asp-page-handler="DeleteComment">
                                             <input type="hidden" name="commentId" value="@comment.Id" />
-                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            <button type="submit" class="btn p-0 text-decoration-none">
+                                                <i class="fa-solid fa-delete-left delete-icon"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                         </form>
                                     </div>
                                 </div>
@@ -228,113 +243,152 @@
             </div>
         </div>
     </div>
+    <style>
+        /* Chatbot Container */
+        .chatbot-container {
+            position: fixed;
+            bottom: 80px; /* Move the chatbot up */
+            right: 20px;
+            width: 350px; /* Increased width for a spacious design */
+            max-height: 500px; /* Limit height for better control */
+            border: 1px solid #ddd;
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
+            background: linear-gradient(to top right, #f9f9f9, #ffffff); /* Gradient background */
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden; /* Ensure content doesn’t overflow */
+        }
 
+        /* Chatbot Header */
+        .chatbot-header {
+            background: #007bff; /* Rich blue color */
+            color: #fff;
+            padding: 12px 16px; /* Slightly increased padding */
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for header */
+        }
+
+        /* Chatbot Body */
+        .chatbot-body {
+            padding: 16px; /* More padding for comfort */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Chatbot Messages */
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            padding-right: 8px; /* Space for scrollbar */
+        }
+
+        /* Individual Chat Messages */
+        .chatbot-message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word; /* Ensure long words don’t overflow */
+            background: #f1f1f1; /* Default background for bot messages */
+            color: #333; /* Default text color */
+        }
+
+            .chatbot-message.user {
+                background: #007bff; /* Background for user messages */
+                color: #fff;
+                align-self: flex-end;
+                border-bottom-right-radius: 0; /* Square bottom right for user messages */
+            }
+
+            .chatbot-message.bot {
+                background: #fff;
+                color: #333;
+                align-self: flex-start;
+                border-bottom-left-radius: 0; /* Square bottom left for bot messages */
+            }
+
+        /* Chatbot Icon */
+        .chatbot-icon {
+            position: fixed;
+            bottom: 80px; /* Align with chatbot container */
+            right: 20px;
+            font-size: 2.5em; /* Slightly larger icon */
+            color: #007bff; /* Matching color */
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        /* Predefined Questions */
+        .predefined-questions {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+        }
+
+        .question-btn {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            color: #007bff;
+            text-align: left;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px; /* Rounded corners */
+            margin-bottom: 6px;
+            transition: background 0.3s, color 0.3s; /* Smooth transition */
+        }
+
+            .question-btn:hover {
+                background: #007bff; /* Background color on hover */
+                color: #fff; /* Text color on hover */
+                text-decoration: none;
+            }
+
+        /* Input Group */
+        .input-group {
+            display: flex;
+            margin-top: auto; /* Push to bottom */
+        }
+
+            .input-group input {
+                flex: 1;
+                border-top-left-radius: 12px;
+                border-bottom-left-radius: 12px;
+                border: 1px solid #ddd;
+                padding: 8px 12px;
+                font-size: 0.9em;
+            }
+
+            .input-group button {
+                border-top-right-radius: 12px;
+                border-bottom-right-radius: 12px;
+                border: 1px solid #ddd;
+                background: #007bff; /* Button background */
+                color: #fff; /* Button text color */
+                padding: 8px 16px;
+                font-size: 0.9em;
+                cursor: pointer;
+                transition: background 0.3s; /* Smooth transition */
+            }
+
+                .input-group button:hover {
+                    background: #0056b3; /* Darker blue on hover */
+                }
+
+
+    </style>
 
 </div>
-<style>
-    .chatbot-container {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 300px;
-        max-height: 400px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: white;
-        display: none;
-        flex-direction: column;
-        z-index: 1000;
-    }
 
-    .chatbot-header {
-        background-color: #007bff;
-        color: white;
-        padding: 10px;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    .chatbot-body {
-        padding: 10px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-    }
-
-    .chatbot-messages {
-        flex: 1;
-        overflow-y: auto;
-        margin-bottom: 10px;
-    }
-
-    .chatbot-message {
-        margin-bottom: 10px;
-        padding: 8px;
-        border-radius: 4px;
-        max-width: 80%;
-    }
-
-        .chatbot-message.user {
-            background-color: #007bff;
-            color: white;
-            align-self: flex-end;
-        }
-
-        .chatbot-message.bot {
-            background-color: #f1f1f1;
-            color: black;
-            align-self: flex-start;
-        }
-
-    .chatbot-icon {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        font-size: 2em;
-        cursor: pointer;
-        z-index: 1000;
-    }
-
-    .predefined-questions {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .question-btn {
-        background-color: transparent;
-        border: none;
-        color: #007bff;
-        text-align: left;
-        cursor: pointer;
-        padding: 5px 0;
-    }
-
-        .question-btn:hover {
-            text-decoration: underline;
-        }
-
-    .input-group {
-        display: flex;
-    }
-
-        .input-group input {
-            flex: 1;
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-
-        .input-group button {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-
-</style>
 
 @if (TempData["Warnings"] is List<string> warnings && warnings.Count > 0)
 {
@@ -356,10 +410,13 @@
     </script>
 }
 
+
 @if (TempData["error"] != null)
 {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+ 
     <script>
         toastr.error('@TempData["error"]');
     </script>

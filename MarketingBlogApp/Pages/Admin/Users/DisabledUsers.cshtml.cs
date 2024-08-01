@@ -35,6 +35,11 @@ namespace MarketingBlogApp.Pages.Admin.Users
         [BindProperty(SupportsGet = true)]
         public DateTime? EndDate { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public int PageIndex { get; set; } = 1;
+
+        public int TotalPages { get; set; }
+
         public async Task OnGetAsync()
         {
             IQueryable<ApplicationUser> query = _userManager.Users.Where(u => u.IsDisabled);
@@ -54,7 +59,9 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 query = query.Where(u => u.CreatedAt <= EndDate.Value);
             }
 
-            DisabledUsers = await query.ToListAsync();
+            int pageSize = 10; // Number of items per page
+            DisabledUsers = await query.Skip((PageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            TotalPages = (int)Math.Ceiling(await query.CountAsync() / (double)pageSize);
 
             // Log user activity
             await LogUserActivity("Viewed Disabled Users");

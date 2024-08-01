@@ -60,7 +60,7 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 var disableUsers = new UserActivity
                 {
                     UserId = user.Id,
-                    ActivityType = "Disabled a User",
+                    ActivityType = "User Disabled",
                     ActivityDate = DateTime.Now
                 };
                 _context.UserActivities.Add(disableUsers);

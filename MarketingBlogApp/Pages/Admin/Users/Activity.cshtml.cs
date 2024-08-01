@@ -26,6 +26,11 @@ namespace MarketingBlogApp.Pages.Admin.Users
         [BindProperty(SupportsGet = true)]
         public string SearchUsername { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public int PageIndex { get; set; } = 1; // Default to first page
+
+        public int TotalPages { get; set; }
+
         public async Task OnGetAsync(int? pageIndex)
         {
             const int pageSize = 40; // Number of activities per page
@@ -57,14 +62,14 @@ namespace MarketingBlogApp.Pages.Admin.Users
             var totalItems = await userActivitiesQuery.CountAsync();
 
             // Calculate the number of pages
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
             // Ensure pageIndex is within valid range
-            pageIndex ??= 1;
-            pageIndex = Math.Max(1, Math.Min(pageIndex.Value, totalPages));
+            PageIndex = pageIndex ?? 1;
+            PageIndex = Math.Max(1, Math.Min(PageIndex, TotalPages));
 
             // Calculate skip amount based on pageIndex and pageSize
-            var skipAmount = (pageIndex.Value - 1) * pageSize;
+            var skipAmount = (PageIndex - 1) * pageSize;
 
             // Retrieve paged activities
             UserActivity = await userActivitiesQuery
@@ -73,8 +78,8 @@ namespace MarketingBlogApp.Pages.Admin.Users
                 .ToListAsync();
 
             // Set additional view data
-            ViewData["PageIndex"] = pageIndex.Value;
-            ViewData["TotalPages"] = totalPages;
+            ViewData["PageIndex"] = PageIndex;
+            ViewData["TotalPages"] = TotalPages;
         }
     }
 

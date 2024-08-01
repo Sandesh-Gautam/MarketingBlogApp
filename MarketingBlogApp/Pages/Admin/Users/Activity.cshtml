@@ -6,168 +6,215 @@
     ModelState.Clear(); // Clear the ModelState to remove any pre-existing validation errors
 }
 
-<h1>User Activity</h1>
+<div class="container">
+    <h1>User Activity</h1>
 
-<form method="get">
-    <div class="form-group">
-        <label for="searchUsername">Search by Username:</label>
-        <input type="text" name="searchUsername" id="searchUsername" value="@Model.SearchUsername" class="form-control" />
+    <form method="get" class="mb-4">
+        <div class="form-group">
+            <label for="searchUsername">Search by Username:</label>
+            <input type="text" name="searchUsername" id="searchUsername" value="@Model.SearchUsername" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <div class="text-right mb-4">
+        <a asp-page="/Admin/Dashboard" class="btn btn-secondary">Back to Dashboard</a>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
 
-<div class="text-right mb-4">
-    <a asp-page="/Admin/Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    @if (Model.UserActivity.Any())
+    {
+        <div class="table-responsive">
+            <table class="table mt-4">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Activity</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var activity in Model.UserActivity)
+                    {
+                        <tr>
+                            <td>@activity.UserName</td>
+                            <td>@activity.ActivityType</td>
+                            <td>@activity.ActivityDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="pagination-container">
+            <ul class="pagination justify-content-center">
+                <!-- First Page Button -->
+                <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-page="./Activity" asp-route-pageIndex="1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <!-- Previous Page Button -->
+                <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-page="./Activity" asp-route-pageIndex="@(Model.PageIndex - 1)" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <!-- Page Numbers -->
+                @{
+                    int startPage = Math.Max(1, Model.PageIndex - 10);
+                    int endPage = Math.Min(Model.TotalPages, Model.PageIndex + 9);
+
+                    if (endPage - startPage < 19 && startPage > 1)
+                    {
+                        startPage = Math.Max(1, endPage - 19);
+                    }
+
+                    if (endPage - startPage < 19 && endPage < Model.TotalPages)
+                    {
+                        endPage = Math.Min(Model.TotalPages, startPage + 19);
+                    }
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-page="./Activity" asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next Page Button -->
+                <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-page="./Activity" asp-route-pageIndex="@(Model.PageIndex + 1)" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <!-- Last Page Button -->
+                <li class="page-item @(Model.PageIndex == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-page="./Activity" asp-route-pageIndex="@(Model.TotalPages)" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <div class="alert alert-info">No activities found.</div>
+    }
+    
+
+
+
+    <style>
+        :root {
+            --primary-color: #666666; /* Medium grey */
+            --secondary-color: #888888; /* Slightly lighter grey */
+            --text-color: #333333; /* Dark grey */
+            --link-color: #444444; /* Dark grey */
+            --border-radius: 5px; /* Small border radius */
+            --taleblue-light: #CCE5FF;
+            --taleblue: #6699CC;
+            --taleblue-dark: #336699;
+            --taleblue-darker: #003366;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7; /* Light grey background */
+            color: var(--text-color); /* Dark grey text */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--taleblue); /* Taleblue text color */
+            margin-bottom: 30px;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: var(--taleblue-darker); /* Darker taleblue text */
+            font-weight: bold;
+        }
+
+        .form-control {
+            padding: 10px;
+            border: 1px solid var(--taleblue); /* Taleblue border */
+            border-radius: var(--border-radius); /* Small border radius */
+            background-color: #ffffff; /* White background */
+            color: var(--text-color); /* Dark grey text */
+        }
+
+        .btn-primary {
+            background-color: var(--taleblue); /* Taleblue */
+            color: #ffffff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--border-radius); /* Small border radius */
+            cursor: pointer;
+        }
+
+            .btn-primary:hover {
+                background-color: var(--taleblue-dark); /* Darker taleblue on hover */
+            }
+
+        .btn-secondary {
+            background-color: var(--taleblue-light); /* Light taleblue background */
+            color: var(--text-color); /* Dark grey text */
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius); /* Small border radius */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background-color: var(--secondary-color); /* Slightly darker grey on hover */
+            }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff; /* White background */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+            border-radius: var(--border-radius); /* Rounded corners */
+            overflow: hidden; /* Ensure rounded corners work */
+        }
+
+        th, td {
+            padding: 15px; /* Increased padding for better spacing */
+            border: 1px solid #e0e0e0; /* Light grey border */
+            color: var(--text-color); /* Dark grey text */
+            text-align: left; /* Left-align text */
+        }
+
+        th {
+            background-color: #ffffff; /* White background for headers */
+            color: var(--text-color); /* Dark grey text */
+            font-weight: bold; /* Bold text */
+        }
+
+        tr:nth-child(even), tr:nth-child(odd) {
+            background-color: #ffffff; /* White background for all rows */
+        }
+
+        tr:hover {
+            background-color: var(--taleblue-light); /* Taleblue background on hover */
+        }
+    </style>
+
 </div>
 
-@if (ModelState.ErrorCount > 0)
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
-}
-
-<table class="table mt-4">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th>Activity</th>
-            <th>Timestamp</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var activity in Model.UserActivity)
-        {
-            <tr>
-                <td>@activity.UserName</td>
-                <td>@activity.ActivityType</td>
-                <td>@activity.ActivityDate</td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Pagination -->
-@if (ViewData["TotalPages"] != null && (int)ViewData["TotalPages"] > 1)
-{
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            @for (var i = 1; i <= (int)ViewData["TotalPages"]; i++)
-            {
-                <li class="page-item @(i == (int)ViewData["PageIndex"] ? "active" : "")">
-                    <a class="page-link" asp-page="./Activity" asp-route-pageIndex="@i">@i</a>
-                </li>
-            }
-        </ul>
-    </nav>
-}
-
-
-<style>
-    :root {
-        --primary-color: #666666; /* Medium grey */
-        --secondary-color: #888888; /* Slightly lighter grey */
-        --text-color: #333333; /* Dark grey */
-        --link-color: #444444; /* Dark grey */
-        --border-radius: 5px; /* Small border radius */
-        --taleblue-light: #CCE5FF;
-        --taleblue: #6699CC;
-        --taleblue-dark: #336699;
-        --taleblue-darker: #003366;
-    }
-
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f7f7f7; /* Light grey background */
-        color: var(--text-color); /* Dark grey text */
-        margin: 20px;
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-        color: var(--taleblue); /* Taleblue text color */
-        margin-bottom: 30px;
-    }
-
-    form {
-        margin-bottom: 30px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    label {
-        color: var(--taleblue-darker); /* Darker taleblue text */
-        font-weight: bold;
-    }
-
-    .form-control {
-        padding: 10px;
-        border: 1px solid var(--taleblue); /* Taleblue border */
-        border-radius: var(--border-radius); /* Small border radius */
-        background-color: #ffffff; /* White background */
-        color: var(--text-color); /* Dark grey text */
-    }
-
-    .btn-primary {
-        background-color: var(--taleblue); /* Taleblue */
-        color: #ffffff; /* White text */
-        border: none;
-        padding: 10px 20px;
-        border-radius: var(--border-radius); /* Small border radius */
-        cursor: pointer;
-    }
-
-        .btn-primary:hover {
-            background-color: var(--taleblue-dark); /* Darker taleblue on hover */
-        }
-
-    .btn-secondary {
-        background-color: var(--taleblue-light); /* Light taleblue background */
-        color: var(--text-color); /* Dark grey text */
-        padding: 10px 20px;
-        border: none;
-        border-radius: var(--border-radius); /* Small border radius */
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-        .btn-secondary:hover {
-            background-color: var(--secondary-color); /* Slightly darker grey on hover */
-        }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: #ffffff; /* White background */
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
-        border-radius: var(--border-radius); /* Rounded corners */
-        overflow: hidden; /* Ensure rounded corners work */
-    }
-
-    th, td {
-        padding: 15px; /* Increased padding for better spacing */
-        border: 1px solid #e0e0e0; /* Light grey border */
-        color: var(--text-color); /* Dark grey text */
-        text-align: left; /* Left-align text */
-    }
-
-    th {
-        background-color: #ffffff; /* White background for headers */
-        color: var(--text-color); /* Dark grey text */
-        font-weight: bold; /* Bold text */
-    }
-
-    tr:nth-child(even), tr:nth-child(odd) {
-        background-color: #ffffff; /* White background for all rows */
-    }
-
-    tr:hover {
-        background-color: var(--taleblue-light); /* Taleblue background on hover */
-    }
-</style>

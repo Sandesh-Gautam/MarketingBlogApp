@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MarketingBlogApp.Pages
 {
+
     [Authorize]
     public class BrowseModel : PageModel
     {
