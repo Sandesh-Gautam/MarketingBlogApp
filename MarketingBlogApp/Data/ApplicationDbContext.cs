@@ -1,6 +1,6 @@
-﻿using MarketingBlogApp.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MarketingBlogApp.Models;
 
 namespace MarketingBlogApp.Data
 {
@@ -22,8 +22,7 @@ namespace MarketingBlogApp.Data
         public DbSet<DeletionReason> DeletionReasons { get; set; }
         public DbSet<ManagerAction> ManagerActions { get; set; }
         public DbSet<ContactMessage> ContactMessages { get; set; }
-
-
+        public DbSet<FAQ> FAQs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,14 +47,14 @@ namespace MarketingBlogApp.Data
                 .HasOne(c => c.BlogPost)
                 .WithMany(b => b.Comments)
                 .HasForeignKey(c => c.BlogPostId)
-                .OnDelete(DeleteBehavior.Cascade);  
+                .OnDelete(DeleteBehavior.Cascade);
 
             // One-to-Many Relationship between BlogPost and Like
             builder.Entity<Like>()
                 .HasOne(l => l.BlogPost)
                 .WithMany(b => b.Likes)
                 .HasForeignKey(l => l.BlogPostId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
             // One-to-Many Relationship between ApplicationUser and Comment
             builder.Entity<Comment>()
@@ -84,7 +83,20 @@ namespace MarketingBlogApp.Data
                 .WithMany(u => u.UserActivities)
                 .HasForeignKey(ua => ua.UserId)
                 .OnDelete(DeleteBehavior.Restrict);  // Prevent cascade delete
-        }
 
+            // Configure FAQ entity
+            builder.Entity<FAQ>()
+                .ToTable("FAQs") // Optional: specify table name if different from default
+                .HasKey(f => f.Id); // Ensure the primary key is set if not using convention
+
+            // Seed data for FAQ
+            builder.Entity<FAQ>().HasData(
+                new FAQ { Id = 1, Question = "What is the purpose of this site?", Answer = "This site allows users to browse and interact with blog posts." },
+                new FAQ { Id = 2, Question = "How can I create a new blog post?", Answer = "You can create a new blog post by navigating to the 'My Posts' section if you are logged in." },
+                new FAQ { Id = 3, Question = "How can I contact support?", Answer = "You can contact support using the 'Contact' page." },
+                new FAQ { Id = 4, Question = "How can I search for posts?", Answer = "Use the search bar at the top of the blog post list to search for posts." },
+                new FAQ { Id = 5, Question = "What categories are available?", Answer = "The categories are listed in the sidebar. Click on a category to filter posts by that category." }
+            );
+        }
     }
 }

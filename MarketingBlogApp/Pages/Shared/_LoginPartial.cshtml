@@ -43,7 +43,6 @@
                     <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">Logout</a></li>
-
                 </ul>
             </li>
         }
@@ -57,11 +56,9 @@
                     <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">Logout</a></li>
-                    
                 </ul>
             </li>
         }
-
     }
     else
     {
@@ -73,12 +70,30 @@
         </li>
     }
 </ul>
+
 @if (warnings.Count > 0)
 {
-    <div class="alert alert-warning" role="alert">
+    <div id="warningAlert" class="alert alert-warning" role="alert">
         @foreach (var warning in warnings)
         {
             <p>@warning.Reason</p>
         }
     </div>
 }
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var warningAlert = document.getElementById('warningAlert');
+        if (warningAlert) {
+            var hasSeenWarning = sessionStorage.getItem('hasSeenWarning');
+            if (!hasSeenWarning) {
+                sessionStorage.setItem('hasSeenWarning', 'true');
+                setTimeout(function () {
+                    warningAlert.style.display = 'none';
+                }, 2000); // 2 seconds
+            } else {
+                warningAlert.style.display = 'none';
+            }
+        }
+    });
+</script>

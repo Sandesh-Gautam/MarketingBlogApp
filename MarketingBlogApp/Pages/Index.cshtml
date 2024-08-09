@@ -224,17 +224,28 @@
 
     <div id="chatbot" class="chatbot-container">
         <div id="chatbot-header" class="chatbot-header">
-            <h5>Bloggy Bot </h5>
+            <h5>Bloggy Bot</h5>
             <button id="chatbot-close" class="btn-close">&times;</button>
         </div>
         <div id="chatbot-body" class="chatbot-body">
             <div id="chatbot-messages" class="chatbot-messages">
                 <div class="predefined-questions">
-                    <button class="question-btn">What is the purpose of this site?</button>
-                    <button class="question-btn">How can I create a new blog post?</button>
-                    <button class="question-btn">How can I contact support?</button>
-                    <button class="question-btn">How can I search for posts?</button>
-                    <button class="question-btn">What categories are available?</button>
+                    @if (Model.FAQs != null && Model.FAQs.Any())
+                    {
+                        <ul>
+                            @foreach (var faq in Model.FAQs)
+                            {
+                                <li>
+                                    <strong class="question">@faq.Question</strong>
+                                    <div class="answer">@faq.Answer</div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No FAQs available.</p>
+                    }
                 </div>
             </div>
             <div class="input-group">
@@ -244,40 +255,50 @@
         </div>
     </div>
     <style>
+        .answer {
+            display: none;
+            margin: 10px 0;
+        }
+
+        .question:hover {
+            cursor: pointer;
+            color: blue;
+        }
+
         /* Chatbot Container */
         .chatbot-container {
             position: fixed;
-            bottom: 80px; /* Move the chatbot up */
+            bottom: 80px;
             right: 20px;
-            width: 350px; /* Increased width for a spacious design */
-            max-height: 500px; /* Limit height for better control */
+            width: 350px;
+            max-height: 500px;
             border: 1px solid #ddd;
-            border-radius: 12px; /* More rounded corners */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow for depth */
-            background: linear-gradient(to top right, #f9f9f9, #ffffff); /* Gradient background */
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to top right, #f9f9f9, #ffffff);
             display: none;
             flex-direction: column;
             z-index: 1000;
-            overflow: hidden; /* Ensure content doesn’t overflow */
+            overflow: hidden;
         }
 
         /* Chatbot Header */
         .chatbot-header {
-            background: #007bff; /* Rich blue color */
+            background: #007bff;
             color: #fff;
-            padding: 12px 16px; /* Slightly increased padding */
+            padding: 12px 16px;
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for header */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Chatbot Body */
         .chatbot-body {
-            padding: 16px; /* More padding for comfort */
+            padding: 16px;
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -289,7 +310,7 @@
             flex: 1;
             overflow-y: auto;
             margin-bottom: 12px;
-            padding-right: 8px; /* Space for scrollbar */
+            padding-right: 8px;
         }
 
         /* Individual Chat Messages */
@@ -298,32 +319,32 @@
             padding: 10px 14px;
             border-radius: 12px;
             max-width: 85%;
-            word-wrap: break-word; /* Ensure long words don’t overflow */
-            background: #f1f1f1; /* Default background for bot messages */
-            color: #333; /* Default text color */
+            word-wrap: break-word;
+            background: #f1f1f1;
+            color: #333;
         }
 
             .chatbot-message.user {
-                background: #007bff; /* Background for user messages */
+                background: #007bff;
                 color: #fff;
                 align-self: flex-end;
-                border-bottom-right-radius: 0; /* Square bottom right for user messages */
+                border-bottom-right-radius: 0;
             }
 
             .chatbot-message.bot {
                 background: #fff;
                 color: #333;
                 align-self: flex-start;
-                border-bottom-left-radius: 0; /* Square bottom left for bot messages */
+                border-bottom-left-radius: 0;
             }
 
         /* Chatbot Icon */
         .chatbot-icon {
             position: fixed;
-            bottom: 80px; /* Align with chatbot container */
+            bottom: 80px;
             right: 20px;
-            font-size: 2.5em; /* Slightly larger icon */
-            color: #007bff; /* Matching color */
+            font-size: 2.5em;
+            color: #007bff;
             cursor: pointer;
             z-index: 1000;
         }
@@ -342,21 +363,21 @@
             text-align: left;
             cursor: pointer;
             padding: 8px 12px;
-            border-radius: 8px; /* Rounded corners */
+            border-radius: 8px;
             margin-bottom: 6px;
-            transition: background 0.3s, color 0.3s; /* Smooth transition */
+            transition: background 0.3s, color 0.3s;
         }
 
             .question-btn:hover {
-                background: #007bff; /* Background color on hover */
-                color: #fff; /* Text color on hover */
+                background: #007bff;
+                color: #fff;
                 text-decoration: none;
             }
 
         /* Input Group */
         .input-group {
             display: flex;
-            margin-top: auto; /* Push to bottom */
+            margin-top: auto;
         }
 
             .input-group input {
@@ -372,127 +393,99 @@
                 border-top-right-radius: 12px;
                 border-bottom-right-radius: 12px;
                 border: 1px solid #ddd;
-                background: #007bff; /* Button background */
-                color: #fff; /* Button text color */
+                background: #007bff;
+                color: #fff;
                 padding: 8px 16px;
                 font-size: 0.9em;
                 cursor: pointer;
-                transition: background 0.3s; /* Smooth transition */
+                transition: background 0.3s;
             }
 
                 .input-group button:hover {
-                    background: #0056b3; /* Darker blue on hover */
+                    background: #0056b3;
                 }
-
-
     </style>
 
-</div>
-
-
-@if (TempData["Warnings"] is List<string> warnings && warnings.Count > 0)
-{
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        @foreach (var warning in warnings)
-        {
-            <p>@warning</p>
-        }
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-@if (TempData["message"] != null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        toastr.success('@TempData["message"]');
-    </script>
-}
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatbotIcon = document.getElementById('chatbot-icon');
+            const chatbot = document.getElementById('chatbot');
+            const chatbotHeader = document.getElementById('chatbot-header');
+            const chatbotClose = document.getElementById('chatbot-close');
+            const chatbotInput = document.getElementById('chatbot-input');
+            const chatbotSend = document.getElementById('chatbot-send');
+            const chatbotMessages = document.getElementById('chatbot-messages');
+            const questionButtons = document.querySelectorAll('.question-btn');
 
+            let faqData = [];
 
-@if (TempData["error"] != null)
-{
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
- 
-    <script>
-        toastr.error('@TempData["error"]');
-    </script>
-}
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const chatbotIcon = document.getElementById('chatbot-icon');
-        const chatbot = document.getElementById('chatbot');
-        const chatbotHeader = document.getElementById('chatbot-header');
-        const chatbotClose = document.getElementById('chatbot-close');
-        const chatbotInput = document.getElementById('chatbot-input');
-        const chatbotSend = document.getElementById('chatbot-send');
-        const chatbotMessages = document.getElementById('chatbot-messages');
-        const questionButtons = document.querySelectorAll('.question-btn');
-
-        // Open chatbot
-        chatbotIcon.addEventListener('click', function () {
-            chatbot.style.display = 'flex';
-        });
-
-        // Close chatbot
-        chatbotClose.addEventListener('click', function () {
-            chatbot.style.display = 'none';
-        });
-
-        // Send message
-        chatbotSend.addEventListener('click', function () {
-            const message = chatbotInput.value.trim();
-            if (message) {
-                addMessage('user', message);
-                chatbotInput.value = '';
-                getBotResponse(message);
-            }
-        });
-
-        // Predefined questions
-        questionButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const question = button.innerText;
-                addMessage('user', question);
-                getBotResponse(question);
+            document.querySelectorAll('.question').forEach(item => {
+                item.addEventListener('click', () => {
+                    const answer = item.nextElementSibling;
+                    answer.style.display = answer.style.display === 'none' ? 'block' : 'none';
+                });
             });
-        });
 
-        // Add message to chat
-        function addMessage(sender, text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('chatbot-message', sender);
-            messageDiv.textContent = text;
-            chatbotMessages.appendChild(messageDiv);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+        @* Populate faqData from the Model.FAQs *@
+        @foreach (var faq in Model.FAQs)
+        {
+            <text>
+                    faqData.push({ question: "@faq.Question", answer: "@faq.Answer" });
+            </text>
         }
 
-        // Get bot response
-        function getBotResponse(userMessage) {
-            let response = "I'm sorry, I don't understand that.";
+                // Open chatbot
+                chatbotIcon.addEventListener('click', function () {
+                    chatbot.style.display = 'flex';
+                });
 
-            const faq = [
-                { question: "What is the purpose of this site?", answer: "This site allows users to browse and interact with blog posts." },
-                { question: "How can I create a new blog post?", answer: "You can create a new blog post by navigating to the 'My Posts' section if you are logged in." },
-                { question: "How can I contact support?", answer: "You can contact support using the 'Contact' page." },
-                { question: "How can I search for posts?", answer: "Use the search bar at the top of the blog post list to search for posts." },
-                { question: "What categories are available?", answer: "The categories are listed in the sidebar. Click on a category to filter posts by that category." }
-            ];
+            // Close chatbot
+            chatbotClose.addEventListener('click', function () {
+                chatbot.style.display = 'none';
+            });
 
-            faq.forEach(faqItem => {
-                if (userMessage.toLowerCase().includes(faqItem.question.toLowerCase())) {
-                    response = faqItem.answer;
+            // Send message
+            chatbotSend.addEventListener('click', function () {
+                const message = chatbotInput.value.trim();
+                if (message) {
+                    addMessage('user', message);
+                    chatbotInput.value = '';
+                    getBotResponse(message);
                 }
             });
 
-            setTimeout(function () {
-                addMessage('bot', response);
-            }, 1000);
-        }
-    });
+            // Predefined questions
+            questionButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const question = button.innerText;
+                    addMessage('user', question);
+                    getBotResponse(question);
+                });
+            });
 
-</script>
+            // Add message to chat
+            function addMessage(sender, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chatbot-message', sender);
+                messageDiv.textContent = text;
+                chatbotMessages.appendChild(messageDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+
+            // Get bot response
+            function getBotResponse(userMessage) {
+                let response = "I'm sorry, I don't understand that.";
+
+                faqData.forEach(faqItem => {
+                    if (userMessage.toLowerCase().includes(faqItem.question.toLowerCase())) {
+                        response = faqItem.answer;
+                    }
+                });
+
+                setTimeout(function () {
+                    addMessage('bot', response);
+                }, 1000);
+            }
+        });
+    </script>

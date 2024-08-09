@@ -27,6 +27,7 @@ namespace MarketingBlogApp.Pages
 
         public IList<BlogPost> BlogPosts { get; set; }
         public IList<Category> CategoryOptions { get; set; }
+        public IList<FAQ> FAQs { get; set; } // Ensure consistent naming
         public string SearchString { get; set; }
         public string SearchCategory { get; set; }
         public string SortBy { get; set; }
@@ -34,6 +35,7 @@ namespace MarketingBlogApp.Pages
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public int PageSize { get; set; } = 10;
+
         public async Task<IActionResult> OnGetAsync(string searchString, string searchCategory, string sortBy = "date", string sortOrder = "desc", int page = 1)
         {
             var userId = _userManager.GetUserId(User);
@@ -98,11 +100,11 @@ namespace MarketingBlogApp.Pages
                 .ToListAsync();
 
             CategoryOptions = await _context.Categories.ToListAsync();
+            FAQs = await _context.FAQs.ToListAsync(); // Fetch FAQ data
             CurrentPage = page;
 
             return Page();
         }
-
 
         private async Task<List<string>> GetUnresolvedWarningsAsync()
         {
@@ -210,32 +212,46 @@ namespace MarketingBlogApp.Pages
         {
             try
             {
-                var post = await _context.BlogPosts.FindAsync(postId);
-                var userId = _userManager.GetUserId(User);
-
-                if (post != null)
+                var post = await _context.BlogPosts.Include(b => b.Author).FirstOrDefaultAsync(b => b.Id == postId);
+                var currentUserId = _userManager.GetUserId(User);
+                if (post == null)
                 {
-                    // Set the specific post to be invisible
-                    post.IsVisible = false;
-                    _context.BlogPosts.Update(post);
-                    await _context.SaveChangesAsync();
-
-                    // Save the proof image if provided
-                    var proofImageUrl = await SaveProofImageAsync(proofImage);
-
-                    // Issue a warning to the user for this specific post
-                    var warning = new Warning
-                    {
-                        UserId = post.AuthorId,
-                        Reason = $"Your post with ID {postId} was deleted: {reason}",
-                        DateIssued = DateTime.Now,
-                        IsResolved = false,
-                        BlogPostId = postId
-                    };
-
-                    _context.Warnings.Add(warning);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
+
+                var isAdmin = await _userManager.IsInRoleAsync(post.Author, "Admin");
+                var isManager = await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), "Manager");
+
+                // Check if the current user is a manager trying to delete an admin's post
+                if (isManager && isAdmin)
+                {
+                    ModelState.AddModelError(string.Empty, "Managers cannot delete admin posts.");
+                    return RedirectToPage();
+                }
+
+                // Set the specific post to be invisible
+                post.IsVisible = false;
+                _context.BlogPosts.Update(post);
+                await _context.SaveChangesAsync();
+
+                // Save the proof image if provided
+                var proofImageUrl = await SaveProofImageAsync(proofImage);
+
+                // Issue a warning to the user for this specific post
+                var warning = new Warning
+                {
+                    UserId = post.AuthorId,
+                    Reason = $"Your post with ID {postId} was deleted: {reason}",
+                    DateIssued = DateTime.Now,
+                    IsResolved = false,
+                    BlogPostId = postId
+                };
+
+                _context.Warnings.Add(warning);
+                await _context.SaveChangesAsync();
+
+                // Log user activity
+                await LogUserActivity(currentUserId, "Post Deleted");
             }
             catch (Exception ex)
             {
@@ -243,12 +259,10 @@ namespace MarketingBlogApp.Pages
                 Console.WriteLine($"Error deleting post: {ex.Message}");
                 // Optionally, you could also show an error message to the user
                 ModelState.AddModelError(string.Empty, "An error occurred while deleting the post.");
-                return RedirectToPage();
             }
 
             return RedirectToPage();
         }
-
 
         private async Task<string> SaveProofImageAsync(IFormFile proofImage)
         {
@@ -257,27 +271,31 @@ namespace MarketingBlogApp.Pages
                 return null;
             }
 
-            var filePath = Path.Combine("wwwroot/uploads", proofImage.FileName);
+            var fileName = Path.GetFileNameWithoutExtension(proofImage.FileName);
+            var extension = Path.GetExtension(proofImage.FileName);
+            var newFileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}";
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", newFileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await proofImage.CopyToAsync(stream);
             }
 
-            return "/uploads/" + proofImage.FileName;
+            return $"/uploads/{newFileName}";
         }
 
-        private async Task LogUserActivity(string userId, string activityType)
+        private async Task LogUserActivity(string userId, string activity)
         {
-            var activity = new UserActivity
+            var userActivity = new UserActivity
             {
                 UserId = userId,
-                ActivityType = activityType,
+                ActivityType = activity,
                 ActivityDate = DateTime.Now
             };
 
-            _context.UserActivities.Add(activity);
+            _context.UserActivities.Add(userActivity);
             await _context.SaveChangesAsync();
         }
     }
 }
+
