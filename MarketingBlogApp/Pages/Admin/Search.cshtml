@@ -1,0 +1,119 @@
+﻿@page
+@model MarketingBlogApp.Pages.Admin.SearchModel
+
+<h2>AI SEARCH</h2>
+
+<form method="get">
+    <div class="form-group">
+        <input type="text" name="SearchTerm" class="form-control" placeholder="Enter search term..." value="@Html.Encode(Model.SearchTerm)" oninput="updateWordCount()" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.SearchTerm) && Model.BlogPosts != null && Model.BlogPosts.Any())
+{
+    <h3>AI Analysis of Search Results</h3>
+    <div id="typewriterLoader">
+        <div id="loader"></div>
+        <p id="typewriterText"></p>
+        <small id="generatedWordCount" class="form-text text-muted"></small>
+    </div>
+    <script>
+        var i = 0;
+        var txt = `@Html.Raw(Model.AIAnalysis)`;
+        var speed = 2;
+
+        function typeWriter() {
+            if (i < txt.length) {
+                document.getElementById("typewriterText").innerHTML += txt.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            } else {
+                document.getElementById("loader").style.display = "none";
+                updateGeneratedWordCount();
+            }
+        }
+
+        function updateGeneratedWordCount() {
+            var text = document.getElementById("typewriterText").innerText;
+            var wordCount = text.trim().split(/\s+/).filter(function(word) {
+                return word.length > 0;
+            }).length;
+            document.getElementById("generatedWordCount").innerText = "Word count: " + wordCount;
+        }
+
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById("loader").classList.add("spinning");
+                setTimeout(typeWriter, 500); // Delay to simulate loading time
+            }, 1000); // Start spinning after a brief pause
+        };
+    </script>
+}
+else if (!string.IsNullOrEmpty(Model.SearchTerm))
+{
+    <p>No results found for "@Html.Encode(Model.SearchTerm)".</p>
+}
+
+@section Scripts {
+    <script>
+        function updateWordCount() {
+            var text = document.querySelector('input[name="SearchTerm"]').value;
+            var wordCount = text.trim().split(/\s+/).filter(function(word) {
+                return word.length > 0;
+            }).length;
+            document.getElementById("wordCount").innerText = "Word count: " + wordCount;
+        }
+    </script>
+}
+
+<style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        padding: 10px;
+        font-size: 1.2em;
+    }
+
+    .btn {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+
+    #wordCount {
+        font-size: 0.9em;
+        color: #6c757d;
+    }
+
+    #typewriterLoader {
+        position: relative;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    #loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1.5s linear infinite;
+        display: inline-block;
+    }
+
+    #typewriterText {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+        font-size: 1.2em;
+        margin-top: 20px;
+        white-space: pre-wrap;
+    }
+
+    #generatedWordCount {
+        font-size: 0.9em;
+        color: #6c757d;
+        margin-top: 10px;
+    }
+
+</style>

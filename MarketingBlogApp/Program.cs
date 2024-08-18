@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure AdminSettings from configuration
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("AdminSettings"));
 
+builder.Services.AddHttpClient();
+
 // Configure Razor Pages
 builder.Services.AddRazorPages();
 
