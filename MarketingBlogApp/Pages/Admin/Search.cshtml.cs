@@ -34,11 +34,14 @@ namespace MarketingBlogApp.Pages.Admin
 
         public async Task OnGetAsync()
         {
+            // Ensure SearchTerm is initialized to an empty string if it is null
+            var searchTerm = string.IsNullOrEmpty(SearchTerm) ? string.Empty : SearchTerm.ToLower();
+
             BlogPosts = await (
                 from bp in _context.BlogPosts
                 join author in _context.Users on bp.AuthorId equals author.Id
-                where EF.Functions.Like(bp.Title.ToLower(), $"%{SearchTerm.ToLower()}%")
-                      || EF.Functions.Like(bp.Content.ToLower(), $"%{SearchTerm.ToLower()}%")
+                where EF.Functions.Like(bp.Title.ToLower(), $"%{searchTerm}%")
+                      || EF.Functions.Like(bp.Content.ToLower(), $"%{searchTerm}%")
                 select new
                 {
                     Id = bp.Id,
@@ -68,8 +71,9 @@ namespace MarketingBlogApp.Pages.Admin
             string summary = GenerateSummary(BlogPosts);
 
             // Optionally, you can pass the summary to AI for further analysis
-            AIAnalysis = await GetRelevantDataAsync(SearchTerm, summary);
+            AIAnalysis = await GetRelevantDataAsync(searchTerm, summary);
         }
+
 
         private string GenerateSummary(IEnumerable<dynamic> blogPosts)
         {

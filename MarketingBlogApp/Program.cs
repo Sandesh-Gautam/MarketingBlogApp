@@ -23,6 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseSqlServer(connectionString);
+    options.EnableSensitiveDataLogging();
 });
 
 // Configure Authentication with Google and Cookie
